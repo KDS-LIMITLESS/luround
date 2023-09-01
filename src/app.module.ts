@@ -1,26 +1,23 @@
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
-import { AuthController } from './auth/auth.controller';
 import { AppService } from './app.service';
 import { ConfigModule } from '@nestjs/config';
 import { MongoModule } from './store/db.module';
 import { DatabaseService } from './store/db.service';
-import { ResponseData } from './logger.service';
-import { AuthService} from './auth/auth.service';
-import { GoogleStrategy } from './auth/google.startegy';
+import { UserModule } from './user/user.module';
+import { AuthModule } from './auth/auth.module';
 
 
 @Module({
   imports: [
     ConfigModule.forRoot(), 
-    MongoModule.registerAsync()],
-  controllers: [AppController, AuthController],
+    MongoModule.registerAsync(),
+    UserModule,
+  ],
+  controllers: [AppController],
   providers: [
     AppService, 
-    DatabaseService, 
-    ResponseData, 
-    AuthService, 
-    GoogleStrategy
+    DatabaseService
   ],
 })
 export class AppModule {}
