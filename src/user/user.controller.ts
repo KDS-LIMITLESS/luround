@@ -1,7 +1,7 @@
-import { Controller, Get, Req, UseGuards } from '@nestjs/common';
+import { Controller, Get, HttpStatus, Req, Res, UseGuards } from '@nestjs/common';
 import { UserService } from './user.service';
 import { AuthGuard } from '@nestjs/passport';
-import { Request } from 'express';
+import { Request, Response } from 'express';
 
 @Controller('google')
 export class UserController {
@@ -14,7 +14,9 @@ export class UserController {
 
   @Get('signIn')
   @UseGuards(AuthGuard('google'))
-  async googleLogin(@Req() req: Request) {
-    return this.userService.googleSignIn(req)
+  async googleLogin(@Req() req: Request, @Res() res: Response) {
+    return res
+    .status(HttpStatus.CREATED)
+    .json(await this.userService.googleSignIn(req)) 
   }
 }

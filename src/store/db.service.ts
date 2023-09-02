@@ -5,6 +5,7 @@ import { IUser } from "./db.interfaces";
 @Injectable()
 export class DatabaseService {
 
+  
   userCollection = this.db.collection('users')
   constructor(@Inject('MONGO_CONNECTION') private db:Db) {}
 
@@ -12,8 +13,8 @@ export class DatabaseService {
     return this.db.collection(collectionName)
   }
 
-  public async findOneDocument(searchParam: string) {
-    const document = (await this.getDbCollection('users')).findOne(
+  public async findOneDocument(collection: string, searchParam: string) {
+    const document = (await this.getDbCollection(collection)).findOne(
       {
         email: searchParam
       }
@@ -21,8 +22,8 @@ export class DatabaseService {
     return document
   }
 
-  public async createDocument(data: IUser) {
-    const result = await this.userCollection.insertOne(data)
+  public async createDocument(collection: string, data: IUser) {
+    const result = await (await this.getDbCollection(collection)).insertOne(data)
     return result.acknowledged ? result : undefined
   }
 }

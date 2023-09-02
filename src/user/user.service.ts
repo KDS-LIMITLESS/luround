@@ -7,11 +7,11 @@ import { DatabaseService } from 'src/store/db.service';
 export class UserService {
   constructor(
     private jwt: JwtService, 
-    @Inject('MONGO_CONNECTION') private db: DatabaseService
+    private db: DatabaseService
   ) {}
 
   async googleSignIn(req) {
-    const user = await this.db.createDocument(req.user)
+    const user = await this.db.createDocument('user', req.user)
     return user === undefined ? ResponseData.log(
       HttpStatus.INTERNAL_SERVER_ERROR, "An error occured!"
     ) : this.jwt.sign(req.user)
