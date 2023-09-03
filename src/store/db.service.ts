@@ -1,6 +1,5 @@
 import { Inject, Injectable } from "@nestjs/common";
 import { Db } from "mongodb";
-import { IUser } from "./db.interfaces";
 
 @Injectable()
 export class DatabaseService {
@@ -14,15 +13,13 @@ export class DatabaseService {
   }
 
   public async findOneDocument(collection: string, searchParam: string) {
-    const document = (await this.getDbCollection(collection)).findOne(
-      {
-        email: searchParam
-      }
+    const document = await (await this.getDbCollection(collection)).findOne(
+      { email: searchParam }
     )
     return document
   }
 
-  public async createDocument(collection: string, data: IUser) {
+  public async createDocument(collection: string, data: any) {
     const result = await (await this.getDbCollection(collection)).insertOne(data)
     return result.acknowledged ? result : undefined
   }
