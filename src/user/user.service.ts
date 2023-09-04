@@ -1,4 +1,4 @@
-import { HttpStatus, Inject, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { DatabaseService } from 'src/store/db.service';
 import { IGoogleAccount } from './interface/user.interface';
@@ -12,6 +12,15 @@ export class UserService {
   ) {}
 
   async googleSignIn(user: IGoogleAccount): Promise<string> {
+    
+    user = {
+      email:user.email,
+      firstName: user.firstName,
+      lastName: user.lastName,
+      picture: user.picture,
+      accountCreatedFrom: 'Google'
+    }
+    
     if (await this.db.findOneDocument('user', user.email)) {
       return this.jwt.sign({user})
     }
