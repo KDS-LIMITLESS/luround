@@ -19,6 +19,6 @@ export class UserController {
     console.log(req)
     return res
     .status(HttpStatus.CREATED)
-    .json(await this.userService.googleSignIn(req.user)) 
+    .json(await this.userService.googleSignIn(req.body)) 
   }
 }
