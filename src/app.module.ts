@@ -18,10 +18,10 @@ import { GlobalExceptionFilter } from './global-error-handler';
   providers: [
     AppService, 
     DatabaseService,
-    {
-      provide: APP_FILTER,
-      useClass: GlobalExceptionFilter,
-    },
+    // {
+      // provide: APP_FILTER,
+      // useClass: GlobalExceptionFilter,
+    // },
   ],
 })
 export class AppModule {}

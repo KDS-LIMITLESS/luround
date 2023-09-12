@@ -16,7 +16,7 @@ export class DatabaseService {
     const document = await (await this.getDbCollection(collection)).findOne(
       { email: searchParam }
     )
-    return document
+    return document || null
   }
 
   public async createDocument(collection: string, data: any) {

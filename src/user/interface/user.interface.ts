@@ -5,6 +5,7 @@ export interface IGoogleAccount {
   firstName: string,
   lastName:string,
   picture: string,
+  password?: string
   accountCreatedFrom: string
 }
 

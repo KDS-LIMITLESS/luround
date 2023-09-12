@@ -13,12 +13,27 @@ export class UserController {
   @UseGuards(AuthGuard('google'))
   async googleAuth(@Req() req: Request) {}
 
-  @Post('sign-in')
+  @Post('google/sign-in')
   // @UseGuards(AuthGuard('google'))
   async googleLogin(@Req() req: IRequest, @Res() res: Response) {
     console.log(req)
     return res
     .status(HttpStatus.CREATED)
     .json(await this.userService.googleSignIn(req.body)) 
+  }
+
+  @Post('/local/sign-up')
+  async localSignUp(@Req() req: IRequest, @Res() res: Response) {
+    let createUser = await this.userService.localSignUp(req.body)
+    if (!createUser === false) {
+      return res.status(HttpStatus.CREATED).json(createUser)
+    }
+    res.status(HttpStatus.INTERNAL_SERVER_ERROR)
+  }
+
+  @Post('/local/login')
+  async login(@Req() req: IRequest, @Res() res: Response) {
+    let userLoginDetails = await this.userService.login(req.body)
+    return res.status(HttpStatus.CREATED).json(userLoginDetails)
   }
 }
