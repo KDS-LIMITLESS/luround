@@ -3,6 +3,7 @@ import { JwtService } from '@nestjs/jwt';
 import { DatabaseService } from 'src/store/db.service';
 import { IGoogleAccount } from './interface/user.interface';
 import { AuthService } from 'src/auth/auth.service';
+import { sendOnboardingMail } from 'src/utils/mail.services';
 
 
 @Injectable()
@@ -47,6 +48,8 @@ export class UserService {
     }
     // Check if the user has been successfully registered
     const newuser = (await this.db.createDocument('user', user)).acknowledged
+    // SEND ONBOARDING EMAIL
+    await sendOnboardingMail(user.email, user.firstName)
     return newuser ? {email: user.email, picture: user.picture, created: true} : false
   }
 
