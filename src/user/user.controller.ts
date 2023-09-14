@@ -1,8 +1,9 @@
-import { Controller, Get, HttpStatus, Post, Req, Res, UseGuards } from '@nestjs/common';
+import { Controller, FileTypeValidator, Get, HttpStatus, MaxFileSizeValidator, ParseFilePipe, Post, Req, Res, UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common';
 import { UserService } from './user.service';
 import { AuthGuard } from '@nestjs/passport';
 import { Request, Response } from 'express';
 import { IRequest } from './interface/user.interface';
+import { FileInterceptor } from '@nestjs/platform-express';
 
 @Controller('api/v1/user')
 export class UserController {
@@ -36,4 +37,23 @@ export class UserController {
     let userLoginDetails = await this.userService.login(req.body)
     return res.status(HttpStatus.CREATED).json(userLoginDetails)
   }
+
+  @Post('/upload-image')
+  @UseInterceptors(FileInterceptor('image'))
+  async uploadFile(
+    @UploadedFile( 
+      new ParseFilePipe({
+        validators: [
+          // new MaxFileSizeValidator({maxSize: 2000})
+          new FileTypeValidator({fileType: 'image/jpeg'})
+        ]
+      })
+    )
+    file: Express.Multer.File,
+    @Res() res: Response
+  ) {
+    return res.status(HttpStatus.CREATED).json(file.originalname)
+  }
+  
+ 
 }
