@@ -3,24 +3,18 @@ import { Db } from "mongodb";
 
 @Injectable()
 export class DatabaseService {
-
+  private static db: Db 
+  userDB = this._uDB.collection('user')
   
-  userCollection = this.db.collection('users')
-  constructor(@Inject('MONGO_CONNECTION') private db:Db) {}
-
-  public async getDbCollection(collectionName: string) {
-    return this.db.collection(collectionName)
-  }
-
-  public async findOneDocument(collection: string, searchParam: string) {
-    const document = await (await this.getDbCollection(collection)).findOne(
-      { email: searchParam }
-    )
+  constructor(@Inject('MONGO_CONNECTION') private _uDB:Db) {}
+  
+  public async findOneDocument(searchParam: string) {
+    const document = await this.userDB.findOne({ email: searchParam })
     return document || null
   }
 
-  public async createDocument(collection: string, data: any) {
-    const result = await (await this.getDbCollection(collection)).insertOne(data)
+  public async createDocument( data: any) {
+    const result = await this.userDB.insertOne(data)
     return result.acknowledged ? result : undefined
   }
 }

@@ -13,12 +13,16 @@ export class MongoModule {
         const client = new MongoClient(process.env.MONGO_ATLAS_DB, {
           maxPoolSize: 100,
           minPoolSize: 0,
-          maxIdleTimeMS: 1000,
+          maxIdleTimeMS: 60000,
           socketTimeoutMS: 8000
         });
 
-        client.on("connectionCreated", function(pool) {
-          console.log("Connected to database >>>>> " + pool.connectionId)
+        client.on("connectionPoolReady", function(pool) {
+          console.log("Connected to database .....", pool.time )
+        })
+
+        client.on('connectionPoolCleared', function(pool) {
+          console.log("Connection closed", pool.interruptInUseConnections)
         })
         
         await client.connect();

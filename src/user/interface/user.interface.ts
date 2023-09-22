@@ -1,6 +1,6 @@
 import { Request } from "express";
 
-export interface IGoogleAccount {
+export interface IUser {
   email: string,
   firstName: string,
   lastName:string,

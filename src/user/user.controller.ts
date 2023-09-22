@@ -1,4 +1,7 @@
-import { Controller, FileTypeValidator, Get, HttpStatus, MaxFileSizeValidator, ParseFilePipe, Post, Req, Res, UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common';
+import { Controller, FileTypeValidator, Get, HttpStatus, 
+  MaxFileSizeValidator, ParseFilePipe, Post, Req, Res, 
+  UploadedFile, UseGuards, UseInterceptors 
+} from '@nestjs/common';
 import { UserService } from './user.service';
 import { AuthGuard } from '@nestjs/passport';
 import { Request, Response } from 'express';
@@ -17,7 +20,6 @@ export class UserController {
   @Post('google/sign-in')
   // @UseGuards(AuthGuard('google'))
   async googleLogin(@Req() req: IRequest, @Res() res: Response) {
-    console.log(req)
     return res
     .status(HttpStatus.CREATED)
     .json(await this.userService.googleSignIn(req.body)) 
