@@ -8,9 +8,16 @@ export class ProfileService {
 
   constructor(private profileManager: ProfileManager) {}
 
-  async updateUserProfie(req: any) {
+  async updateUserCertificatesOrMlinks(req: any) {
     const { email, occupation, about, certificates, media_links} = req
-    return await this.profileManager.update(email, occupation, about, certificates, media_links)
+    let userProfile = await this.profileManager.updateCertsOrMLinks(email, certificates, media_links)
+    if (userProfile === null) {
+      throw new BadRequestException({
+        status: 400,
+        message: "A user with specified email not found"
+      })
+    }
+    return userProfile
   }
 
   async getUserProfile(email: string) {
@@ -18,7 +25,7 @@ export class ProfileService {
     if (userProfile === null) {
       throw new BadRequestException({
         status: 400,
-        message: "Are you logged in?"
+        message: "A user with specified email not found"
       })
     }
     return userProfile
