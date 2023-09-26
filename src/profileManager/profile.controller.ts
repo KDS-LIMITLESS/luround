@@ -16,7 +16,7 @@ export class ProfileController {
   async updateCertificates(@Req() req: Request, @Res() res: Response) {
     return res
     .status(HttpStatus.CREATED)
-    .json(await this.profileSevice.updateUserCertificatesOrMlinks(req.body)) 
+    .json(await this.profileSevice.update_user_certificates(req.body)) 
   }
 
   /**
@@ -29,7 +29,28 @@ export class ProfileController {
   async updateMediaLinks(@Req() req: Request, @Res() res: Response) {
     return res
     .status(HttpStatus.CREATED)
-    .json(await this.profileSevice.updateUserCertificatesOrMlinks(req.body)) 
+    .json(await this.profileSevice.update_user_media_links(req.body)) 
+  }
+
+  @Put('/about/update')
+  async updateUserDescription(@Req() req: Request, @Res() res: Response) {
+    return res
+    .status(HttpStatus.CREATED)
+    .json(await this.profileSevice.update_user_description(req.body)) 
+  }
+
+  @Put('/names/update')
+  async updateUserNames(@Req() req: Request, @Res() res: Response) {
+    return res
+    .status(HttpStatus.CREATED)
+    .json(await this.profileSevice.update_user_name(req.body)) 
+  }
+
+  @Put('/occupation/update')
+  async updateUserOccupation(@Req() req: Request, @Res() res: Response) {
+    return res
+    .status(HttpStatus.CREATED)
+    .json(await this.profileSevice.update_user_occupation(req.body)) 
   }
 
   /**
