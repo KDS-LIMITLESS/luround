@@ -36,7 +36,7 @@ export class UserController {
 
   @Post('/local/login')
   async login(@Req() req: IRequest, @Res() res: Response) {
-    let userLoginDetails = await this.userService.login(req.body)
+    let userLoginDetails = await this.userService.localLogin(req.body)
     return res.status(HttpStatus.CREATED).json(userLoginDetails)
   }
 

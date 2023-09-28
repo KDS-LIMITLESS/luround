@@ -56,7 +56,7 @@ export class UserService {
     return newuser ? {email: user.email, picture: user.picture, created: true} : false
   }
 
-  async login(user: IUser): Promise<string> {
+  async localLogin(user: IUser): Promise<string> {
     // CHECK IF USER EMAIL EXISTS IN DB
     const isUser = await this._uDB.findOneDocument( user.email)    
 

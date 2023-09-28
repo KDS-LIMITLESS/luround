@@ -90,4 +90,14 @@ export class ProfileService {
     }
     return userProfile
   }
+
+  // function to generate random user url --> https://luround.com/random_string
+  // click on this link, query the database for the link and return the email associated with the link 
+  // then call findone(returned_email)
+  // if (email) call get_user_profile(email)
+
+  // function to generate a qrCode using a users email
+  // After user sign's up it generates a qrCode with the users email
+  // on scaanning the qr code, it decodes the base64 string and calls get_user_profile(decoded_base64_string)
+  // return the profile.
 }

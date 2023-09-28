@@ -1,4 +1,4 @@
-import { Request } from "express";
+import * as e from "express";
 
 export interface IUser {
   email: string,
@@ -9,6 +9,7 @@ export interface IUser {
   accountCreatedFrom: string
 }
 
-export interface IRequest<U = any> extends Request {
+export interface IRequest<U = any > extends e.Request {
   user?: U
+  query: {email: any}
 }

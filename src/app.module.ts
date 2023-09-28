@@ -8,13 +8,15 @@ import { UserModule } from './user/user.module';
 import { APP_FILTER } from '@nestjs/core';
 import { GlobalExceptionFilter } from './global-error-handler';
 import { ProfileModule } from './profileManager/profile.module';
+import { QRCodeModule } from './qrCode/qrcode.module';
 
 @Module({
   imports: [
     ConfigModule.forRoot(), 
     MongoModule.registerAsync(),
     UserModule,
-    ProfileModule
+    ProfileModule,
+    QRCodeModule
   ],
   controllers: [AppController],
   providers: [

@@ -40,7 +40,7 @@ export class ProfileManager {
    */
   async getProfile(email: string) {
    const profile = await this.userDB.findOne({ email }, { projection: { password: 0 }})
-    return profile._id ? profile : null
+    return profile ? profile : null
   }
 }
 
