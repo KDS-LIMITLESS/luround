@@ -1,14 +1,15 @@
-import { Injectable, InternalServerErrorException } from "@nestjs/common";
+import { BadRequestException, Injectable, InternalServerErrorException } from "@nestjs/common";
 import * as qrc from 'qrcode'
 import { DatabaseService } from "src/store/db.service";
 
 @Injectable()
 export class QRCodeService {
-  constructor(private _db:DatabaseService) {}
 
-  async generateQRCode(email: string) {
+  constructor(private qrcodeManager:DatabaseService) {}
+
+  async generate_qrcode(email: string): Promise<Buffer> {
     const qrCode = await qrc.toDataURL(email)
-    const isUser = await this._db.findOneDocument(email)
+    const isUser = await this.qrcodeManager.getUserDocument(email)
     
     if(!qrCode || !isUser) {
       throw new InternalServerErrorException({

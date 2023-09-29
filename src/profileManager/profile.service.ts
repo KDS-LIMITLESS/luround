@@ -1,16 +1,15 @@
 import { BadRequestException, Injectable } from "@nestjs/common";
-import { ProfileManager } from "./profile.db";
-import { IUser } from "src/user/interface/user.interface";
+import { DatabaseService } from "src/store/db.service";
 
 
 @Injectable()
 export class ProfileService {
 
-  constructor(private profileManager: ProfileManager) {}
+  constructor(private profileManager: DatabaseService) {}
 
   async update_user_certificates(req: any) {
     const {email, certificates} = req
-    let cert = []
+    let cert: ICertificates[] = []
 
     for (const certificate of certificates) {
       cert.push(certificate)
@@ -28,7 +27,7 @@ export class ProfileService {
 
   async update_user_media_links(req: any) {
     const {email, media_links} = req
-    let media_link = []
+    let media_link: ILinks[] = []
     
     for (const link of media_links ) {
       media_link.push(link)
@@ -81,7 +80,7 @@ export class ProfileService {
   }
   
   async getUserProfile(email: string) {
-    let userProfile = await this.profileManager.getProfile(email)
+    let userProfile = await this.profileManager.findOneDocument("email", email)
     if (userProfile === null) {
       throw new BadRequestException({
         status: 400,
@@ -91,13 +90,44 @@ export class ProfileService {
     return userProfile
   }
 
-  // function to generate random user url --> https://luround.com/random_string
-  // click on this link, query the database for the link and return the email associated with the link 
-  // then call findone(returned_email)
-  // if (email) call get_user_profile(email)
+  async generate_user_url(email: string) {
+    try {
+      let userCount = await this.profileManager.userDB.estimatedDocumentCount()
+      let getUserNames = await this.profileManager.getUserDocument(email)
+      let url = `luround.com/${getUserNames.firstName}_${getUserNames.lastName}_${userCount}`
+      return await this.profileManager.updateUserDocument(email, "luround_url", url)
 
-  // function to generate a qrCode using a users email
-  // After user sign's up it generates a qrCode with the users email
-  // on scaanning the qr code, it decodes the base64 string and calls get_user_profile(decoded_base64_string)
-  // return the profile.
+    } catch(err: any) {
+      throw new BadRequestException({
+        status: 400,
+        message: "A user with specified email not found"
+      })
+    }
+  }
+
+  async generate_custom_user_url(req: any) {
+    const {email, slug} = req
+    let user = await this.profileManager.getUserDocument(email)
+    if (user === null) {
+      throw new BadRequestException({
+        status: 400,
+        message: "A user with specified email not found"
+      })
+    }
+    let custom_url = `luround.com/${slug}`
+    return await this.profileManager.updateUserDocument(email, "luround_url", custom_url)
+  }
+  
+  async get_user_link(req: any) {
+    const {link} = req
+    let user = await this.profileManager.findOneDocument("luround_url", link)
+
+    if (user === null) {
+      throw new BadRequestException({
+        status: 400,
+        message: "A user with specified email not found"
+      })
+    }
+    return user
+  }
 }

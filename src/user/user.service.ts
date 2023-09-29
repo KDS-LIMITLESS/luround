@@ -24,7 +24,7 @@ export class UserService {
       accountCreatedFrom: 'GOOGLE'
     } // CREATE A USER DTO ON THE CONTROLLER LEVEL FOR THE USER DATA
     
-    if (await this._uDB.findOneDocument(user.email)) {
+    if (await this._uDB.getUserDocument(user.email)) {
       return this.jwt.sign({email: user.email, picture: user.picture})
     }
     await this._uDB.createDocument(user)
@@ -34,7 +34,7 @@ export class UserService {
 
   async localSignUp(user: IUser): Promise<object | false>{
     // CHECK IF EMAIL ALREADY EXISTS
-    const isUser = await this._uDB.findOneDocument(user.email)
+    const isUser = await this._uDB.getUserDocument(user.email)
     if (isUser) throw new BadRequestException({
       statusCode: 400,
       message: "Email already exists!"
@@ -58,8 +58,8 @@ export class UserService {
 
   async localLogin(user: IUser): Promise<string> {
     // CHECK IF USER EMAIL EXISTS IN DB
-    const isUser = await this._uDB.findOneDocument( user.email)    
-
+    const isUser = await this._uDB.getUserDocument( user.email)    
+    
     // AN ERROR OCCURED PLAIN PASSWORD AND HASH DOES NOT MATCH
     if (isUser === null || 
         !await this.authService.comparePasswords(user.password, isUser.password)

@@ -54,6 +54,20 @@ export class ProfileController {
     .json(await this.profileSevice.update_user_occupation(req.body)) 
   }
 
+  @Put('/generate-url')
+  async generateUserUrl(@Req() req: Request, @Res() res: Response) {
+    return res
+    .status(HttpStatus.OK)
+    .json(await this.profileSevice.generate_user_url(req.body.email))
+  }
+
+  @Put('/generate-custom-url')
+  async generateCustomUserUrl(@Req() req: Request, @Res() res: Response) {
+    return res
+    .status(HttpStatus.OK)
+    .json(await this.profileSevice.generate_custom_user_url(req.body))
+  }
+
   /**
    * Get user profile
    * @param req 
@@ -65,5 +79,12 @@ export class ProfileController {
     return res
     .status(HttpStatus.OK)
     .json(await this.profileSevice.getUserProfile(req.query.email)) 
+  }
+
+  @Get('/get-link')
+  async generateUserLink(@Req() req: Request, @Res() res: Response) {
+    return res
+    .status(HttpStatus.OK)
+    .json(await this.profileSevice.get_user_link(req.query))
   }
 }
