@@ -90,8 +90,9 @@ export class ProfileService {
     return userProfile
   }
 
-  async generate_user_url(email: string) {
+  async generate_user_url(req: any) {
     try {
+      const {email} = req
       let userCount = await this.profileManager.userDB.estimatedDocumentCount()
       let getUserNames = await this.profileManager.getUserDocument(email)
       let url = `luround.com/${getUserNames.firstName}_${getUserNames.lastName}_${userCount}`

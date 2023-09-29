@@ -58,7 +58,7 @@ export class ProfileController {
   async generateUserUrl(@Req() req: Request, @Res() res: Response) {
     return res
     .status(HttpStatus.OK)
-    .json(await this.profileSevice.generate_user_url(req.body.email))
+    .json(await this.profileSevice.generate_user_url(req.query))
   }
 
   @Put('/generate-custom-url')
