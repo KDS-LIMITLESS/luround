@@ -8,7 +8,8 @@ export class QRCodeService {
 
   constructor(private qrcodeManager:DatabaseService) {}
 
-  async generate_qrcode(email: string): Promise<Buffer> {
+  async generate_qrcode(req: any): Promise<Buffer> {
+    const {email} = req
     const qrCode = await qrc.toDataURL(email)
     const isUser = await this.qrcodeManager.getUserDocument(email)
     

@@ -3,6 +3,11 @@ enum ResponseMessages {
    * The email provided does not exist in dataase
    */
   EmailDoesNotExist = 'A user with specified email not found',
+
+  /**
+   * Email found in database
+   */
+  EmailExists = 'Email already exists',
   
   /**
    * The custom luround link has been changed by the user or email pointing to the link does not exist

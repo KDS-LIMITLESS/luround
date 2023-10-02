@@ -7,11 +7,11 @@ export class QRCodeController {
   
   constructor(private qrcodeService: QRCodeService) {}
 
-  @Post('/generate')
+  @Get('/generate')
   async generateUserQRCode(@Req() req: Request, @Res() res: Response) {
     res.setHeader('Content-Type', 'image/png');
     return res
     .status(HttpStatus.OK)
-    .json(await this.qrcodeService.generate_qrcode(req.body.email))
+    .json(await this.qrcodeService.generate_qrcode(req.query))
   }
 }

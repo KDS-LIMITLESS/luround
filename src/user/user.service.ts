@@ -38,7 +38,7 @@ export class UserService {
     const isUser = await this._uDB.getUserDocument(user.email)
     if (isUser) throw new BadRequestException({
       statusCode: 400,
-      message: "Email already exists!"
+      message: ResponseMessages.EmailExists
     })
     // HASH USERS PASSWORD
     const PSW_HASH = await this.authService.hashPassword(user.password)
