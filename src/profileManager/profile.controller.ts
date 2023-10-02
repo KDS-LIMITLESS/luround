@@ -7,12 +7,6 @@ import { IRequest } from "src/user/interface/user.interface";
 export class ProfileController {
   constructor(private profileSevice: ProfileService) {}
 
-  /**
-   * Update user cetificates in profile
-   * @param req 
-   * @param res 
-   * @returns 
-   */
   @Put('/certificates/update')
   async updateCertificates(@Req() req: Request, @Res() res: Response) {
     return res
@@ -20,12 +14,6 @@ export class ProfileController {
     .json(await this.profileSevice.update_user_certificates(req.body)) 
   }
 
-  /**
-   * Update user media links in profile
-   * @param req 
-   * @param res 
-   * @returns 
-   */
   @Put('/media-links/update')
   async updateMediaLinks(@Req() req: Request, @Res() res: Response) {
     return res
@@ -54,13 +42,6 @@ export class ProfileController {
     .json(await this.profileSevice.update_user_occupation(req.body)) 
   }
 
-  @Put('/generate-url')
-  async generateUserUrl(@Req() req: Request, @Res() res: Response) {
-    return res
-    .status(HttpStatus.OK)
-    .json(await this.profileSevice.generate_user_url(req.query))
-  }
-
   @Put('/generate-custom-url')
   async generateCustomUserUrl(@Req() req: Request, @Res() res: Response) {
     return res
@@ -68,12 +49,6 @@ export class ProfileController {
     .json(await this.profileSevice.generate_custom_user_url(req.body))
   }
 
-  /**
-   * Get user profile
-   * @param req 
-   * @param res 
-   * @returns 
-   */
   @Get('/get')
   async getUserProfile(@Req() req: IRequest, @Res() res: Response) {
     return res
@@ -86,5 +61,12 @@ export class ProfileController {
     return res
     .status(HttpStatus.OK)
     .json(await this.profileSevice.get_user_link(req.query))
+  }
+
+  @Get('/generate-url')
+  async generateUserUrl(@Req() req: Request, @Res() res: Response) {
+    return res
+    .status(HttpStatus.OK)
+    .json(await this.profileSevice.generate_user_url(req.query))
   }
 }
