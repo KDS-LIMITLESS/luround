@@ -4,6 +4,7 @@ import { DatabaseService } from 'src/store/db.service';
 import { IUser } from './interface/user.interface';
 import { AuthService } from 'src/auth/auth.service';
 import { sendOnboardingMail } from 'src/utils/mail.services';
+import ResponseMessages from 'src/messageConstants';
 
 
 @Injectable()
@@ -66,7 +67,7 @@ export class UserService {
       ){
       throw new BadRequestException({
         statusCode: 400,
-        message: "Invalid login details"
+        message: ResponseMessages.BadLoginDetails
       })
     }
     // SUCCESS! GENERATE A USER TOKEN 

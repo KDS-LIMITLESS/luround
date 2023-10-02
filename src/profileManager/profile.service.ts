@@ -1,4 +1,5 @@
 import { BadRequestException, Injectable } from "@nestjs/common";
+import ResponseMessages from "src/messageConstants";
 import { DatabaseService } from "src/store/db.service";
 
 
@@ -19,7 +20,7 @@ export class ProfileService {
     if (data === null) {
       throw new BadRequestException({
         status: 400,
-        message: "A user with specified email not found"
+        message: ResponseMessages.EmailDoesNotExist
       })
     }
     return data
@@ -37,7 +38,7 @@ export class ProfileService {
     if (data === null) {
       throw new BadRequestException({
         status: 400,
-        message: "A user with specified email not found"
+        message: ResponseMessages.EmailDoesNotExist
       })
     }
     return data
@@ -49,7 +50,7 @@ export class ProfileService {
     if (data === null) {
       throw new BadRequestException({
         status: 400,
-        message: "A user with specified email not found"
+        message: ResponseMessages.EmailDoesNotExist
       })
     }
     return data
@@ -61,7 +62,7 @@ export class ProfileService {
     if (data === null) {
       throw new BadRequestException({
         status: 400,
-        message: "A user with specified email not found"
+        message: ResponseMessages.EmailDoesNotExist
       })
     }
     return data
@@ -73,7 +74,7 @@ export class ProfileService {
     if (data === null) {
       throw new BadRequestException({
         status: 400,
-        message: "A user with specified email not found"
+        message: ResponseMessages.EmailDoesNotExist
       })
     }
     return data
@@ -84,7 +85,7 @@ export class ProfileService {
     if (userProfile === null) {
       throw new BadRequestException({
         status: 400,
-        message: "A user with specified email not found"
+        message: ResponseMessages.EmailDoesNotExist
       })
     }
     return userProfile
@@ -101,7 +102,7 @@ export class ProfileService {
     } catch(err: any) {
       throw new BadRequestException({
         status: 400,
-        message: "A user with specified email not found"
+        message: ResponseMessages.EmailDoesNotExist
       })
     }
   }
@@ -112,7 +113,7 @@ export class ProfileService {
     if (user === null) {
       throw new BadRequestException({
         status: 400,
-        message: "A user with specified email not found"
+        message: ResponseMessages.EmailDoesNotExist
       })
     }
     let custom_url = `luround.com/${slug}`
@@ -126,7 +127,7 @@ export class ProfileService {
     if (user === null) {
       throw new BadRequestException({
         status: 400,
-        message: "A user with specified email not found"
+        message: ResponseMessages.BrokenLinkUrl
       })
     }
     return user

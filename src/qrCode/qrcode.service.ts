@@ -1,5 +1,6 @@
 import { BadRequestException, Injectable, InternalServerErrorException } from "@nestjs/common";
 import * as qrc from 'qrcode'
+import ResponseMessages from "src/messageConstants";
 import { DatabaseService } from "src/store/db.service";
 
 @Injectable()
@@ -14,7 +15,7 @@ export class QRCodeService {
     if(!qrCode || !isUser) {
       throw new InternalServerErrorException({
         status: 500,
-        message: "Error generating QRCode"
+        message: ResponseMessages.QRCodeError
       })
     }
     return Buffer.from(qrCode.replace(/^data:image\/png;base64,/, ''), "base64")
