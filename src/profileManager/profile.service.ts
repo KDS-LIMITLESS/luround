@@ -56,9 +56,21 @@ export class ProfileService {
     return data
   }
 
-  async update_user_name(req: any) {
+  async update_user_first_name(req: any) {
     const{email, firstName, lastName} = req
-    let data = await this.profileManager.updateUserDocument(email, "full_name", firstName, lastName )
+    let data = await this.profileManager.updateUserDocument(email, "firstName", firstName, lastName )
+    if (data === null) {
+      throw new BadRequestException({
+        status: 400,
+        message: ResponseMessages.EmailDoesNotExist
+      })
+    }
+    return data
+  }
+
+  async update_user_last_name(req: any) {
+    const{email, firstName, lastName} = req
+    let data = await this.profileManager.updateUserDocument(email, "lastName", lastName )
     if (data === null) {
       throw new BadRequestException({
         status: 400,

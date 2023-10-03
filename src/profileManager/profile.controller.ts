@@ -28,11 +28,18 @@ export class ProfileController {
     .json(await this.profileSevice.update_user_description(req.body)) 
   }
 
-  @Put('/names/update')
+  @Put('/first-name/update')
   async updateUserNames(@Req() req: Request, @Res() res: Response) {
     return res
     .status(HttpStatus.OK)
-    .json(await this.profileSevice.update_user_name(req.body)) 
+    .json(await this.profileSevice.update_user_first_name(req.body)) 
+  }
+  ff
+  @Put('/last-name/update')
+  async updateUserFirstName(@Req() req: Request, @Res() res: Response) { 
+    return res
+    .status(HttpStatus.OK)
+    .json(await this.profileSevice.update_user_last_name(req.body)) 
   }
 
   @Put('/occupation/update')
