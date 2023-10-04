@@ -22,7 +22,9 @@ export class UserService {
       firstName: user.firstName,
       lastName: user.lastName,
       picture: user.picture,
-      accountCreatedFrom: 'GOOGLE'
+      accountCreatedFrom: 'GOOGLE',
+      occupation: '',
+      about: ''
     } // CREATE A USER DTO ON THE CONTROLLER LEVEL FOR THE USER DATA
     
     if (await this._uDB.getUserDocument(user.email)) {
@@ -48,7 +50,9 @@ export class UserService {
       lastName: user.lastName,
       picture: user.picture,
       password: PSW_HASH,
-      accountCreatedFrom: "LOCAL"
+      accountCreatedFrom: "LOCAL",
+      occupation: "",
+      about: ""
     } // CREATE A USER DTO ON THE CONTROLLER LEVEL FOR THE USER DATA
     // USER SUCCESSFULLY CREATED
     const newuser = (await this._uDB.createDocument(user)).acknowledged

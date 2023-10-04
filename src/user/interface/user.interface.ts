@@ -7,6 +7,8 @@ export interface IUser {
   picture: string,
   password?: string
   accountCreatedFrom: string
+  occupation: string,
+  about: string
 }
 
 export interface IRequest<U = any > extends e.Request {
