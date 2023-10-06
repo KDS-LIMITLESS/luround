@@ -1,18 +1,19 @@
 import { Inject, Injectable } from "@nestjs/common";
-import { Db } from "mongodb";
+import { Collection, Db } from "mongodb";
 
 @Injectable()
 export class DatabaseService { 
   userDB = this._uDB.collection('user')
+  serviceDB = this._uDB.collection("services")
 
   constructor(@Inject('MONGO_CONNECTION') private _uDB:Db) {}
   
-  public async findOneDocument(searchParam: string, value: string) {
-    const document = await this.userDB.findOne({ [searchParam]: value }, { projection: { password: 0 }})
+  public async findOneDocument(db:Collection<Document | any>, searchParam: string, value: string) {
+    const document = await db.findOne({ [searchParam]: value }, { projection: { password: 0 }})
     return document || null
   }
 
-  public async createDocument( data: any) {
+  public async create( data: any) {
     const result = await this.userDB.insertOne(data)
     return result.acknowledged ? result : undefined
   }
@@ -20,7 +21,7 @@ export class DatabaseService {
   /**
    * Updates a user certificates or media-links section in the profile with the specified fields. 
    */
-  async updateUserDocument(email: string, alias:string, ...args: any) {
+  async update(email: string, alias:string, ...args: any) {
     let data: any;
     if (
       alias === "about" || alias === "occupation" || 
@@ -39,7 +40,7 @@ export class DatabaseService {
   /**
    * Returns a user profile if email is found in db
    */
-  async getUserDocument(email: string) {
+  async read(email: string) {
    const profile = await this.userDB.findOne({ email })
     return profile ? profile : null
   }

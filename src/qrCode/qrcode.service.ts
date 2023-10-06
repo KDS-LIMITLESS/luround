@@ -11,7 +11,7 @@ export class QRCodeService {
   async generate_qrcode(req: any): Promise<Buffer> {
     const {email} = req
     const qrCode = await qrc.toDataURL(email)
-    const isUser = await this.qrcodeManager.getUserDocument(email)
+    const isUser = await this.qrcodeManager.read(email)
     
     if(!qrCode || !isUser) {
       throw new InternalServerErrorException({

@@ -24,20 +24,22 @@ export class UserService {
       picture: user.picture,
       accountCreatedFrom: 'GOOGLE',
       occupation: '',
-      about: ''
+      about: '',
+      certificates: null,
+      media_links: null
     } // CREATE A USER DTO ON THE CONTROLLER LEVEL FOR THE USER DATA
     
-    if (await this._uDB.getUserDocument(user.email)) {
+    if (await this._uDB.read(user.email)) {
       return this.jwt.sign({email: user.email, picture: user.picture})
     }
-    await this._uDB.createDocument(user)
+    await this._uDB.create(user)
     await sendOnboardingMail(user.email, user.firstName)
     return this.jwt.sign({email: user.email, picture: user.picture})
   }
 
   async localSignUp(user: IUser): Promise<object | false>{
     // CHECK IF EMAIL ALREADY EXISTS
-    const isUser = await this._uDB.getUserDocument(user.email)
+    const isUser = await this._uDB.read(user.email)
     if (isUser) throw new BadRequestException({
       statusCode: 400,
       message: ResponseMessages.EmailExists
@@ -52,10 +54,12 @@ export class UserService {
       password: PSW_HASH,
       accountCreatedFrom: "LOCAL",
       occupation: "",
-      about: ""
+      about: "",
+      certificates: null,
+      media_links: null
     } // CREATE A USER DTO ON THE CONTROLLER LEVEL FOR THE USER DATA
     // USER SUCCESSFULLY CREATED
-    const newuser = (await this._uDB.createDocument(user)).acknowledged
+    const newuser = (await this._uDB.create(user)).acknowledged
     // SEND ONBOARDING EMAIL
     await sendOnboardingMail(user.email, user.firstName)
     return newuser ? {email: user.email, picture: user.picture, created: true} : false
@@ -63,7 +67,7 @@ export class UserService {
 
   async localLogin(user: IUser): Promise<string> {
     // CHECK IF USER EMAIL EXISTS IN DB
-    const isUser = await this._uDB.getUserDocument( user.email)    
+    const isUser = await this._uDB.read( user.email)    
     
     // AN ERROR OCCURED PLAIN PASSWORD AND HASH DOES NOT MATCH
     if (isUser === null || 

@@ -6,6 +6,8 @@ import { DatabaseService } from "src/store/db.service";
 @Injectable()
 export class ProfileService {
 
+  _udb = this.profileManager.userDB
+
   constructor(private profileManager: DatabaseService) {}
 
   async update_user_certificates(req: any) {
@@ -16,7 +18,7 @@ export class ProfileService {
       cert.push(certificate)
     }
     
-    let data = await this.profileManager.updateUserDocument(email, "certificates", certificates)
+    let data = await this.profileManager.update(email, "certificates", certificates)
     if (data === null) {
       throw new BadRequestException({
         status: 400,
@@ -34,7 +36,7 @@ export class ProfileService {
       media_link.push(link)
     }
     
-    let data = await this.profileManager.updateUserDocument(email,"media_links", media_link)
+    let data = await this.profileManager.update(email,"media_links", media_link)
     if (data === null) {
       throw new BadRequestException({
         status: 400,
@@ -46,7 +48,7 @@ export class ProfileService {
 
   async update_user_description(req: any) {
     const{email, about} = req
-    let data = await this.profileManager.updateUserDocument(email, "about", about )
+    let data = await this.profileManager.update(email, "about", about )
     if (data === null) {
       throw new BadRequestException({
         status: 400,
@@ -58,7 +60,7 @@ export class ProfileService {
 
   async update_user_first_name(req: any) {
     const{email, firstName, lastName} = req
-    let data = await this.profileManager.updateUserDocument(email, "firstName", firstName, lastName )
+    let data = await this.profileManager.update(email, "firstName", firstName, lastName )
     if (data === null) {
       throw new BadRequestException({
         status: 400,
@@ -70,7 +72,7 @@ export class ProfileService {
 
   async update_user_last_name(req: any) {
     const{email, firstName, lastName} = req
-    let data = await this.profileManager.updateUserDocument(email, "lastName", lastName )
+    let data = await this.profileManager.update(email, "lastName", lastName )
     if (data === null) {
       throw new BadRequestException({
         status: 400,
@@ -82,7 +84,7 @@ export class ProfileService {
 
   async update_user_occupation(req: any) {
     const{email, occupation} = req
-    let data = await this.profileManager.updateUserDocument(email, "occupation", occupation )
+    let data = await this.profileManager.update(email, "occupation", occupation )
     if (data === null) {
       throw new BadRequestException({
         status: 400,
@@ -93,7 +95,7 @@ export class ProfileService {
   }
   
   async getUserProfile(email: string) {
-    let userProfile = await this.profileManager.findOneDocument("email", email)
+    let userProfile = await this.profileManager.findOneDocument(this._udb, "email", email)
     if (userProfile === null) {
       throw new BadRequestException({
         status: 400,
@@ -107,9 +109,9 @@ export class ProfileService {
     try {
       const {email} = req
       let userCount = await this.profileManager.userDB.estimatedDocumentCount()
-      let getUserNames = await this.profileManager.getUserDocument(email)
+      let getUserNames = await this.profileManager.read(email)
       let url = `luround.com/${getUserNames.firstName}_${getUserNames.lastName}_${userCount}`
-      return await this.profileManager.updateUserDocument(email, "luround_url", url)
+      return await this.profileManager.update(email, "luround_url", url)
 
     } catch(err: any) {
       throw new BadRequestException({
@@ -121,7 +123,7 @@ export class ProfileService {
 
   async generate_custom_user_url(req: any) {
     const {email, slug} = req
-    let user = await this.profileManager.getUserDocument(email)
+    let user = await this.profileManager.read(email)
     if (user === null) {
       throw new BadRequestException({
         status: 400,
@@ -129,12 +131,12 @@ export class ProfileService {
       })
     }
     let custom_url = `luround.com/${slug}`
-    return await this.profileManager.updateUserDocument(email, "luround_url", custom_url)
+    return await this.profileManager.update(email, "luround_url", custom_url)
   }
   
   async get_user_link(req: any) {
     const {link} = req
-    let user = await this.profileManager.findOneDocument("luround_url", link)
+    let user = await this.profileManager.findOneDocument(this._udb ,"luround_url", link)
 
     if (user === null) {
       throw new BadRequestException({
