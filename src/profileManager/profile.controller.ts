@@ -63,6 +63,20 @@ export class ProfileController {
     .json(await this.profileSevice.getUserProfile(req.query.email)) 
   }
 
+  @Get('/certificates/get')
+  async getUserCertficates(@Req() req: IRequest, @Res() res: Response) {
+    return res
+    .status(HttpStatus.OK)
+    .json(await this.profileSevice.get_user_certs(req.query.email)) 
+  }
+
+  @Get('/about/get')
+  async getUserAbout(@Req() req: IRequest, @Res() res: Response) {
+    return res
+    .status(HttpStatus.OK)
+    .json(await this.profileSevice.get_user_about(req.query.email)) 
+  }
+
   @Get('/get-link')
   async generateUserLink(@Req() req: Request, @Res() res: Response) {
     return res
