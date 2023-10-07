@@ -22,8 +22,8 @@ export class UserService {
       displayName: user.displayName,
       photoUrl: user.photoUrl,
       accountCreatedFrom: 'GOOGLE',
-      occupation: '',
-      about: '',
+      occupation: null,
+      about: null,
       certificates: null,
       media_links: null
     } // CREATE A USER DTO ON THE CONTROLLER LEVEL FOR THE USER DATA
