@@ -25,7 +25,7 @@ export class DatabaseService {
     let data: any;
     if (
       alias === "about" || alias === "occupation" || 
-      alias === "firstName" || "lastName" || alias === "luround_url" ||
+      "displayName" || alias === "luround_url" ||
       alias === "services"
     ){
       data = args[0]

@@ -19,9 +19,8 @@ export class UserService {
   async googleSignIn(user: IUser): Promise<string> {
     user = {
       email:user.email,
-      firstName: user.firstName,
-      lastName: user.lastName,
-      picture: user.picture,
+      displayName: user.displayName,
+      photoUrl: user.photoUrl,
       accountCreatedFrom: 'GOOGLE',
       occupation: '',
       about: '',
@@ -30,11 +29,11 @@ export class UserService {
     } // CREATE A USER DTO ON THE CONTROLLER LEVEL FOR THE USER DATA
     
     if (await this.userManager.read(this._udb, user.email)) {
-      return this.jwt.sign({email: user.email, picture: user.picture})
+      return this.jwt.sign({email: user.email, picture: user.photoUrl})
     }
     await this.userManager.create(this._udb, user)
-    await sendOnboardingMail(user.email, user.firstName)
-    return this.jwt.sign({email: user.email, picture: user.picture})
+    await sendOnboardingMail(user.email, user.displayName)
+    return this.jwt.sign({email: user.email, picture: user.photoUrl})
   }
 
   async localSignUp(user: IUser): Promise<object | false>{
@@ -48,9 +47,8 @@ export class UserService {
     const PSW_HASH = await this.authService.hashPassword(user.password)
     user = {
       email:user.email,
-      firstName: user.firstName,
-      lastName: user.lastName,
-      picture: user.picture,
+      displayName: user.displayName,
+      photoUrl: user.photoUrl,
       password: PSW_HASH,
       accountCreatedFrom: "LOCAL",
       occupation: null,
@@ -61,8 +59,8 @@ export class UserService {
     // USER SUCCESSFULLY CREATED
     const newuser = (await this.userManager.create(this._udb, user)).acknowledged
     // SEND ONBOARDING EMAIL
-    await sendOnboardingMail(user.email, user.firstName)
-    return newuser ? {email: user.email, picture: user.picture, created: true} : false
+    await sendOnboardingMail(user.email, user.displayName)
+    return newuser ? {email: user.email, picture: user.photoUrl, created: true} : false
   }
 
   async localLogin(user: IUser): Promise<string> {
@@ -79,7 +77,7 @@ export class UserService {
       })
     }
     // SUCCESS! GENERATE A USER TOKEN 
-    return this.jwt.sign({email: isUser.email, picture: isUser.picture})
+    return this.jwt.sign({email: isUser.email, picture: isUser.photoUrl})
   }
 
   async deleteUserAccount() {}

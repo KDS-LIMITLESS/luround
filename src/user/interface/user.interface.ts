@@ -2,9 +2,8 @@ import * as e from "express";
 
 export interface IUser {
   email: string,
-  firstName: string,
-  lastName:string,
-  picture: string,
+  displayName: string,
+  photoUrl: string
   password?: string
   accountCreatedFrom: string
   occupation: string,

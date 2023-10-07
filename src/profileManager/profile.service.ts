@@ -58,9 +58,9 @@ export class ProfileService {
     return data
   }
 
-  async update_user_first_name(req: any) {
-    const{email, firstName, lastName} = req
-    let data = await this.profileManager.update(this._udb, email, "firstName", firstName )
+  async update_user_display_name(req: any) {
+    const{email, displayName } = req
+    let data = await this.profileManager.update(this._udb, email, "displayName", displayName )
     if (data === null) {
       throw new BadRequestException({
         status: 400,
