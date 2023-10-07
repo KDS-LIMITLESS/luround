@@ -67,6 +67,7 @@ export class ProfileService {
         message: ResponseMessages.EmailDoesNotExist
       })
     }
+    console.log(req)
     return data
   }
 
@@ -91,6 +92,7 @@ export class ProfileService {
         message: ResponseMessages.EmailDoesNotExist
       })
     }
+    console.log(req)
     return data
   }
   

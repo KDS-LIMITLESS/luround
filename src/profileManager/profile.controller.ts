@@ -34,7 +34,7 @@ export class ProfileController {
     .status(HttpStatus.OK)
     .json(await this.profileSevice.update_user_display_name(req.body)) 
   }
-  ff
+
   @Put('/last-name/update')
   async updateUserFirstName(@Req() req: Request, @Res() res: Response) { 
     return res
@@ -97,8 +97,6 @@ export class ProfileController {
     .status(HttpStatus.OK)
     .json(await this.profileSevice.get_user_media_links(req.query))
   }
-
-
 
   @Get('/generate-url')
   async generateUserUrl(@Req() req: Request, @Res() res: Response) {
