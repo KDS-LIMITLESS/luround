@@ -61,14 +61,14 @@ export class ProfileService {
   async update_user_display_name(req: any) {
     const {email, displayName } = req
     let data = await this.profileManager.update(this._udb, email, "displayName", displayName )
+    console.log(req)
     if (data === null) {
-      console.log('username')
       throw new BadRequestException({
         status: 400,
         message: ResponseMessages.EmailDoesNotExist
       })
     }
-    console.log(data)
+    console.log(data + 'heyy')
     return data
   }
 
@@ -87,6 +87,7 @@ export class ProfileService {
   async update_user_occupation(req: any) {
     const{email, occupation} = req
     let data = await this.profileManager.update(this._udb, email, "occupation", occupation )
+    console.log(req)
     if (data === null) {
       console.log('here')
       throw new BadRequestException({
