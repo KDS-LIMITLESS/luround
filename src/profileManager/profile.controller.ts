@@ -84,6 +84,22 @@ export class ProfileController {
     .json(await this.profileSevice.get_user_link(req.query))
   }
 
+  @Get('/get/occupation')
+  async generateUserOccupation(@Req() req: Request, @Res() res: Response) {
+    return res
+    .status(HttpStatus.OK)
+    .json(await this.profileSevice.get_user_occupation(req.query))
+  }
+
+  @Get('/get/media_links')
+  async generateUserMediaLinks(@Req() req: Request, @Res() res: Response) {
+    return res
+    .status(HttpStatus.OK)
+    .json(await this.profileSevice.get_user_media_links(req.query))
+  }
+
+
+
   @Get('/generate-url')
   async generateUserUrl(@Req() req: Request, @Res() res: Response) {
     return res

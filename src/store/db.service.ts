@@ -13,23 +13,25 @@ export class DatabaseService {
     return document || null
   }
 
-  public async create( data: any) {
-    const result = await this.userDB.insertOne(data)
+  public async create(db: Collection<Document | any>, data: any) {
+    const result = await db.insertOne(data)
     return result.acknowledged ? result : undefined
   }
 
   /**
    * Updates a user certificates or media-links section in the profile with the specified fields. 
    */
-  async update(email: string, alias:string, ...args: any) {
+  async update(db: Collection<Document | any>, email: string, alias:string, ...args: any) {
     let data: any;
     if (
       alias === "about" || alias === "occupation" || 
-      alias === "firstName" || "lastName" || alias === "luround_url"
+      alias === "firstName" || "lastName" || alias === "luround_url" ||
+      alias === "services"
     ){
       data = args[0]
     }
-    const update = await this.userDB.findOneAndUpdate(
+    console.log(args[0])
+    const update = await db.findOneAndUpdate(
         { email: email }, 
         { $set: {[alias]: data}},
         {returnDocument: "after", projection: {password: 0}}
@@ -40,8 +42,8 @@ export class DatabaseService {
   /**
    * Returns a user profile if email is found in db
    */
-  async read(email: string) {
-   const profile = await this.userDB.findOne({ email })
+  async read(db: Collection<Document | any>, email: string) {
+   const profile = await db.findOne({ email })
     return profile ? profile : null
   }
 

@@ -18,7 +18,7 @@ export class ProfileService {
       cert.push(certificate)
     }
     
-    let data = await this.profileManager.update(email, "certificates", certificates)
+    let data = await this.profileManager.update(this._udb, email, "certificates", certificates)
     if (data === null) {
       throw new BadRequestException({
         status: 400,
@@ -36,7 +36,7 @@ export class ProfileService {
       media_link.push(link)
     }
     
-    let data = await this.profileManager.update(email,"media_links", media_link)
+    let data = await this.profileManager.update(this._udb, email,"media_links", media_link)
     if (data === null) {
       throw new BadRequestException({
         status: 400,
@@ -48,7 +48,7 @@ export class ProfileService {
 
   async update_user_description(req: any) {
     const{email, about} = req
-    let data = await this.profileManager.update(email, "about", about )
+    let data = await this.profileManager.update(this._udb, email, "about", about )
     if (data === null) {
       throw new BadRequestException({
         status: 400,
@@ -60,7 +60,7 @@ export class ProfileService {
 
   async update_user_first_name(req: any) {
     const{email, firstName, lastName} = req
-    let data = await this.profileManager.update(email, "firstName", firstName, lastName )
+    let data = await this.profileManager.update(this._udb, email, "firstName", firstName )
     if (data === null) {
       throw new BadRequestException({
         status: 400,
@@ -72,7 +72,7 @@ export class ProfileService {
 
   async update_user_last_name(req: any) {
     const{email, firstName, lastName} = req
-    let data = await this.profileManager.update(email, "lastName", lastName )
+    let data = await this.profileManager.update(this._udb, email, "lastName", lastName )
     if (data === null) {
       throw new BadRequestException({
         status: 400,
@@ -84,7 +84,7 @@ export class ProfileService {
 
   async update_user_occupation(req: any) {
     const{email, occupation} = req
-    let data = await this.profileManager.update(email, "occupation", occupation )
+    let data = await this.profileManager.update(this._udb, email, "occupation", occupation )
     if (data === null) {
       throw new BadRequestException({
         status: 400,
@@ -127,11 +127,35 @@ export class ProfileService {
     return userProfile.about
   }
 
+  async get_user_occupation(req:any) {
+    const {email} = req
+    let userProfile = await this.profileManager.findOneDocument(this._udb, "email", email)
+    if (userProfile === null) {
+      throw new BadRequestException({
+        status: 400,
+        message: ResponseMessages.EmailDoesNotExist
+      })
+    }
+    return userProfile.occupation
+  }
+
+  async get_user_media_links(req: any) {
+    const {email} = req
+    let userProfile = await this.profileManager.findOneDocument(this._udb, "email", email)
+    if (userProfile === null) {
+      throw new BadRequestException({
+        status: 400,
+        message: ResponseMessages.EmailDoesNotExist
+      })
+    }
+    return userProfile.media_links
+  }
+
   async generate_user_url(req: any) {
     try {
       const {email} = req
       let userCount = await this.profileManager.userDB.estimatedDocumentCount()
-      let getUserNames = await this.profileManager.read(email)
+      let getUserNames = await this.profileManager.read(this._udb, email)
       let url = `luround.com/${getUserNames.firstName}_${getUserNames.lastName}_${userCount}`
       return await this.profileManager.update(email, "luround_url", url)
 
@@ -145,7 +169,7 @@ export class ProfileService {
 
   async generate_custom_user_url(req: any) {
     const {email, slug} = req
-    let user = await this.profileManager.read(email)
+    let user = await this.profileManager.read(this._udb, email)
     if (user === null) {
       throw new BadRequestException({
         status: 400,
@@ -153,7 +177,7 @@ export class ProfileService {
       })
     }
     let custom_url = `luround.com/${slug}`
-    return await this.profileManager.update(email, "luround_url", custom_url)
+    return await this.profileManager.update(this._udb, email, "luround_url", custom_url)
   }
   
   async get_user_link(req: any) {
