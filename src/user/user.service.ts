@@ -45,9 +45,10 @@ export class UserService {
     })
     // HASH USERS PASSWORD
     const PSW_HASH = await this.authService.hashPassword(user.password)
+    
     user = {
       email:user.email,
-      displayName: user.displayName,
+      displayName: user.firstName + " " + user.lastName,
       photoUrl: user.photoUrl,
       password: PSW_HASH,
       accountCreatedFrom: "LOCAL",

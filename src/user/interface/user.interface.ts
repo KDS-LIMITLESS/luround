@@ -10,6 +10,8 @@ export interface IUser {
   about: string
   certificates: any
   media_links: any
+  firstName?: string
+  lastName?: string
 }
 
 export interface IRequest<U = any > extends e.Request {
