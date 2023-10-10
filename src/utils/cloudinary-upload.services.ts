@@ -1,5 +1,4 @@
 import { v2  as cloudinary } from "cloudinary"
-import { InternalServerErrorException } from "@nestjs/common"
 
 cloudinary.config({
   api_key: process.env.CLOUDINARY_API_KEY,

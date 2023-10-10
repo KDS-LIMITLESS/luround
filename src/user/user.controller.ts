@@ -54,7 +54,7 @@ export class UserController {
     )
     file: Express.Multer.File,
     @Res() res: Response
-  ) {
+  ){
     try {
       let uploadFile = await uploadImage(file.buffer)
       return res.status(HttpStatus.CREATED).json(uploadFile)
