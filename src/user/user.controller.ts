@@ -7,6 +7,7 @@ import { AuthGuard } from '@nestjs/passport';
 import { Request, Response } from 'express';
 import { IRequest } from './interface/user.interface';
 import { FileInterceptor } from '@nestjs/platform-express';
+import { uploadImage } from 'src/utils/cloudinary-upload.services';
 
 @Controller('api/v1/user')
 export class UserController {
@@ -46,7 +47,7 @@ export class UserController {
     @UploadedFile( 
       new ParseFilePipe({
         validators: [
-          // new MaxFileSizeValidator({maxSize: 2000})
+          // new MaxFileSizeValidator({maxSize: 100000}),
           new FileTypeValidator({fileType: 'image/jpeg'})
         ]
       })
@@ -54,8 +55,13 @@ export class UserController {
     file: Express.Multer.File,
     @Res() res: Response
   ) {
-    return res.status(HttpStatus.CREATED).json(file.originalname)
+    try {
+      let uploadFile = await uploadImage(file.buffer)
+      return res.status(HttpStatus.CREATED).json(uploadFile)
+
+    } catch (err: any){
+      return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json(err.message)
+    }
   }
-  
- 
+
 }

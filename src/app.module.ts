@@ -13,7 +13,7 @@ import { ServicePageModule } from './servicePage/service-page.module';
 
 @Module({
   imports: [
-    ConfigModule.forRoot(), 
+    ConfigModule.forRoot({ isGlobal: true}), 
     MongoModule.registerAsync(),
     UserModule,
     ProfileModule,

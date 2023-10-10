@@ -22,10 +22,10 @@ export class ProfileController {
   }
 
   @Put('/about/update')
-  async updateUserDescription(@Req() req: Request, @Res() res: Response) {
+  async updateUserAbout(@Req() req: Request, @Res() res: Response) {
     return res
     .status(HttpStatus.OK)
-    .json(await this.profileSevice.update_user_description(req.body)) 
+    .json(await this.profileSevice.update_user_about(req.body)) 
   }
 
   @Put('/display-name/update')
