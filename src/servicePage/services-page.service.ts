@@ -23,10 +23,11 @@ export class ServicePageManager {
     }]}
     let isUserExists = await this.servicePageManager.read(this._spm, email)
     // console.log(service.services)
-    if (isUserExists._id ) {
-      return await this.servicePageManager.update(this._spm, email, "services", service.services[0])
+    if (isUserExists === null) {
+      const new_service = await this.servicePageManager.create(this._spm, service)
+      return new_service
     }
-    const new_service = await this.servicePageManager.create(this._spm, service)
-    return new_service
+    console.log(service.services)
+    return await this.servicePageManager.updateArr(this._spm, email, service.services)
   }
 }
