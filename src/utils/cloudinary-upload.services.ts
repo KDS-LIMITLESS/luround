@@ -17,5 +17,6 @@ export async function uploadImage(file: any) {
       }
     }).end(file)
   })
+  console.log(cloudinaryApiResponse.secure_url)
   return cloudinaryApiResponse.secure_url
 }
