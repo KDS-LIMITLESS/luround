@@ -22,7 +22,13 @@ enum ResponseMessages {
   /**
    * Username specified does not exist or password does not match
    */
-  BadLoginDetails = 'Invalid login details'
+  BadLoginDetails = 'Invalid login details',
+  
+  /**
+   * The user service requested for does not exist
+   */
+  SeviceNotFound = 'Service not found',
+  
 }
 
 export default ResponseMessages

@@ -1,5 +1,5 @@
 import { Inject, Injectable } from "@nestjs/common";
-import { Collection, Db } from "mongodb";
+import { Collection, Db, PushOperator } from "mongodb";
 
 @Injectable()
 export class DatabaseService { 
@@ -8,19 +8,37 @@ export class DatabaseService {
 
   constructor(@Inject('MONGO_CONNECTION') private _uDB:Db) {}
   
+  /**
+   * Return a single document in specified db collection where data matches the searchParam
+   * @param db Collection to query for document
+   * @param searchParam Search filter to query in the document
+   * @param value Data value to search for in the document.
+   * @returns 
+   */
   public async findOneDocument(db:Collection<Document | any>, searchParam: string, value: string) {
     const document = await db.findOne({ [searchParam]: value }, { projection: { password: 0 }})
     console.log(document)
     return document || null
   }
 
+  /**
+   * Inserts a new document in any specified database collection
+   * @param db Collection to insert new document
+   * @param data Data to insert into the collection
+   * @returns 
+   */
   public async create(db: Collection<Document | any>, data: any) {
     const result = await db.insertOne(data)
     return result.acknowledged ? result : undefined
   }
 
   /**
-   * Updates a user certificates or media-links section in the profile with the specified fields. 
+   * Updates a specified document in specified db collection. 
+   * @param db Document to update
+   * @param email 
+   * @param alias The field name to update
+   * @param args converts all other parameters to an array for updating specified document.
+   * @returns 
    */
   async update(db: Collection<Document | any>, email: string, alias:string, ...args: any) {
     let data: any;
@@ -36,9 +54,42 @@ export class DatabaseService {
     return update.value
   }
 
-  async updateArr(db: Collection<Document | any>, email: string, data: any) {
-    let arr = await db.findOneAndUpdate({email: email}, {$push: data[0] }, {returnDocument: "after", projection: {password: 0}})
+  /**
+   * Pushes to and updates an array field in specified document
+   * @param db 
+   * @param email 
+   * @param data 
+   * @returns 
+   */
+  async updateArr(db: Collection<Document | any>, email: string, data: PushOperator<any>) {
+    let arr = await db.findOneAndUpdate({email: email}, {$push: {services: data[0] } }, {returnDocument: "after", projection: {password: 0}})
     return arr.value
+  }
+
+  /**
+   * Updates the serrvices page document 
+   * @param db 
+   * @param email 
+   * @param query_service_name The user service_name to update in document
+   * @param data converts all other paramenters enterd to an array, to be used for updating document fields
+   * @returns 
+   */
+  async updateServices(db: Collection<Document | any>, email: string, query_service_name: string,  ...data: any){
+    console.log(data)
+    let doc = await db.updateOne({email: email, "services.service_name": query_service_name}, 
+      {$set: {
+        "services.$.service_name": data[0],
+        "services.$.description": data[1],
+        "services.$.links": data[2],
+        "services.$.service_charge_virtual": data[3],
+        "services.$.service_charge_in_person": data[4],
+        "services.$.duration": data[5],
+        "services.$.schedule_type": data[6],
+        "services.$.date": data[7],
+      }}
+    )
+    console.log(doc)
+    return doc.matchedCount
   }
 
   /**
