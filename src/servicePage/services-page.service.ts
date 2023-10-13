@@ -30,7 +30,6 @@ export class ServicePageManager {
       const new_service = await this.servicePageManager.create(this._spm, service)
       return new_service
     }
-    console.log(service.services[0].links)
     return await this.servicePageManager.updateArr(this._spm, email, service.services)
   }
 
@@ -41,16 +40,42 @@ export class ServicePageManager {
       service_charge_in_person, duration, schedule_type, date
     } = req
 
-    let service_update = await this.servicePageManager.updateServices(this._spm, email, Qservice_name, 
+    let service_update = await this.servicePageManager.updateService(this._spm, email, Qservice_name, 
       service_name, description, links, service_charge_virtual, 
       service_charge_in_person, duration, schedule_type, date 
     )   
-    if (service_update === 0) {
+    if (service_update.modifiedCount !== 1) {
       throw new BadRequestException({
         status: 400,
         message: ResponseMessages.SeviceNotFound
       })
     }
-    return service_update
+    return ResponseMessages.ServiceUpdated
+  }
+  // Add created_at and updated_at values
+  // Add service link
+
+  async delete_service(req: any) {
+    const{ email, service_name } = req
+    let deleted = await this.servicePageManager.deleteService(this._spm, email, service_name )
+    if (deleted.modifiedCount !== 1) {
+      throw new BadRequestException({
+        status: 400,
+        message: ResponseMessages.SeviceNotFound
+      })
+    }
+    return ResponseMessages.ServiceDeleted
+  }
+
+  async get_user_services(req: any) {
+    const { email } = req
+    let user_services = await this.servicePageManager.read(this._spm, email)
+    if (user_services === null) {
+      throw new BadRequestException({
+        status: 400,
+        message: ResponseMessages.EmailDoesNotExist
+      })
+    }
+    return user_services
   }
 }

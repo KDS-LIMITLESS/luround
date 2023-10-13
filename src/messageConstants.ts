@@ -2,7 +2,7 @@ enum ResponseMessages {
   /**
    * The email provided does not exist in dataase
    */
-  EmailDoesNotExist = 'A user with specified email not found',
+  EmailDoesNotExist = 'User not found',
 
   /**
    * Email found in database
@@ -28,6 +28,10 @@ enum ResponseMessages {
    * The user service requested for does not exist
    */
   SeviceNotFound = 'Service not found',
+
+  ServiceDeleted = 'Service Deleted Successfully',
+
+  ServiceUpdated = 'Service Updated Successfully'
   
 }
 

@@ -1,4 +1,4 @@
-import { Controller, HttpStatus, Post, Put, Req, Res } from "@nestjs/common";
+import { Controller, Delete, Get, HttpStatus, Post, Put, Req, Res } from "@nestjs/common";
 import { Request, Response } from "express";
 import { ServicePageManager } from "./services-page.service";
 
@@ -18,5 +18,19 @@ export class ServiceController {
     return res
     .status(HttpStatus.OK)
     .json(await this.services.edit_service(req.body, req.query)) 
+  }
+
+  @Delete('/delete')
+  async delete_service(@Req() req: Request, @Res() res: Response) {
+    return res
+    .status(HttpStatus.OK)
+    .json(await this.services.delete_service(req.body)) 
+  }
+
+  @Get('/get')
+  async get_user_service(@Req() req: Request, @Res() res: Response) {
+    return res
+    .status(HttpStatus.OK)
+    .json(await this.services.get_user_services(req.query)) 
   }
 }

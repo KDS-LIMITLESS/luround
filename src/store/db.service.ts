@@ -74,9 +74,8 @@ export class DatabaseService {
    * @param data converts all other paramenters enterd to an array, to be used for updating document fields
    * @returns 
    */
-  async updateServices(db: Collection<Document | any>, email: string, query_service_name: string,  ...data: any){
-    console.log(data)
-    let doc = await db.updateOne({email: email, "services.service_name": query_service_name}, 
+  async updateService(db: Collection<Document | any>, email: string, query_service_name: string,  ...data: any){
+    let result = await db.updateOne({email: email, "services.service_name": query_service_name}, 
       {$set: {
         "services.$.service_name": data[0],
         "services.$.description": data[1],
@@ -88,8 +87,22 @@ export class DatabaseService {
         "services.$.date": data[7],
       }}
     )
-    console.log(doc)
-    return doc.matchedCount
+    return result
+  }
+
+  /**
+   * Deletes a service from database
+   * @param db Database collection to delete from
+   * @param email 
+   * @param data A unique value in the user service used to mark a document for removal
+   * @returns 
+   */
+  async deleteService(db: Collection<Document | any>, email:string,  data: any) {
+    console.log(data)
+    let result = await db.updateOne({email: email, "services.service_name": data},
+      {$pull: {"services": {"service_name": data}}}
+  )
+    return result
   }
 
   /**
