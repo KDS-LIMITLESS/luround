@@ -27,10 +27,17 @@ export class ServiceController {
     .json(await this.services.delete_service(req.body)) 
   }
 
-  @Get('/get')
+  @Get('/get-services')
   async get_user_service(@Req() req: Request, @Res() res: Response) {
     return res
     .status(HttpStatus.OK)
     .json(await this.services.get_user_services(req.query)) 
+  }
+
+  @Get('/get-service')
+  async get_service(@Req() req: Request, @Res() res: Response) {
+    return res
+    .status(HttpStatus.OK)
+    .json(await this.services.getService(req.query)) 
   }
 }
