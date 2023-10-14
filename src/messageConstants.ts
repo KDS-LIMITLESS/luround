@@ -27,11 +27,13 @@ enum ResponseMessages {
   /**
    * The user service requested for does not exist
    */
-  SeviceNotFound = 'Service not found',
+  ServiceNotFound = 'Service not found',
 
   ServiceDeleted = 'Service Deleted Successfully',
 
-  ServiceUpdated = 'Service Updated Successfully'
+  ServiceUpdated = 'Service Updated Successfully',
+
+  InvalidServiceId = 'Invalid Service ID'
   
 }
 

@@ -154,10 +154,12 @@ export class ProfileService {
   async generate_user_url(req: any) {
     try {
       const {email} = req
+      // GET DOCUMENT COUNT IN DB
       let userCount = await this.profileManager.userDB.estimatedDocumentCount()
       let getUserNames = await this.profileManager.read(this._udb, email)
-      let url = `luround.com/${getUserNames.firstName}_${getUserNames.lastName}_${userCount}`
-      return await this.profileManager.update(email, "luround_url", url)
+      // BUILD THE USER URL 
+      let url = `luround.com/${getUserNames.displayName}_${userCount}`
+      return await this.profileManager.update(this._udb, email, "luround_url", url)
 
     } catch(err: any) {
       throw new BadRequestException({
