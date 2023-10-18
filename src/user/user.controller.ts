@@ -1,4 +1,4 @@
-import { Controller, FileTypeValidator, Get, HttpStatus, 
+import { Body, Controller, FileTypeValidator, Get, HttpStatus, 
   MaxFileSizeValidator, ParseFilePipe, Post, Req, Res, 
   UploadedFile, UseGuards, UseInterceptors 
 } from '@nestjs/common';
@@ -8,6 +8,7 @@ import { Request, Response } from 'express';
 import { IRequest } from './interface/user.interface';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { uploadImage } from 'src/utils/cloudinary-upload.services';
+import { createUserDto, loginUserDto } from './user.dto';
 
 @Controller('api/v1/user')
 export class UserController {
@@ -19,16 +20,15 @@ export class UserController {
   async googleAuth(@Req() req: Request) {}
 
   @Post('google/sign-in')
-  // @UseGuards(AuthGuard('google'))
-  async googleLogin(@Req() req: IRequest, @Res() res: Response) {
+  async googleLogin(@Res() res: Response, @Body() body: createUserDto) {
     return res
     .status(HttpStatus.CREATED)
-    .json(await this.userService.googleSignIn(req.body)) 
+    .json(await this.userService.googleSignIn(body)) 
   }
 
   @Post('/local/sign-up')
-  async localSignUp(@Req() req: IRequest, @Res() res: Response) {
-    let createUser = await this.userService.localSignUp(req.body)
+  async localSignUp(@Res() res: Response, @Body() body: createUserDto) {
+    let createUser = await this.userService.localSignUp(body)
     if (!createUser === false) {
       return res.status(HttpStatus.CREATED).json(createUser)
     }
@@ -36,8 +36,8 @@ export class UserController {
   }
 
   @Post('/local/login')
-  async login(@Req() req: IRequest, @Res() res: Response) {
-    let userLoginDetails = await this.userService.localLogin(req.body)
+  async login(@Res() res: Response, @Body() body: loginUserDto) {
+    let userLoginDetails = await this.userService.localLogin(body)
     return res.status(HttpStatus.CREATED).json(userLoginDetails)
   }
 

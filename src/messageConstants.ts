@@ -4,6 +4,8 @@ enum ResponseMessages {
    */
   EmailDoesNotExist = 'User not found',
 
+  UserNotCreated = 'User Not Created',
+
   /**
    * Email found in database
    */
