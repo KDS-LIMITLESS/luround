@@ -1,6 +1,7 @@
-import { Controller, Get, HttpStatus, Post, Put, Req, Res } from "@nestjs/common";
+import { Controller, Get, HttpStatus, Post, Put, Query, Req, Res } from "@nestjs/common";
 import { QRCodeService } from "./qrcode.service";
-import { Request, Response } from "express";
+import { Response } from "express";
+import { QRCodeDTO } from "./qrcode.dto";
 
 @Controller('api/v1/users/qrcode')
 export class QRCodeController {
@@ -8,10 +9,10 @@ export class QRCodeController {
   constructor(private qrcodeService: QRCodeService) {}
 
   @Get('/generate')
-  async generateUserQRCode(@Req() req: Request, @Res() res: Response) {
+  async generateUserQRCode(@Res() res: Response, @Query() query: QRCodeDTO) {
     res.setHeader('Content-Type', 'image/png');
     return res
     .status(HttpStatus.OK)
-    .json(await this.qrcodeService.generate_qrcode(req.query))
+    .json(await this.qrcodeService.generate_qrcode(query.email))
   }
 }

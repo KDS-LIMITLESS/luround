@@ -1,6 +1,5 @@
-import { IsEmail, IsEmpty, IsEnum, IsNotEmpty, IsString } from "class-validator";
-import { PartialType, PickType } from '@nestjs/mapped-types'
-
+import { IsEmail, IsNotEmpty } from "class-validator";
+import { PickType } from '@nestjs/mapped-types'
 
 
 export class userProfileDto{

@@ -1,7 +1,6 @@
 import { Body, Controller, Get, HttpStatus, Post, Put, Query, Req, Res } from "@nestjs/common";
 import { ProfileService } from "./profile.service";
-import { Request, Response } from "express";
-import { IRequest } from "src/user/interface/user.interface";
+import { Response } from "express";
 import { aboutDto, certificatesDto, customURLDto, displayNameDto, emailDto, media_linksDto, occupationDto, urlDto } from "./profile.dto";
 
 @Controller('api/v1/users/profile')
