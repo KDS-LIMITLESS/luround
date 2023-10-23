@@ -3,7 +3,7 @@ import { ProfileService } from "./profile.service";
 import { Response } from "express";
 import { aboutDto, certificatesDto, customURLDto, displayNameDto, emailDto, media_linksDto, occupationDto, urlDto } from "./profile.dto";
 
-@Controller('api/v1/users/profile')
+@Controller('api/v1/profile')
 export class ProfileController {
   constructor(private profileSevice: ProfileService) {}
 
