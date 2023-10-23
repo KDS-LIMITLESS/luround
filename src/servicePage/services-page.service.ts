@@ -1,7 +1,7 @@
 import { BadRequestException, Injectable } from "@nestjs/common";
 import ResponseMessages from "src/messageConstants";
 import { DatabaseService } from "src/store/db.service";
-import { ServicePageDto, deleteServiceDto } from "./servicePage.dto";
+import { ServiceDto } from "./servicePage.dto";
 
 @Injectable()
 export class ServicePageManager {
@@ -11,7 +11,7 @@ export class ServicePageManager {
 
   constructor(private servicePageManager: DatabaseService) {}
 
-  async add_new_service(data: ServicePageDto){
+  async add_new_service(data: ServiceDto){
     
     let isUserExists = await this.servicePageManager.read(this._udb, data.email)
     if (isUserExists === null) {
@@ -43,15 +43,19 @@ export class ServicePageManager {
   // Add created_at and updated_at values
   // Add service link
 
-  async delete_service(data: deleteServiceDto) {
-    let deleted = await this.servicePageManager.deleteService(this._spm_db, data.email, data.service_name )
-    if (deleted.modifiedCount !== 1) {
+  async delete_service(id: string) {
+    try {
+      let deleted = await this.servicePageManager.delete(this._spm_db, id )
+      console.log(deleted)
+      if (deleted.value !== null) return ResponseMessages.ServiceDeleted
+      throw Error
+    } catch(err: any) {
       throw new BadRequestException({
         status: 400,
-        message: ResponseMessages.ServiceNotFound
+        message: ResponseMessages.InvalidServiceId
       })
     }
-    return ResponseMessages.ServiceDeleted
+    
   }
 
   // This function queries and returns all user services where email equals user email

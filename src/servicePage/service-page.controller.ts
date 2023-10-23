@@ -1,32 +1,31 @@
 import { Body, Controller, Delete, Get, HttpStatus, Post, Put, Query, Req, Res } from "@nestjs/common";
 import { Request, Response, query } from "express";
 import { ServicePageManager } from "./services-page.service";
-import { EmailDto, IdDto, ServicePageDto } from "./servicePage.dto";
-import { createUserDto } from "src/user/user.dto";
+import { EmailDto, IdDto, ServiceDto, ServicePageDto } from "./servicePage.dto";
 
 @Controller('api/v1/services')
 export class ServiceController {
   constructor(private services: ServicePageManager) {}
 
   @Post('/create')
-  async create_service(@Body() req: ServicePageDto, @Res() res: Response) {
+  async create_service(@Body() req: ServiceDto, @Res() res: Response) {
     return res
     .status(HttpStatus.CREATED)
     .json(await this.services.add_new_service(req)) 
   }
 
   @Put('/edit')
-  async update_service(@Req() req: createUserDto, @Res() res: Response, @Query() query:ServicePageDto) {
+  async update_service(@Req() req: ServiceDto, @Res() res: Response, @Query() query:ServicePageDto) {
     return res
     .status(HttpStatus.OK)
     .json(await this.services.edit_service(req, query.id)) 
   }
 
   @Delete('/delete')
-  async delete_service(@Req() req: ServicePageDto, @Res() res: Response) {
+  async delete_service(@Query() query: IdDto, @Res() res: Response) {
     return res
     .status(HttpStatus.OK)
-    .json(await this.services.delete_service(req)) 
+    .json(await this.services.delete_service(query.id)) 
   }
 
   @Get('/get-services')

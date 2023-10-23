@@ -104,6 +104,11 @@ export class DatabaseService {
     return result
   }
 
+  async delete(db: Collection<Document | any>, id: string) {
+    let result = await db.findOneAndDelete({_id: new ObjectId(id)})
+    return result
+  }
+
   /**
    * Returns a user profile if email is found in db
    */

@@ -1,4 +1,4 @@
-import { PickType } from "@nestjs/mapped-types";
+import { OmitType, PickType } from "@nestjs/mapped-types";
 import { IS_STRING, IsDate, IsEmail, IsNotEmpty, IsString, isNotEmpty } from "class-validator";
 
 export class ServicePageDto{
@@ -13,9 +13,6 @@ export class ServicePageDto{
 
   @IsNotEmpty()
   links: string
-
-  @IsNotEmpty()
-  service_page: string
 
   @IsNotEmpty()
   duration: string
@@ -35,7 +32,7 @@ export class ServicePageDto{
   id: string
 }
 
-export class deleteServiceDto extends PickType(ServicePageDto, ['email', 'service_name'] as const) {}
+export class ServiceDto extends OmitType(ServicePageDto, ['id'] as const) {}
 
 export class EmailDto extends PickType(ServicePageDto, ['email'] as const) {}
 
