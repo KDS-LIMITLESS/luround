@@ -3,7 +3,7 @@ import { QRCodeService } from "./qrcode.service";
 import { Response } from "express";
 import { QRCodeDTO } from "./qrcode.dto";
 
-@Controller('api/v1/users/qrcode')
+@Controller('api/v1/qrcode')
 export class QRCodeController {
   
   constructor(private qrcodeService: QRCodeService) {}
