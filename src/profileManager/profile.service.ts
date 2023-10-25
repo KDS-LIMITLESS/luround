@@ -1,7 +1,6 @@
 import { BadRequestException, Injectable } from "@nestjs/common";
 import ResponseMessages from "src/messageConstants";
 import { DatabaseService } from "src/store/db.service";
-import { aboutDto, certificatesDto, customURLDto, displayNameDto, media_linksDto, occupationDto } from "./profile.dto";
 
 
 @Injectable()
@@ -11,11 +10,9 @@ export class ProfileService {
 
   constructor(private profileManager: DatabaseService) {}
 
-  async update_user_certificates(req: certificatesDto) {
-    const {email, certificates} = req
-    console.log(req)
+  async update_user_certificates(userEmail:string, certificates: any) {
     
-    let data = await this.profileManager.update(this._udb, email, "certificates", certificates)
+    let data = await this.profileManager.update(this._udb, userEmail, "certificates", certificates)
     if (data === null) {
       throw new BadRequestException({
         status: 400,
@@ -25,10 +22,9 @@ export class ProfileService {
     return data
   }
 
-  async update_user_media_links(req: media_linksDto) {
-    const {email, media_links} = req
+  async update_user_media_links(userEmail:string, media_links: any) {
   
-    let data = await this.profileManager.update(this._udb, email,"media_links", media_links)
+    let data = await this.profileManager.update(this._udb, userEmail,"media_links", media_links)
     if (data === null) {
       throw new BadRequestException({
         status: 400,
@@ -38,9 +34,8 @@ export class ProfileService {
     return data
   }
 
-  async update_user_about(req: aboutDto) {
-    const{email, about} = req
-    let data = await this.profileManager.update(this._udb, email, "about", about )
+  async update_user_about(userEmail, about: string) {
+    let data = await this.profileManager.update(this._udb, userEmail, "about", about )
     if (data === null) {
       throw new BadRequestException({
         status: 400,
@@ -50,9 +45,8 @@ export class ProfileService {
     return data
   }
 
-  async update_user_display_name(req: displayNameDto) {
-    const {email, displayName } = req
-    let data = await this.profileManager.update(this._udb, email, "displayName", displayName )
+  async update_user_display_name(userEmail: string, displayName: string) {
+    let data = await this.profileManager.update(this._udb, userEmail, "displayName", displayName )
     if (data === null) {
       throw new BadRequestException({
         status: 400,
@@ -63,9 +57,8 @@ export class ProfileService {
   }
 
 
-  async update_user_occupation(req: occupationDto) {
-    const{email, occupation} = req
-    let data = await this.profileManager.update(this._udb, email, "occupation", occupation )
+  async update_user_occupation(userEmail: string, occupation: string) {
+    let data = await this.profileManager.update(this._udb, userEmail, "occupation", occupation )
     if (data === null) {
       throw new BadRequestException({
         status: 400,
@@ -150,9 +143,8 @@ export class ProfileService {
     }
   }
 
-  async generate_custom_user_url(req: customURLDto) {
-    const {email, slug} = req
-    let user = await this.profileManager.read(this._udb, email)
+  async generate_custom_user_url(userEmail: string, slug: string) {
+    let user = await this.profileManager.read(this._udb, userEmail)
     if (user === null) {
       throw new BadRequestException({
         status: 400,
@@ -160,7 +152,7 @@ export class ProfileService {
       })
     }
     let custom_url = `luround.com/${slug}`
-    return await this.profileManager.update(this._udb, email, "luround_url", custom_url)
+    return await this.profileManager.update(this._udb, userEmail, "luround_url", custom_url)
   }
   
   async get_user_profile_by_link(url: string) {
@@ -176,3 +168,22 @@ export class ProfileService {
     return user
   }
 }
+
+// class Certificate {
+
+//   static async transformCertificates(certificateObj: CertificateValidationDto): Promise<boolean> {
+//     let id = await this.generateCertificateID()
+//     console.log(id)
+//     return Object.defineProperty(certificateObj, "certificateID", {
+//       enumerable: true,
+//       value: id
+//     }) ? true: false
+//   }
+
+//   static async generateCertificateID(): Promise<number> {
+//     // Generate a random number between 100,000 (inclusive) and 1,000,000 (exclusive)
+//     const randomInt = Math.floor(Math.random() * 90000000) + 10000000;
+//     return randomInt;
+//   }
+// }
+

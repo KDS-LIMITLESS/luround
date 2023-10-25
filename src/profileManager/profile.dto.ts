@@ -1,8 +1,8 @@
-import { IsEmail, IsNotEmpty } from "class-validator";
-import { PickType } from '@nestjs/mapped-types'
+import { IsDate, IsEmail, IsNotEmpty, IsNumber } from "class-validator";
+import { PartialType, PickType } from '@nestjs/mapped-types'
 
 
-export class userProfileDto{
+export class userProfileMainDto{
   @IsNotEmpty()
   @IsEmail()
   email: string
@@ -35,20 +35,23 @@ export class userProfileDto{
   url: string
 }
 
+export class CertificateValidationDto {
+  @IsEmail()
+  email: string
 
-export class certificatesDto extends PickType(userProfileDto, ['email', 'certificates'] as const) {}
+  @IsNotEmpty()
+  certificateName: string
 
-export class media_linksDto extends PickType(userProfileDto, ['email', 'media_links'] as const) {}
+  @IsNotEmpty()
+  issuingOrganization: string
 
-export class displayNameDto extends PickType(userProfileDto, ['email', 'displayName'] as const ) {}
+  @IsNotEmpty() @IsDate()
+  issueDate: Date
 
-export class occupationDto extends PickType(userProfileDto, ['email', 'occupation'] as const) {}
+  @IsNumber({allowNaN: false})
+  certificateID: number
+}
 
-export class aboutDto extends PickType(userProfileDto, ['email', 'about'] as const ) {}
 
-export class customURLDto extends PickType(userProfileDto, ['email', 'slug']as const ) {}
-
-export class emailDto extends PickType(userProfileDto, ['email'] as const) {}
-
-export class urlDto extends PickType(userProfileDto, ['url']as const ) {}
+export class userProfileDto extends PartialType(userProfileMainDto) {}
 

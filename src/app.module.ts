@@ -11,11 +11,13 @@ import { ProfileModule } from './profileManager/profile.module';
 import { QRCodeModule } from './qrCode/qrcode.module';
 import { ServicePageModule } from './servicePage/service-page.module';
 import { BookServiceModule } from './payments/paystack.module';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true}), 
     MongoModule.registerAsync(),
+    AuthModule,
     UserModule,
     ProfileModule,
     QRCodeModule,

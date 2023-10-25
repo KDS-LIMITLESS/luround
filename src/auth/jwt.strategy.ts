@@ -1,11 +1,12 @@
-import { Injectable } from "@nestjs/common";
+import { ExecutionContext, Injectable, SetMetadata } from "@nestjs/common";
+import { Reflector } from "@nestjs/core";
 import { AuthGuard, PassportStrategy } from "@nestjs/passport";
 import { ExtractJwt, Strategy } from 'passport-jwt'
 
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
-  constructor() {
+  constructor(private reflector: Reflector) {
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
       ignoreExpiration: false,
@@ -23,4 +24,25 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
   }
 }
 
-export class JwtAuthGuard extends AuthGuard('jwt') {}
+
+@Injectable()
+export class JwtAuthGuard extends AuthGuard('jwt') {
+  constructor(private reflector: Reflector) {
+    super()
+  }
+
+  canActivate(context: ExecutionContext) {
+    const isPublic = this.reflector.getAllAndOverride<boolean>(IS_PUBLIC_KEY, [
+      context.getHandler(),
+      context.getClass(),
+    ])
+    if (isPublic){
+      return true
+    }
+    return super.canActivate(context)
+  }
+}
+
+export const IS_PUBLIC_KEY = 'isPublic';
+export const SkipAuth = () => SetMetadata(IS_PUBLIC_KEY, true);
+

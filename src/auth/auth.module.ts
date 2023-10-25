@@ -3,10 +3,11 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
 import { GoogleStrategy } from './auth.googleStartegy';
 import { LocalStrategy } from './local.strategy';
-import { JwtStrategy } from './jwt.strategy';
+import { JwtAuthGuard, JwtStrategy } from './jwt.strategy';
 import { AuthService } from './auth.service';
 import { DatabaseService } from 'src/store/db.service';
 import { AuthControllers } from './auth.controllers';
+import { APP_GUARD } from '@nestjs/core';
 
 
 @Module({
@@ -23,7 +24,7 @@ import { AuthControllers } from './auth.controllers';
     }),
   ],
   controllers: [AuthControllers],
-  providers: [GoogleStrategy, AuthService, 
+  providers: [{provide: APP_GUARD, useClass: JwtAuthGuard},GoogleStrategy, AuthService, 
     LocalStrategy, JwtStrategy, 
     DatabaseService
   ],
