@@ -10,9 +10,9 @@ export class ProfileService {
 
   constructor(private profileManager: DatabaseService) {}
 
-  async update_user_certificates(userEmail:string, certificates: any) {
-    
-    let data = await this.profileManager.update(this._udb, userEmail, "certificates", certificates)
+  async update_user_certificates(user: any, certificates: any) {
+    const { email } = user
+    let data = await this.profileManager.update(this._udb, email, "certificates", certificates)
     if (data === null) {
       throw new BadRequestException({
         status: 400,
@@ -22,53 +22,57 @@ export class ProfileService {
     return data
   }
 
-  async update_user_media_links(userEmail:string, media_links: any) {
+  async update_user_media_links(user:any, media_links: any) {
+    const { email } = user
+    let data = await this.profileManager.update(this._udb, email, "media_links", media_links)
+    if (data === null) {
+      throw new BadRequestException({
+        status: 400,
+        message: ResponseMessages.EmailDoesNotExist
+      })
+    }
+    return data
+  }
+
+  async update_user_about(user: any, about: string) {
+    const { email } = user
+    let data = await this.profileManager.update(this._udb, email, "about", about )
+    if (data === null) {
+      throw new BadRequestException({
+        status: 400,
+        message: ResponseMessages.EmailDoesNotExist
+      })
+    }
+    return data
+  }
+
+  async update_user_display_name(user: any, displayName: string) {
+    const { email } = user
+    let data = await this.profileManager.update(this._udb, email, "displayName", displayName )
+    if (data === null) {
+      throw new BadRequestException({
+        status: 400,
+        message: ResponseMessages.EmailDoesNotExist
+      })
+    }
+    return data
+  }
+
+
+  async update_user_occupation(user: any, occupation: string) {
+    const { email } = user
+    let data = await this.profileManager.update(this._udb, email, "occupation", occupation )
+    if (data === null) {
+      throw new BadRequestException({
+        status: 400,
+        message: ResponseMessages.EmailDoesNotExist
+      })
+    }
+    return data
+  }
   
-    let data = await this.profileManager.update(this._udb, userEmail,"media_links", media_links)
-    if (data === null) {
-      throw new BadRequestException({
-        status: 400,
-        message: ResponseMessages.EmailDoesNotExist
-      })
-    }
-    return data
-  }
-
-  async update_user_about(userEmail, about: string) {
-    let data = await this.profileManager.update(this._udb, userEmail, "about", about )
-    if (data === null) {
-      throw new BadRequestException({
-        status: 400,
-        message: ResponseMessages.EmailDoesNotExist
-      })
-    }
-    return data
-  }
-
-  async update_user_display_name(userEmail: string, displayName: string) {
-    let data = await this.profileManager.update(this._udb, userEmail, "displayName", displayName )
-    if (data === null) {
-      throw new BadRequestException({
-        status: 400,
-        message: ResponseMessages.EmailDoesNotExist
-      })
-    }
-    return data
-  }
-
-
-  async update_user_occupation(userEmail: string, occupation: string) {
-    let data = await this.profileManager.update(this._udb, userEmail, "occupation", occupation )
-    if (data === null) {
-      throw new BadRequestException({
-        status: 400,
-        message: ResponseMessages.EmailDoesNotExist
-      })
-    }
-    return data
-  }
-  
-  async get_user_profile(email: string) {
+  async get_user_profile(user: any) {
+    const { email } = user
     let userProfile = await this.profileManager.findOneDocument(this._udb, "email", email)
     if (userProfile === null) {
       throw new BadRequestException({
@@ -79,53 +83,54 @@ export class ProfileService {
     return userProfile
   }
 
-  async get_user_certs(email: string) {
-    let userProfile = await this.profileManager.findOneDocument(this._udb, "email", email)
-    if (userProfile === null) {
-      throw new BadRequestException({
-        status: 400,
-        message: ResponseMessages.EmailDoesNotExist
-      })
-    }
-    return userProfile.certificates
-  }
+  // async get_user_certs(email: string) {
+  //   let userProfile = await this.profileManager.findOneDocument(this._udb, "email", email)
+  //   if (userProfile === null) {
+  //     throw new BadRequestException({
+  //       status: 400,
+  //       message: ResponseMessages.EmailDoesNotExist
+  //     })
+  //   }
+  //   return userProfile.certificates
+  // }
 
-  async get_user_about(email: string) {
-    let userProfile = await this.profileManager.findOneDocument(this._udb, "email", email)
-    if (userProfile === null) {
-      throw new BadRequestException({
-        status: 400,
-        message: ResponseMessages.EmailDoesNotExist
-      })
-    }
-    return userProfile.about
-  }
+  // async get_user_about(email: string) {
+  //   let userProfile = await this.profileManager.findOneDocument(this._udb, "email", email)
+  //   if (userProfile === null) {
+  //     throw new BadRequestException({
+  //       status: 400,
+  //       message: ResponseMessages.EmailDoesNotExist
+  //     })
+  //   }
+  //   return userProfile.about
+  // }
 
-  async get_user_occupation(email: string) {
+  // async get_user_occupation(email: string) {
     
-    let userProfile = await this.profileManager.findOneDocument(this._udb, "email", email)
-    if (userProfile === null) {
-      throw new BadRequestException({
-        status: 400,
-        message: ResponseMessages.EmailDoesNotExist
-      })
-    }
-    return userProfile.occupation
-  }
+  //   let userProfile = await this.profileManager.findOneDocument(this._udb, "email", email)
+  //   if (userProfile === null) {
+  //     throw new BadRequestException({
+  //       status: 400,
+  //       message: ResponseMessages.EmailDoesNotExist
+  //     })
+  //   }
+  //   return userProfile.occupation
+  // }
 
-  async get_user_media_links(email: string) {
-    // const {email} = req
-    let userProfile = await this.profileManager.findOneDocument(this._udb, "email", email)
-    if (userProfile === null) {
-      throw new BadRequestException({
-        status: 400,
-        message: ResponseMessages.EmailDoesNotExist
-      })
-    }
-    return userProfile.media_links
-  }
+  // async get_user_media_links(email: string) {
+  //   // const {email} = req
+  //   let userProfile = await this.profileManager.findOneDocument(this._udb, "email", email)
+  //   if (userProfile === null) {
+  //     throw new BadRequestException({
+  //       status: 400,
+  //       message: ResponseMessages.EmailDoesNotExist
+  //     })
+  //   }
+  //   return userProfile.media_links
+  // }
 
-  async generate_user_url(email: string) {
+  async generate_user_url(user: any) {
+    const { email } = user
     try {
       // const {email} = req
       // GET DOCUMENT COUNT IN DB
@@ -143,16 +148,17 @@ export class ProfileService {
     }
   }
 
-  async generate_custom_user_url(userEmail: string, slug: string) {
-    let user = await this.profileManager.read(this._udb, userEmail)
-    if (user === null) {
+  async generate_custom_user_url(user: any, slug: string) {
+    const { email } = user
+    let isUser = await this.profileManager.read(this._udb, email)
+    if (isUser === null) {
       throw new BadRequestException({
         status: 400,
         message: ResponseMessages.EmailDoesNotExist
       })
     }
     let custom_url = `luround.com/${slug}`
-    return await this.profileManager.update(this._udb, userEmail, "luround_url", custom_url)
+    return await this.profileManager.update(this._udb, email, "luround_url", custom_url)
   }
   
   async get_user_profile_by_link(url: string) {
