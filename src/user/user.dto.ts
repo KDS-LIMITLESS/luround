@@ -7,7 +7,7 @@ export enum AccountCreatedFrom {
   Local = 'LOCAL'
 }
 
-export class createUserDto{
+export class UserDto{
   @IsNotEmpty()
   @IsEmail()
   email: string
@@ -38,5 +38,3 @@ export class createUserDto{
   media_links: null
 
 }
-
-export class loginUserDto extends PickType(createUserDto, ['email', 'password'] as const) {}

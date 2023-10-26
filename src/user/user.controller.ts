@@ -1,44 +1,38 @@
-import { Body, Controller, FileTypeValidator, Get, HttpStatus, 
-  MaxFileSizeValidator, ParseFilePipe, Post, Req, Res, 
-  UploadedFile, UseGuards, UseInterceptors 
+import { Body, Controller, FileTypeValidator, HttpStatus, 
+  ParseFilePipe, Post, Res, UploadedFile, UseInterceptors 
 } from '@nestjs/common';
 import { UserService } from './user.service';
-import { AuthGuard } from '@nestjs/passport';
-import { Request, Response } from 'express';
-import { IRequest } from './interface/user.interface';
+import { Response } from 'express';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { uploadImage } from 'src/utils/cloudinary-upload.services';
-import { createUserDto, loginUserDto } from './user.dto';
+import { UserDto } from './user.dto';
+import { SkipAuth } from 'src/auth/jwt.strategy';
 
 @Controller('api/v1/user')
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
   // Login route
-  @Get()
-  @UseGuards(AuthGuard('google'))
-  async googleAuth(@Req() req: Request) {}
+  // @Get()
+  // @UseGuards(AuthGuard('google'))
+  // async googleAuth(@Req() req: Request) {}
 
+  @SkipAuth()
   @Post('google/sign-in')
-  async googleLogin(@Res() res: Response, @Body() body: createUserDto) {
+  async googleLogin(@Res() res: Response, @Body() body: UserDto) {
     return res
     .status(HttpStatus.CREATED)
     .json(await this.userService.googleSignIn(body)) 
   }
 
-  @Post('/local/sign-up')
-  async localSignUp(@Res() res: Response, @Body() body: createUserDto) {
+  @SkipAuth()
+  @Post('/sign-up')
+  async localSignUp(@Res() res: Response, @Body() body: UserDto) {
     let createUser = await this.userService.localSignUp(body)
     if (!createUser === false) {
       return res.status(HttpStatus.CREATED).json(createUser)
     }
     res.status(HttpStatus.INTERNAL_SERVER_ERROR)
-  }
-
-  @Post('/local/login')
-  async login(@Res() res: Response, @Body() body: loginUserDto) {
-    let userLoginDetails = await this.userService.localLogin(body)
-    return res.status(HttpStatus.CREATED).json(userLoginDetails)
   }
 
   @Post('/upload-image')
