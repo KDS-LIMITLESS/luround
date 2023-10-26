@@ -1,5 +1,5 @@
-import { OmitType, PickType } from "@nestjs/mapped-types";
-import { IS_STRING, IsDate, IsEmail, IsNotEmpty, IsString, isNotEmpty } from "class-validator";
+import { PartialType } from "@nestjs/mapped-types";
+import { IsDate, IsEmail, IsMongoId, IsNotEmpty } from "class-validator";
 
 export class ServicePageDto{
   @IsEmail()
@@ -27,13 +27,9 @@ export class ServicePageDto{
   @IsDate({always: true})
   date: Date
 
-  @IsString()
+  @IsMongoId()
   @IsNotEmpty()
-  id: string
+  serviceId: string
 }
 
-export class ServiceDto extends OmitType(ServicePageDto, ['id'] as const) {}
-
-export class EmailDto extends PickType(ServicePageDto, ['email'] as const) {}
-
-export class IdDto extends PickType(ServicePageDto, ['id'] as const) {}
+export class ServiceDto extends PartialType(ServicePageDto) {}

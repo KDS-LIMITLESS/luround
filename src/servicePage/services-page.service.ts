@@ -24,11 +24,11 @@ export class ServicePageManager {
     // return await this.servicePageManager.updateArr(this._spm_db, email, service.services)
   }
 
-  async edit_service(data: any, id: string) {
+  async edit_service(data: any, serviceId: string) {
    
     try {
       // UPDATE DOCUMENT IN DATABASE IF FOUND.
-      if ((await this.servicePageManager.updateDocument(this._spm_db, id, data)).matchedCount === 1)   
+      if ((await this.servicePageManager.updateDocument(this._spm_db, serviceId, data)).matchedCount === 1)   
       return ResponseMessages.ServiceUpdated
 
       // ID DOES NOT EXISTS OR ID IS NOT VALID ObjectId 
@@ -46,7 +46,6 @@ export class ServicePageManager {
   async delete_service(id: string) {
     try {
       let deleted = await this.servicePageManager.delete(this._spm_db, id )
-      console.log(deleted)
       if (deleted.value !== null) return ResponseMessages.ServiceDeleted
       throw Error
     } catch(err: any) {
@@ -59,7 +58,8 @@ export class ServicePageManager {
   }
 
   // This function queries and returns all user services where email equals user email
-  async get_user_services(email: string) {
+  async get_user_services(user: any) {
+    const { email } = user
     let user_services = await this.servicePageManager.readAndWriteToArray(this._spm_db, email)
     if (user_services.length === 0) {
       throw new BadRequestException({

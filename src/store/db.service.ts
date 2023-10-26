@@ -22,7 +22,6 @@ export class DatabaseService {
       return document || null
     }
     const document = await db.findOne({ [searchParam]: value }, { projection: { password: 0 }})
-    console.log(document)
     return document || null
   }
 
@@ -50,7 +49,6 @@ export class DatabaseService {
     if (alias === "about" || alias === "occupation" || "displayName" || alias === "luround_url" || alias === "services") {
       data = args[0]
     }
-    console.log(args[0], email)
     const update = await db.findOneAndUpdate(
       { email: email }, 
       { $set: {[alias]: data}},
@@ -113,7 +111,6 @@ export class DatabaseService {
    * Returns a user profile if email is found in db
    */
   async read(db: Collection<Document | any>, email: string) {
-    console.log(email)
    const profile = await db.findOne({ email })
     return profile ? profile : null
   }
