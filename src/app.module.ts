@@ -10,8 +10,9 @@ import { GlobalExceptionFilter } from './global-error-handler';
 import { ProfileModule } from './profileManager/profile.module';
 import { QRCodeModule } from './qrCode/qrcode.module';
 import { ServicePageModule } from './servicePage/service-page.module';
-import { BookServiceModule } from './payments/paystack.module';
+import { PaymentsModule } from './payments/paystack.module';
 import { AuthModule } from './auth/auth.module';
+import { BookingsModule } from './bookService/bookService.module';
 
 @Module({
   imports: [
@@ -22,7 +23,8 @@ import { AuthModule } from './auth/auth.module';
     ProfileModule,
     QRCodeModule,
     ServicePageModule,
-    BookServiceModule
+    PaymentsModule,
+    BookingsModule
   ],
   controllers: [AppController],
   providers: [

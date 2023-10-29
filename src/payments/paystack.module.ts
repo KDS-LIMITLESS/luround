@@ -8,4 +8,4 @@ import { PaystackAPI } from "src/payments/paystack.sevices";
   providers: [PaystackAPI]
 })
 
-export class BookServiceModule {}
+export class PaymentsModule {}

@@ -1,5 +1,5 @@
 import { PartialType } from "@nestjs/mapped-types";
-import { IsDate, IsEmail, IsMongoId, IsNotEmpty } from "class-validator";
+import { IsDate, IsEmail, IsMongoId, IsNotEmpty, IsOptional } from "class-validator";
 
 export class ServicePageDto{
   @IsEmail()
@@ -17,10 +17,10 @@ export class ServicePageDto{
   @IsNotEmpty()
   duration: string
 
-  @IsNotEmpty()
+  @IsOptional()
   service_charge_virtual: string
 
-  @IsNotEmpty()
+  @IsOptional()
   service_charge_in_person: string
 
   @IsNotEmpty()

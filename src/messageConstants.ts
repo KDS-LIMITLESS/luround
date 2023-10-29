@@ -35,7 +35,8 @@ enum ResponseMessages {
 
   ServiceUpdated = 'Service Updated Successfully',
 
-  InvalidServiceId = 'Invalid Service ID'
+  InvalidServiceId = 'Invalid Service ID',
+  BOOKING_ID_NOT_FOUND = 'Booking ID not found'
   
 }
 
