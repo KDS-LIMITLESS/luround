@@ -1,8 +1,8 @@
 import { PartialType } from "@nestjs/mapped-types";
-import { IsDate, IsEmail, IsMongoId, IsNotEmpty, IsOptional } from "class-validator";
+import { IsMongoId, IsNotEmpty, IsOptional } from "class-validator";
 
 export class ServicePageDto{
-  @IsEmail()
+  @IsOptional()
   email: string
 
   @IsNotEmpty()
@@ -11,7 +11,7 @@ export class ServicePageDto{
   @IsNotEmpty()
   description: string
 
-  @IsNotEmpty()
+  @IsOptional()
   links: string
 
   @IsNotEmpty()
@@ -23,12 +23,12 @@ export class ServicePageDto{
   @IsOptional()
   service_charge_in_person: string
 
+  // add enum of the types
   @IsNotEmpty()
-  @IsDate({always: true})
-  date: Date
+  schedule_type: string
 
   @IsMongoId()
-  @IsNotEmpty()
+  @IsOptional()
   serviceId: string
 }
 

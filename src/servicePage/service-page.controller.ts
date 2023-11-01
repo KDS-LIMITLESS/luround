@@ -9,10 +9,10 @@ export class ServiceController {
   constructor(private services: ServicePageManager) {}
 
   @Post('/create')
-  async create_service(@Body() req: ServicePageDto, @Res() res: Response) {
+  async create_service(@Req() req, @Res() res: Response, @Body() body: ServicePageDto) {
     return res
     .status(HttpStatus.CREATED)
-    .json(await this.services.add_new_service(req)) 
+    .json(await this.services.add_new_service(req.user.userId, body)) 
   }
 
   @Put('/edit')

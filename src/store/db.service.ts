@@ -115,9 +115,8 @@ export class DatabaseService {
     return profile ? profile : null
   }
 
-  async readAndWriteToArray(db: Collection<Document | any>, email: string) {
-    console.log(email)
-   const profile = await db.find({ email }).toArray()
+  async readAndWriteToArray(db: Collection<Document | any>, searchParam: string, value: string) {
+   const profile = await db.find({ [searchParam]: value }).toArray()
     return profile ? profile : null
   }
 

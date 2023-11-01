@@ -1,7 +1,7 @@
 import { BadRequestException, Injectable } from "@nestjs/common";
 import ResponseMessages from "src/messageConstants";
 import { DatabaseService } from "src/store/db.service";
-import { ServiceDto } from "./servicePage.dto";
+
 
 @Injectable()
 export class ServicePageManager {
@@ -11,15 +11,18 @@ export class ServicePageManager {
 
   constructor(private servicePageManager: DatabaseService) {}
 
-  async add_new_service(data: ServiceDto){
-    
-    let isUserExists = await this.servicePageManager.read(this._udb, data.email)
-    if (isUserExists === null) {
-      throw new BadRequestException({
-        status:400, message: ResponseMessages.EmailDoesNotExist
-      })  
+  async add_new_service(userId: string, serviceData: any){
+    let service = {
+      service_provider_id: userId, 
+      service_name: serviceData.service_name,
+      description: serviceData.description,
+      links: serviceData.links,
+      duration: serviceData.duration,
+      service_charge_virtual: serviceData.service_charge_virtual || null,
+      service_charge_in_person: serviceData.service_charge_in_person || null,
+      schedule_type: serviceData.schedule_type
     }
-    const new_service = await this.servicePageManager.create(this._spm_db, data)
+    const new_service = await this.servicePageManager.create(this._spm_db, service)
     return new_service
     // return await this.servicePageManager.updateArr(this._spm_db, email, service.services)
   }
@@ -60,7 +63,7 @@ export class ServicePageManager {
   // This function queries and returns all user services where email equals user email
   async get_user_services(user: any) {
     const { email } = user
-    let user_services = await this.servicePageManager.readAndWriteToArray(this._spm_db, email)
+    let user_services = await this.servicePageManager.readAndWriteToArray(this._spm_db, "email", email)
     if (user_services.length === 0) {
       throw new BadRequestException({
         status: 400,
@@ -85,4 +88,6 @@ export class ServicePageManager {
       })
     }
   }
+
+  async share_service(service_id: string) {}
 }
