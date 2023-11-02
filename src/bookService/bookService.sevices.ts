@@ -12,6 +12,7 @@ export class BookingsManager {
   // Decorate service with initialize payment 
   // Add the payment_reference to the bookingDetail document
   // Run seperate endpoint to verify the payment using the payment_reference_no.
+  // If payment valid update booked status
   async book_service(bookingDetail: any, serviceID: string) {
   
     let serviceDetails = await this.serviceManager.getService(serviceID)
@@ -28,20 +29,21 @@ export class BookingsManager {
         service_provider_id: serviceDetails.service_provider_id,
         service_fee: amount,
         appointment_type: bookingDetail.appointment_type,
-        service_receiver_names: bookingDetail.names,
-        service_receiver_email: bookingDetail.email,
+        service_receiver_names: bookingDetail.service_receiver_names,
+        service_receiver_email: bookingDetail.service_receiver_email,
         phone_number: bookingDetail.phone_number,
         date: bookingDetail.date,
         time: bookingDetail.time,
         duration: bookingDetail.duration,
-        message: bookingDetail.message,
+        message: bookingDetail.message || null,
+        file: bookingDetail.file || null,
         payment_reference_number: null,
         booked_status: "PENDING CONFIRMATION",
         created_at: Date.now()
       }
       let service_booked = await this.bookingsManager.create(this._bKM, bookingDetail)
       // CHECK FOR PAYMENT CONFIRMED AND SEND NOTIFICATION
-      if (service_booked.acknowledged) return {BookingID: service_booked.insertedId}
+      if (service_booked.acknowledged) return {BookingId: service_booked.insertedId}
       throw Error("An error occurred")
     }
     throw new BadRequestException({
@@ -61,6 +63,7 @@ export class BookingsManager {
     return booking_details
   }
 
+  // RUN THIS FUNCTION IN THE WORKER THREAD AND CACHE THE RESPONSE
   async get_user_service_bookings(userId: string) {
     let booking = await this.bookingsManager.readAndWriteToArray(this._bKM, 'service_provider_id', userId)
     if ( booking === null) {

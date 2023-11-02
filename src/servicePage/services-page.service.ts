@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable } from "@nestjs/common";
+import { BadRequestException, Injectable, InternalServerErrorException } from "@nestjs/common";
 import ResponseMessages from "src/messageConstants";
 import { DatabaseService } from "src/store/db.service";
 
@@ -22,9 +22,14 @@ export class ServicePageManager {
       service_charge_in_person: serviceData.service_charge_in_person || null,
       schedule_type: serviceData.schedule_type
     }
-    const new_service = await this.servicePageManager.create(this._spm_db, service)
-    return new_service
-    // return await this.servicePageManager.updateArr(this._spm_db, email, service.services)
+    try {
+      const new_service = await this.servicePageManager.create(this._spm_db, service)
+      return { serviceId: new_service.insertedId }
+    } catch(err: any) {
+      throw new InternalServerErrorException({
+        message: "An error occured"
+      })
+    }
   }
 
   async edit_service(data: any, serviceId: string) {
