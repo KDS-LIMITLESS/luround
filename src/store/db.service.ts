@@ -89,6 +89,22 @@ export class DatabaseService {
   }
 
   /**
+   * Update a property in a document 
+   * @param db Database collection to update a document
+   * @param documentId Id of the document to update
+   * @param updateProperty Propperty key to update 
+   * @param data new property value 
+   * @returns 
+   */
+  async updateProperty(db: Collection<Document | any>, documentId: string, updateProperty: string, data: { [key: string]: any} ){
+    let result = await db.updateOne(
+      {_id: new ObjectId(documentId)}, 
+      {$set: data}
+    )
+    return result
+  }
+
+  /**
    * Deletes a service from database
    * @param db Database collection to delete from
    * @param email 

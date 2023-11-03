@@ -13,6 +13,8 @@ export class BookingsManager {
   // Add the payment_reference to the bookingDetail document
   // Run seperate endpoint to verify the payment using the payment_reference_no.
   // If payment valid update booked status
+
+  // Increase price based on the service duration
   async book_service(bookingDetail: any, serviceID: string) {
   
     let serviceDetails = await this.serviceManager.getService(serviceID)
@@ -75,9 +77,24 @@ export class BookingsManager {
     return booking
   }
   // refund decorator 
+  
+  // how do we diffarentiate a booking that has been carried out and one that hasnt
   async cancel_booking(booking_id: string) {}
 
-  async reschedule_booking(booking_id: string) {}
+  async reschedule_booking(booking_id: string, new_date: string, new_time: string) {
+    let schedule_details = {date: new_date, time: new_time}
+    let update;
+    Object.keys(schedule_details).forEach(async (key) => {
+      update = await this.bookingsManager.updateProperty(this._bKM, booking_id, key, schedule_details)
+    })
+    return 'Booking schedule updated'
+  }
 
-  async delete_booking(booking_id: string) {}
+  async delete_booking(booking_id: string) {
+    let booking = await this.bookingsManager.delete(this._bKM, booking_id)
+    if (booking.value !== null) return `Booking deleted!` 
+    throw new BadRequestException({
+      message: ResponseMessages.BOOKING_ID_NOT_FOUND
+    })
+  }
 }
