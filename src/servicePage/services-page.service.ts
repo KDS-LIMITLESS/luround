@@ -1,6 +1,7 @@
-import { BadRequestException, Injectable, InternalServerErrorException } from "@nestjs/common";
+import { BadRequestException, Inject, Injectable, InternalServerErrorException } from "@nestjs/common";
 import ResponseMessages from "src/messageConstants";
 import { DatabaseService } from "src/store/db.service";
+import { Encrypter } from "src/utils/Encryption";
 
 
 @Injectable()
@@ -12,6 +13,9 @@ export class ServicePageManager {
   constructor(private servicePageManager: DatabaseService) {}
 
   async add_new_service(userId: string, serviceData: any){
+
+    let encryption = new Encrypter(process.env.ENCRYPTION_KEY as string)
+    let link = `https://luround.com/${encryption.encrypt(userId)}/${serviceData.service_name.replace(/\s/g, "_")}`     
     let service = {
       service_provider_id: userId, 
       service_name: serviceData.service_name,
@@ -20,7 +24,8 @@ export class ServicePageManager {
       duration: serviceData.duration,
       service_charge_virtual: serviceData.service_charge_virtual || null,
       service_charge_in_person: serviceData.service_charge_in_person || null,
-      schedule_type: serviceData.schedule_type
+      schedule_type: serviceData.schedule_type,
+      service_link: link
     }
     try {
       const new_service = await this.servicePageManager.create(this._spm_db, service)
