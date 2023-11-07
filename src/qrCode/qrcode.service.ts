@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable, InternalServerErrorException } from "@nestjs/common";
+import { Injectable, InternalServerErrorException } from "@nestjs/common";
 import * as qrc from 'qrcode'
 import ResponseMessages from "src/messageConstants";
 import { DatabaseService } from "src/store/db.service";

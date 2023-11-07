@@ -98,6 +98,4 @@ export class ServicePageManager {
       })
     }
   }
-
-  async share_service(service_id: string) {}
 }

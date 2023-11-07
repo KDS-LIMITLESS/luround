@@ -1,6 +1,6 @@
 import { Body, Controller, Get, HttpStatus, Post, Put, Query, Req, Res,} from "@nestjs/common";
 import { ProfileService } from "./profile.service";
-import { Response, query } from "express";
+import { Response } from "express";
 import { userProfileDto } from "./profile.dto";
 import { SkipAuth } from "src/auth/jwt.strategy";
 

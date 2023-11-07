@@ -1,4 +1,4 @@
-import { Controller, Get, HttpStatus, Post, Put, Query, Req, Res } from "@nestjs/common";
+import { Controller, Get, HttpStatus, Query, Res } from "@nestjs/common";
 import { QRCodeService } from "./qrcode.service";
 import { Response } from "express";
 import { QRCodeDTO } from "./qrcode.dto";
