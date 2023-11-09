@@ -3,11 +3,12 @@ import { Collection, Db, ObjectId, PushOperator } from "mongodb";
 
 @Injectable()
 export class DatabaseService { 
-  userDB = this._uDB.collection('user')
-  serviceDB = this._uDB.collection("services")
-  bookingsDB = this._uDB.collection("bookings")
+  userDB = this._db.collection('user')
+  serviceDB = this._db.collection("services")
+  bookingsDB = this._db.collection("bookings")
+  // notifications = this._db.collection("bookings").watch()
 
-  constructor(@Inject('MONGO_CONNECTION') private _uDB:Db) {}
+  constructor(@Inject('MONGO_CONNECTION') private _db:Db) {}
   
   /**
    * Return a single document in specified db collection where data matches the searchParam

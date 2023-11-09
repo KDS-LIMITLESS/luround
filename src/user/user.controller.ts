@@ -1,5 +1,5 @@
-import { Body, Controller, FileTypeValidator, HttpStatus, 
-  ParseFilePipe, Post, Res, UploadedFile, UseInterceptors 
+import { Body, Controller, FileTypeValidator, Get, HttpStatus, 
+  ParseFilePipe, Post, Req, Res, UploadedFile, UseGuards, UseInterceptors 
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { Response } from 'express';
@@ -7,22 +7,34 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { uploadImage } from 'src/utils/cloudinary-upload.services';
 import { UserDto } from './user.dto';
 import { SkipAuth } from 'src/auth/jwt.strategy';
+import { AuthGuard } from '@nestjs/passport';
 
-@Controller('api/v1/user')
+@Controller()
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
   // Login route
-  // @Get()
-  // @UseGuards(AuthGuard('google'))
-  // async googleAuth(@Req() req: Request) {}
+  @SkipAuth()
+  @Get('/auth')
+  @UseGuards(AuthGuard('google'))
+  async googleAuth(@Req() req: Request) {}
 
   @SkipAuth()
-  @Post('google/sign-in')
-  async googleLogin(@Res() res: Response, @Body() body: UserDto) {
+  @UseGuards(AuthGuard('google'))
+  @Get('/google/signIn')
+  async googleLogin(@Res() res: Response, @Req() req: any) {
     return res
     .status(HttpStatus.CREATED)
-    .json(await this.userService.googleSignIn(body)) 
+    .json(await this.userService.googleSignIn(req.user)) 
+  }
+
+  @SkipAuth()
+  @UseGuards(AuthGuard('google'))
+  @Get('/google/signUp')
+  async googleSignUp(@Res() res: Response, @Req() req: any) {
+    return res
+    .status(HttpStatus.CREATED)
+    .json(await this.userService.googleSignUp(req.user)) 
   }
 
   @SkipAuth()

@@ -16,15 +16,34 @@ export class UserService {
     private jwt: JwtService
   ) {}
 
-  async googleSignIn(user: UserDto): Promise<Object> {
+  async googleSignIn(user: any): Promise<Object> {
+    let userExists = await this.userManager.read(this._udb, user.email)
+    if (userExists) {
+      return this.authService.login(userExists)
+    }
+    throw new BadRequestException({message: "User does not exist"})
+  }
+
+  async googleSignUp(user: any): Promise<Object> {
     
     if (await this.userManager.read(this._udb, user.email)) {
-      return this.jwt.sign({email: user.email, picture: user.photoUrl})
+      throw new BadRequestException({message: ResponseMessages.EmailExists})
     }
-    await this.userManager.create(this._udb, user)
-    await sendOnboardingMail(user.email, user.displayName)
-    let payload = { email: user.email, picture: user.photoUrl }
-    return { "accessToken": this.jwt.signAsync(payload) }
+    // Trnsform user details
+    let new_user = {
+      email: user.email, 
+      displayName: user.firstName + " " + user.lastName, 
+      photoUrl: user.picture, 
+      accountCreatedFrom: "GOOGLE",
+      occupation: null,
+      about: null,
+      certificates: null,
+      media_links: null
+    }
+    await this.userManager.create(this._udb, new_user)
+    await sendOnboardingMail(user.email, user.firstName)
+    // let payload = { email: user.email, picture: user.photoUrl }
+    return ResponseMessages.USER_CREATED
   }
 
   async localSignUp(user: UserDto): Promise<object | string>{
@@ -39,7 +58,7 @@ export class UserService {
       const newuser = (await this.userManager.create(this._udb, user)).acknowledged
 
       // SEND ONBOARDING EMAIL
-      await sendOnboardingMail(user.email, user.displayName)
+      await sendOnboardingMail(user.email, user.firstName)
       return newuser ? {email: user.email, picture: user.photoUrl, created: true} : Error(ResponseMessages.UserNotCreated)
 
     } catch(err: any) {

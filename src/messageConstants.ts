@@ -3,7 +3,7 @@ enum ResponseMessages {
    * The email provided does not exist in dataase
    */
   EmailDoesNotExist = 'User not found',
-
+  USER_CREATED = "User created successfully",
   UserNotCreated = 'User Not Created',
 
   /**

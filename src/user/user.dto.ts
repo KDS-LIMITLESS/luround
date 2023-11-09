@@ -16,7 +16,10 @@ export class UserDto{
   password: string
 
   @IsNotEmpty()
-  displayName: string
+  firstName: string
+
+  @IsNotEmpty()
+  lastName: string
 
   @IsNotEmpty()
   photoUrl: string
