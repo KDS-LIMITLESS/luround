@@ -1,8 +1,7 @@
 // change-tracking.service.ts
 import { Injectable } from '@nestjs/common';
 import { MongoClient, ChangeStream } from 'mongodb';
-import { Server } from 'http';
-import { createServer } from 'http';
+import { Server, createServer } from 'http';
 
 @Injectable()
 export class CustomNotificationService {
