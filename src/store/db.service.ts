@@ -6,8 +6,6 @@ export class DatabaseService {
   userDB = this._db.collection('user')
   serviceDB = this._db.collection("services")
   bookingsDB = this._db.collection("bookings")
-  // notifications = this._db.collection("bookings").watch()
-
   constructor(@Inject('MONGO_CONNECTION') private _db:Db) {}
   
   /**

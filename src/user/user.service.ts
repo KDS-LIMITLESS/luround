@@ -21,7 +21,8 @@ export class UserService {
     if (userExists) {
       return this.authService.login(userExists)
     }
-    throw new BadRequestException({message: "User does not exist"})
+    console.log("signing up user....")
+    return this.googleSignUp(user)
   }
 
   async googleSignUp(user: any): Promise<Object> {
