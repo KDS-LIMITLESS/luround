@@ -71,8 +71,7 @@ export class ServicePageManager {
   }
 
   // This function queries and returns all user services where email equals user email
-  async get_user_services(user: any) {
-    const { email } = user
+  async get_user_services(email: any) {
     let user_services = await this.servicePageManager.readAndWriteToArray(this._spm_db, "email", email)
     if (user_services.length === 0) {
       throw new BadRequestException({

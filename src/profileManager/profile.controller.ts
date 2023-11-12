@@ -34,7 +34,7 @@ export class ProfileController {
   async updateUserNames(@Req() req,  @Res() res: Response, @Body() body: userProfileDto) {
     return res
     .status(HttpStatus.OK)
-    .json(await this.profileSevice.update_user_display_name(req.user, body.displayName)) 
+    .json(await this.profileSevice.update_user_display_name(req.user, body.firstName, body.lastName)) 
   }
   
   @Put('/occupation/update')
@@ -96,7 +96,7 @@ export class ProfileController {
   //   .json(await this.profileSevice.get_user_media_links(req.user))
   // }
   
-  @Get('/generate-url')
+  @Put('/generate-url')
   async generateUserUrl( @Req() req, @Res() res: Response) {
     return res
     .status(HttpStatus.OK)

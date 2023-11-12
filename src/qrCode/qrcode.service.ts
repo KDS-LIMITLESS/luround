@@ -18,7 +18,6 @@ export class QRCodeService {
         message: ResponseMessages.QRCodeError
       })
     }
-    console.log(Buffer.from(qrCode.replace(/^data:image\/png;base64,/, ''), "base64"))
     return Buffer.from(qrCode.replace(/^data:image\/png;base64,/, ''), "base64")
   }
 }

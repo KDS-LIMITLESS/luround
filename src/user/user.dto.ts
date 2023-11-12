@@ -1,5 +1,4 @@
-import { IsEmail, IsEmpty, IsEnum, IsNotEmpty, IsString } from "class-validator";
-import { PickType } from '@nestjs/mapped-types'
+import { IsEmail, IsEmpty, IsEnum, IsNotEmpty, IsString, IsOptional } from "class-validator";
 
 
 export enum AccountCreatedFrom {
@@ -21,7 +20,7 @@ export class UserDto{
   @IsNotEmpty()
   lastName: string
 
-  @IsNotEmpty()
+  @IsOptional()
   photoUrl: string
 
   @IsNotEmpty() @IsString()

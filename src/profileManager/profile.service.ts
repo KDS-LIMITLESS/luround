@@ -46,8 +46,9 @@ export class ProfileService {
     return data
   }
 
-  async update_user_display_name(user: any, displayName: string) {
+  async update_user_display_name(user: any, firstName: string, lastName: string) {
     const { email } = user
+    let displayName = firstName + " " + lastName
     let data = await this.profileManager.update(this._udb, email, "displayName", displayName )
     if (data === null) {
       throw new BadRequestException({

@@ -15,7 +15,7 @@ export class UserController {
 
   // Login route
   @SkipAuth()
-  @Get('/auth')
+  @Get('google-auth')
   @UseGuards(AuthGuard('google'))
   async googleAuth(@Req() req: Request) {}
 
@@ -27,7 +27,7 @@ export class UserController {
   }
 
   @SkipAuth()
-  @Post('/sign-up')
+  @Post('/api/v1/sign-up')
   async localSignUp(@Res() res: Response, @Body() body: UserDto) {
     let createUser = await this.userService.localSignUp(body)
     if (!createUser === false) {
@@ -36,7 +36,7 @@ export class UserController {
     res.status(HttpStatus.INTERNAL_SERVER_ERROR)
   }
 
-  @Post('/upload-image')
+  @Post('/api/v1/upload-image')
   @UseInterceptors(FileInterceptor('image'))
   async uploadFile(
     @UploadedFile( 

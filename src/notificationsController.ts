@@ -3,7 +3,7 @@ import { Controller, Get, Res } from '@nestjs/common';
 import { CustomNotificationService } from './notificationsService';
 import { SkipAuth } from './auth/jwt.strategy';
 
-@Controller('notifications')
+@Controller('api/v1/notifications')
 export class NotificationsController {
   constructor(private readonly changeTrackingService: CustomNotificationService) {}
 

@@ -34,7 +34,7 @@ export class ServiceController {
   async get_user_service(@Query() query: ServiceDto, @Res() res: Response) {
     return res
     .status(HttpStatus.OK)
-    .json(await this.services.get_user_services(query)) 
+    .json(await this.services.get_user_services(query.email)) 
   }
 
   @SkipAuth()

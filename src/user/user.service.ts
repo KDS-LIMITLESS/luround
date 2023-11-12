@@ -53,10 +53,22 @@ export class UserService {
       const isUser = await this.userManager.read(this._udb, user.email)
       if (isUser) throw Error(ResponseMessages.EmailExists)
 
+      
       // HASH USERS PASSWORD
       const PSW_HASH = await this.authService.hashPassword(user.password)
-      user.password = PSW_HASH
-      const newuser = (await this.userManager.create(this._udb, user)).acknowledged
+      
+      let new_user = {
+        email: user.email, 
+        displayName: user.firstName + " " + user.lastName, 
+        photoUrl: user.photoUrl, 
+        password: PSW_HASH,
+        accountCreatedFrom: "LOCAL",
+        occupation: null,
+        about: null,
+        certificates: null,
+        media_links: null
+      }
+      const newuser = (await this.userManager.create(this._udb, new_user)).acknowledged
 
       // SEND ONBOARDING EMAIL
       await sendOnboardingMail(user.email, user.firstName)
