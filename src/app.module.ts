@@ -13,7 +13,6 @@ import { ServicePageModule } from './servicePage/service-page.module';
 import { PaymentsModule } from './payments/paystack.module';
 import { AuthModule } from './auth/auth.module';
 import { BookingsModule } from './bookService/bookService.module';
-import { NotificationsModule } from './notifications/notifications.module';
 import { CustomNotificationService } from './notificationsService';
 import { NotificationsController } from './notificationsController';
 
@@ -28,7 +27,6 @@ import { NotificationsController } from './notificationsController';
     ServicePageModule,
     PaymentsModule,
     BookingsModule,
-    NotificationsModule
   ],
   controllers: [AppController, NotificationsController],
   providers: [
