@@ -1,5 +1,5 @@
 import { Body, Controller, FileTypeValidator, Get, HttpStatus, 
-  ParseFilePipe, Post, Req, Res, UploadedFile, UseGuards, UseInterceptors 
+  ParseFilePipe, Post, Put, Req, Res, UploadedFile, UseGuards, UseInterceptors 
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { Response } from 'express';
@@ -23,7 +23,7 @@ export class UserController {
   @UseGuards(AuthGuard('google'))
   @Get('/google/signIn')
   async googleLogin(@Res() res: Response, @Req() req: any) {
-    return res.status(HttpStatus.CREATED).json(await this.userService.googleSignIn(req.user)) 
+    return res.status(HttpStatus.OK).json(await this.userService.googleSignIn(req.user)) 
   }
 
   @SkipAuth()
@@ -34,6 +34,18 @@ export class UserController {
       return res.status(HttpStatus.CREATED).json(createUser)
     }
     res.status(HttpStatus.INTERNAL_SERVER_ERROR)
+  }
+
+  @SkipAuth()
+  @Put('/api/v1/send-reset-password-otp')
+  async sendResetPasswordOtp(@Res() res: Response, @Body() body) {
+    return res.status(HttpStatus.OK).json(await this.userService.send_reset_password_otp(body.email))
+  }
+
+  @SkipAuth()
+  @Put('/api/v1/reset-password')
+  async ResetPassword(@Res() res: Response, @Body() body) {
+    return res.status(HttpStatus.OK).json(await this.userService.reset_password(body.email, body.new_password, body.otp))
   }
 
   @Post('/api/v1/upload-image')

@@ -2,7 +2,7 @@ import { BadRequestException, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { DatabaseService } from 'src/store/db.service';
 import { AuthService } from 'src/auth/auth.service';
-import { sendOnboardingMail } from 'src/utils/mail.services';
+import { generateRandomSixDigitNumber, sendOTP, sendOnboardingMail } from 'src/utils/mail.services';
 import ResponseMessages from 'src/messageConstants';
 import { UserDto } from './user.dto';
 
@@ -81,7 +81,29 @@ export class UserService {
       })
     }
   }
+  async send_reset_password_otp(email: string){
+    let isUser = await this.userManager.read(this._udb, email)
 
+    if (isUser) {
+      let otp = await generateRandomSixDigitNumber()
+      
+      await sendOTP(email, otp)
+      await this.userManager.updateDocument(this._udb, isUser._id, {otp} )
+      return "Update password OTP sent to users email"
+    }
+    throw new BadRequestException({ message: ResponseMessages.EmailDoesNotExist})
+  }
+
+  async reset_password(email: string, new_password: string, otp: number) {
+    let isUser = await this.userManager.read(this._udb, email)
+    if (isUser && otp === isUser.otp) {
+      const PSW_HASH = await this.authService.hashPassword(new_password)
+      await this.userManager.updateProperty(this._udb, isUser._id, "password", {password: PSW_HASH} )
+      // delete otp details
+      return "User Password Updated"
+    }
+    throw new BadRequestException({ message: "Invalid OTP"})
+  }
  
 
   async deleteUserAccount() {}

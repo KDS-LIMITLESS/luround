@@ -7,9 +7,9 @@ import { BookServiceDto, ServiceId, BookingId } from "./bookServiceDto";
 export class BookingsController {
   constructor(private bookingsManager: BookingsManager) {}
 
-  @Post('/book')
-  async bookSevice(@Body() req: BookServiceDto, @Res() res: Response, @Query() query: ServiceId) {
-    return res.status(200).json(await this.bookingsManager.book_service(req, query.serviceId))
+  @Post('/book-service')
+  async bookSevice(@Body() payload: BookServiceDto, @Res() res: Response, @Query() query: ServiceId) {
+    return res.status(200).json(await this.bookingsManager.book_service(payload, query.serviceId))
   }
 
   @Get('/get')
@@ -17,7 +17,7 @@ export class BookingsController {
     return res.status(200).json(await this.bookingsManager.get_booked_service_detail(query.bookingId))
   }
 
-  @Get('all-bookings')
+  @Get('my-bookings')
   async getAllBokingDetails(@Req() req, @Res() res: Response) {
     return res.status(200).json(await this.bookingsManager.get_user_service_bookings(req.user.userId))
   }

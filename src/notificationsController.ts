@@ -15,3 +15,7 @@ export class NotificationsController {
     setTimeout(() => res.end(), 10000);
   }
 }
+
+// Fix the custom user link. Make sure a slug dose not exist in db already.
+// Use IDs instead of emails across the API
+// Logout API660

@@ -12,3 +12,22 @@ export async function sendOnboardingMail(to:string, name: string) {
     MessageStream: 'outbound'
   });
 }
+
+
+
+export async function sendOTP(to:string, OTP: number) {
+  return mail.sendEmail({
+    From: 'cc@uppist.com',
+    To: to,
+    Subject: 'Change Password Luround',
+    HtmlBody: `<h3> You have requested to update your luround password, </br> Please use this OTP to complete this request. <p>${OTP}. </p></h3>`,
+    MessageStream: 'outbound'
+  });
+}
+
+export async function generateRandomSixDigitNumber(): Promise<number> {
+  const min = 100000; // Smallest 6-digit number
+  const max = 999999; // Largest 6-digit number
+
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+}
