@@ -1,12 +1,12 @@
 import { Body, Controller, FileTypeValidator, Get, HttpStatus, 
   ParseFilePipe, Post, Put, Req, Res, UploadedFile, UseGuards, UseInterceptors 
 } from '@nestjs/common';
-import { UserService } from './user.service';
+import { UserService } from './user.service.js';
 import { Response } from 'express';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { uploadImage } from 'src/utils/cloudinary-upload.services';
-import { UserDto } from './user.dto';
-import { SkipAuth } from 'src/auth/jwt.strategy';
+import { uploadImage } from '../utils/cloudinary-upload.services.js';
+import { UserDto } from './user.dto.js';
+import { SkipAuth } from '../auth/jwt.strategy.js';
 import { AuthGuard } from '@nestjs/passport';
 
 @Controller()

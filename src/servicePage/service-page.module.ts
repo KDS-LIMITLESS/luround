@@ -1,7 +1,7 @@
 import { Module } from "@nestjs/common";
-import { ServiceController } from "./service-page.controller";
-import { ServicePageManager } from "./services-page.service";
-import { DatabaseService } from "src/store/db.service";
+import { ServiceController } from "./service-page.controller.js";
+import { ServicePageManager } from "./services-page.service.js";
+import { DatabaseService } from "../store/db.service.js";
 
 @Module({
   imports: [],

@@ -1,7 +1,7 @@
 import { Injectable, InternalServerErrorException } from "@nestjs/common";
 import * as qrc from 'qrcode'
-import ResponseMessages from "src/messageConstants";
-import { DatabaseService } from "src/store/db.service";
+import ResponseMessages from "../messageConstants.js";
+import { DatabaseService } from "../store/db.service.js";
 
 @Injectable()
 export class QRCodeService {

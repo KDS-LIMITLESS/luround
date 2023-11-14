@@ -1,7 +1,7 @@
 import { Controller, Get, Post, Put, Query, Req, Res, Body, Delete } from "@nestjs/common";
 import { Response } from "express";
-import { BookingsManager } from "./bookService.sevices";
-import { BookServiceDto, ServiceId, BookingId } from "./bookServiceDto";
+import { BookingsManager } from "./bookService.sevices.js";
+import { BookServiceDto, ServiceId, BookingId } from "./bookServiceDto.js";
 
 @Controller('api/v1/booking')
 export class BookingsController {

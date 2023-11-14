@@ -1,6 +1,6 @@
 import { BadRequestException, Injectable } from "@nestjs/common";
-import ResponseMessages from "src/messageConstants";
-import { DatabaseService } from "src/store/db.service";
+import ResponseMessages from "../messageConstants.js";
+import { DatabaseService } from "../store/db.service.js";
 
 
 @Injectable()

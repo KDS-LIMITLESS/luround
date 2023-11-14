@@ -1,7 +1,7 @@
 // your.controller.ts
 import { Controller, Get, Res } from '@nestjs/common';
-import { CustomNotificationService } from './notificationsService';
-import { SkipAuth } from './auth/jwt.strategy';
+import { CustomNotificationService } from './notificationsService.js';
+import { SkipAuth } from './auth/jwt.strategy.js';
 
 @Controller('api/v1/notifications')
 export class NotificationsController {

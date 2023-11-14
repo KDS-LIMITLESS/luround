@@ -1,7 +1,7 @@
 import { BadRequestException, Injectable, NotFoundException } from "@nestjs/common";
-import { DatabaseService } from "src/store/db.service";
-import { ServicePageManager } from "src/servicePage/services-page.service";
-import ResponseMessages from "src/messageConstants";
+import { DatabaseService } from "../store/db.service.js";
+import { ServicePageManager } from "../servicePage/services-page.service.js";
+import ResponseMessages from "../messageConstants.js";
 
 @Injectable()
 export class BookingsManager {

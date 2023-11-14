@@ -1,6 +1,6 @@
 import { Module } from "@nestjs/common";
-import { Payments } from "./paystack.controllers";
-import { PaystackAPI } from "src/payments/paystack.sevices";
+import { Payments } from "./paystack.controllers.js";
+import { PaystackAPI } from "../payments/paystack.sevices.js";
 
 @Module({
   imports: [],

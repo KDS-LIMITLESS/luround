@@ -1,8 +1,8 @@
 import { Injectable, UnauthorizedException } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
 import * as bcrypt from 'bcrypt'
-import ResponseMessages from "src/messageConstants";
-import { DatabaseService } from "src/store/db.service";
+import ResponseMessages from "../messageConstants.js";
+import { DatabaseService } from "../store/db.service.js";
 
 
 @Injectable()

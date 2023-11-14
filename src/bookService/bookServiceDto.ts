@@ -1,7 +1,7 @@
 import { PickType } from "@nestjs/mapped-types";
 import { File } from "buffer";
 import { IsEnum, IsNotEmpty, IsDate, IsOptional, IsMongoId } from "class-validator";
-import { ServicePageDto } from "src/servicePage/servicePage.dto";
+import { ServicePageDto } from "../servicePage/servicePage.dto.js";
 
 enum AppointmentTypes {
   virtual = 'Virtual',

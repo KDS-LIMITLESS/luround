@@ -1,10 +1,10 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { DatabaseService } from 'src/store/db.service';
-import { AuthService } from 'src/auth/auth.service';
-import { generateRandomSixDigitNumber, sendOTP, sendOnboardingMail } from 'src/utils/mail.services';
-import ResponseMessages from 'src/messageConstants';
-import { UserDto } from './user.dto';
+import { DatabaseService } from '../store/db.service.js';
+import { AuthService } from '../auth/auth.service.js';
+import { generateRandomSixDigitNumber, sendOTP, sendOnboardingMail } from '../utils/mail.services.js';
+import ResponseMessages from '../messageConstants.js';
+import { UserDto } from './user.dto.js';
 
 
 @Injectable()

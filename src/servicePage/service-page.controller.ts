@@ -1,8 +1,8 @@
 import { Body, Controller, Delete, Get, HttpStatus, Post, Put, Query, Req, Res } from "@nestjs/common";
 import { Request, Response, query } from "express";
-import { ServicePageManager } from "./services-page.service";
-import {  ServiceDto, ServicePageDto } from "./servicePage.dto";
-import { SkipAuth } from "src/auth/jwt.strategy";
+import { ServicePageManager } from "./services-page.service.js";
+import {  ServiceDto, ServicePageDto } from "./servicePage.dto.js";
+import { SkipAuth } from "../auth/jwt.strategy.js";
 
 @Controller('api/v1/services')
 export class ServiceController {

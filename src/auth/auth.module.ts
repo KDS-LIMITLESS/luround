@@ -1,12 +1,12 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
-import { GoogleStrategy } from './auth.googleStartegy';
-import { LocalStrategy } from './local.strategy';
-import { JwtAuthGuard, JwtStrategy } from './jwt.strategy';
-import { AuthService } from './auth.service';
-import { DatabaseService } from 'src/store/db.service';
-import { AuthControllers } from './auth.controllers';
+import { GoogleStrategy } from './auth.googleStartegy.js';
+import { LocalStrategy } from './local.strategy.js';
+import { JwtAuthGuard, JwtStrategy } from './jwt.strategy.js';
+import { AuthService } from './auth.service.js';
+import { DatabaseService } from '../store/db.service.js';
+import { AuthControllers } from './auth.controllers.js';
 import { APP_GUARD } from '@nestjs/core';
 
 

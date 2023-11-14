@@ -1,7 +1,7 @@
 import { Module } from "@nestjs/common";
-import { QRCodeController } from "./qrcode.controller";
-import { QRCodeService } from "./qrcode.service";
-import { DatabaseService } from "src/store/db.service";
+import { QRCodeController } from "./qrcode.controller.js";
+import { QRCodeService } from "./qrcode.service.js";
+import { DatabaseService } from "../store/db.service.js";
 
 @Module({
   imports: [],
