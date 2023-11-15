@@ -1,15 +1,17 @@
-import { BadRequestException, Injectable } from "@nestjs/common";
+import { BadRequestException, ConsoleLogger, Injectable } from "@nestjs/common";
 import { request } from "https";
 import got from "got";
 
 import Flutterwave from 'flutterwave-node-v3';
+import { DatabaseService } from "../store/db.service.js";
 
 const flw = new Flutterwave(process.env.FLW_PUBLIC_KEY, process.env.FLW_SECRET_KEY)
 
 
 @Injectable()
-export class PaystackAPI {
-  constructor() {}
+export class PaymentsAPI {
+  _tdb = this.transactionsManager.transactionsDb
+  constructor(private transactionsManager: DatabaseService) {}
 
   static async initializePayment(email: string, amount: string): Promise<any> {
     const data = JSON.stringify({
@@ -83,14 +85,14 @@ export class PaystackAPI {
           tx_ref: tx_ref,
           amount: amount,
           currency: "NGN",
-          redirect_url: `http://localhost:3000/api/v1/verify-flw-payment?status=`,
+          redirect_url: `http://localhost:3000/api/v1/payments/verify-flw-payment`,
           meta: {
               consumer_id: req.userId
           },
           customer: {
               email: req.email,
               phonenumber: phone_number,
-              name: req.name
+              name: req.displayName
           },
           customizations: {
               title: "Luround Pay",
@@ -105,17 +107,24 @@ export class PaystackAPI {
   }
 
 // 4722335
-  static async verify_flw_payment(req: any ) {
-    if (req.query.status === 'successful') {
-      const transactionDetails = await flw.Transaction.find({ref: req.tx_ref});
-      const response = await flw.Transaction.verify({id: req.transaction_id});
+  async verify_flw_payment(query: any ) {
+    if (query.status === 'successful') {
+      // const transactionDetails = await Transaction.find({ref: query.tx_ref});
+      const response = await flw.Transaction.verify({id: query.transaction_id});
     if (
-        response.data.status === "successful"
-        && response.data.amount === transactionDetails.amount
-        && response.data.currency === "NGN") {
-        return "Payment Successful"
+      response.data.status === "successful"
+      && response.data.amount === response.data.charged_amount
+      && response.data.currency === "NGN") 
+      {
+        let transaction_details = {
+          transaction_reference: response.data.tx_ref,
+          userID: response.data.meta.consumer_id,
+          amount_paid: response.data.charged_amount,
+          created_at: response.data.created_at,
+          name: response.data.customer.name
+        }
+        return {payment_reference_id : (await this.transactionsManager.create(this._tdb, transaction_details)).insertedId}
     } else {
-        // Inform the customer their payment was unsuccessful
         throw new Error("Payment not Successfull")
       }
     }

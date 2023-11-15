@@ -39,7 +39,7 @@ export class BookingsManager {
         duration: bookingDetail.duration,
         message: bookingDetail.message || null,
         file: bookingDetail.file || null,
-        payment_reference_number: null,
+        payment_reference_id: bookingDetail.payment_reference_id,
         booked_status: "PENDING CONFIRMATION",
         created_at: Date.now()
       }
