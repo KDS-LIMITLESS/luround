@@ -20,10 +20,10 @@ export class UserController {
   async googleAuth(@Req() req: Request) {}
 
   @SkipAuth()
-  @UseGuards(AuthGuard('google'))
-  @Get('/google/signIn')
+  // @UseGuards(AuthGuard('google'))
+  @Post('/google/signIn')
   async googleLogin(@Res() res: Response, @Req() req: any) {
-    return res.status(HttpStatus.OK).json(await this.userService.googleSignIn(req.user)) 
+    return res.status(HttpStatus.OK).json(await this.userService.googleSignIn(req.body)) 
   }
 
   @SkipAuth()

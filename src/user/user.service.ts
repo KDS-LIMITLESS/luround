@@ -33,8 +33,8 @@ export class UserService {
     // Trnsform user details
     let new_user = {
       email: user.email, 
-      displayName: user.firstName + " " + user.lastName, 
-      photoUrl: user.picture, 
+      displayName: user.displayName,// user.firstName + " " + user.lastName, 
+      photoUrl: user.photoUrl, 
       accountCreatedFrom: "GOOGLE",
       occupation: null,
       about: null,
