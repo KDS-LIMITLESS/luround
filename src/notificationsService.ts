@@ -1,4 +1,3 @@
-// change-tracking.service.ts
 import { Injectable } from '@nestjs/common';
 import { MongoClient, ChangeStream } from 'mongodb';
 import { Server, createServer } from 'http';
@@ -29,6 +28,7 @@ export class CustomNotificationService {
   }
 
   createHttpServer() {
+    console.log("server connected!>>>>..........")
     this.httpServer = createServer((req, res) => {
       res.setHeader('Content-Type', 'text/event-stream');
       res.setHeader('Cache-Control', 'no-cache');
