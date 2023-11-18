@@ -36,10 +36,10 @@ export class UserService {
       displayName: user.displayName,// user.firstName + " " + user.lastName, 
       photoUrl: user.photoUrl, 
       accountCreatedFrom: "GOOGLE",
-      occupation: null,
-      about: null,
-      certificates: null,
-      media_links: null
+      occupation: '',
+      about: '',
+      certificates: [],
+      media_links: []
     }
     await this.userManager.create(this._udb, new_user)
     await sendOnboardingMail(user.email, user.firstName)
@@ -63,10 +63,10 @@ export class UserService {
         photoUrl: user.photoUrl, 
         password: PSW_HASH,
         accountCreatedFrom: "LOCAL",
-        occupation: null,
-        about: null,
-        certificates: null,
-        media_links: null
+        occupation: '',
+        about: '',
+        certificates: [],
+        media_links: []
       }
       const newuser = (await this.userManager.create(this._udb, new_user)).acknowledged
 
