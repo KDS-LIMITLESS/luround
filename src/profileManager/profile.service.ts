@@ -81,7 +81,8 @@ export class ProfileService {
         message: ResponseMessages.EmailDoesNotExist
       })
     }
-    return userProfile
+    const {otp, ...profile} = userProfile
+    return profile
   }
 
   // async get_user_certs(email: string) {
