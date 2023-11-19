@@ -22,6 +22,9 @@ export class UserService {
       return this.authService.login(userExists)
     }
     console.log("signing up user....")
+    if (user.email === null && user.displayName === null) {
+      throw new BadRequestException({message: "User data cannot be null"})
+    }
     return this.googleSignUp(user)
   }
 
