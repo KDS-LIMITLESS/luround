@@ -30,14 +30,14 @@ export class ProfileController {
     .json(await this.profileSevice.update_user_about(req.user, body.about)) 
   }
   
-  @Put('/display-name/update')
+  @Put('/personal-details/update')
   async updateUserPersonalDetails(@Req() req,  @Res() res: Response, @Body() body: userProfileDto) {
     return res
     .status(HttpStatus.OK)
     .json(await this.profileSevice.update_user_personal_details(req.user, body)) 
   }
   
-  @Put('/occupation/update')
+  @Put('/photo/update')
   async updateUserOccupation(@Req() req, @Res() res: Response, @Body() body: userProfileDto) {
     return res
     .status(HttpStatus.OK)
