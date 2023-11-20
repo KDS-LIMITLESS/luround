@@ -31,10 +31,10 @@ export class ProfileController {
   }
   
   @Put('/display-name/update')
-  async updateUserNames(@Req() req,  @Res() res: Response, @Body() body: userProfileDto) {
+  async updateUserPersonalDetails(@Req() req,  @Res() res: Response, @Body() body: userProfileDto) {
     return res
     .status(HttpStatus.OK)
-    .json(await this.profileSevice.update_user_display_name(req.user, body.firstName, body.lastName)) 
+    .json(await this.profileSevice.update_user_personal_details(req.user, body)) 
   }
   
   @Put('/occupation/update')
