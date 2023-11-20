@@ -54,7 +54,7 @@ export class ProfileService {
       occupation: details.occupation,
       company: details.company
     }
-    
+
     let data = await this.profileManager.update(this._udb, email, "displayName", personalDetails )
     if (data === null) {
       throw new BadRequestException({
@@ -66,9 +66,9 @@ export class ProfileService {
   }
 
 
-  async update_user_occupation(user: any, occupation: string) {
+  async update_user_profile_photo(user: any, photoUrl: string) {
     const { email } = user
-    let data = await this.profileManager.update(this._udb, email, "occupation", occupation )
+    let data = await this.profileManager.update(this._udb, email, "occupation", photoUrl )
     if (data === null) {
       throw new BadRequestException({
         status: 400,

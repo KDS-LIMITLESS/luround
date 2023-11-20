@@ -41,7 +41,7 @@ export class ProfileController {
   async updateUserOccupation(@Req() req, @Res() res: Response, @Body() body: userProfileDto) {
     return res
     .status(HttpStatus.OK)
-    .json(await this.profileSevice.update_user_occupation(req.user, body.occupation)) 
+    .json(await this.profileSevice.update_user_profile_photo(req.user, body.photoUrl)) 
   }
 
   @Put('/generate-custom-url')
