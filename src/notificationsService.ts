@@ -1,6 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { MongoClient, ChangeStream } from 'mongodb';
 import { Server, createServer } from 'http';
+import { MessageBody, WebSocketGateway, OnGatewayInit, SubscribeMessage, ConnectedSocket } from '@nestjs/websockets';
+import { Socket, Server as Serv } from 'socket.io';
+
 
 @Injectable()
 export class CustomNotificationService {
@@ -38,7 +41,7 @@ export class CustomNotificationService {
       // KEEP CLIENTS ALIVE UNTIL AFTER 15000
       setInterval(() => res.write('\n'), 15000);
     });
-    this.httpServer.listen(3001);
+    this.httpServer.listen(0);
   }
 
   addClient(client: any) {

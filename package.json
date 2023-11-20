@@ -27,7 +27,7 @@
     "@nestjs/mapped-types": "^2.0.2",
     "@nestjs/passport": "^10.0.1",
     "@nestjs/platform-express": "^10.0.0",
-    "@nestjs/platform-socket.io": "^10.2.8",
+    "@nestjs/platform-socket.io": "^10.2.9",
     "@nestjs/websockets": "^10.2.8",
     "@types/bcrypt": "^5.0.0",
     "@types/buffer-to-stream": "^1.0.1",
@@ -51,7 +51,8 @@
     "postmark": "^3.0.19",
     "qrcode": "^1.5.3",
     "reflect-metadata": "^0.1.13",
-    "rxjs": "^7.8.1"
+    "rxjs": "^7.8.1",
+    "socket.io": "^4.7.2"
   },
   "devDependencies": {
     "@nestjs/cli": "^10.0.1",
