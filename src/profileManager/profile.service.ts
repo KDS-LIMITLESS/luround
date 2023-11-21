@@ -67,7 +67,7 @@ export class ProfileService {
 
   async update_user_profile_photo(user: any, photoUrl: string) {
     const { email } = user
-    let data = await this.profileManager.update(this._udb, email, "occupation", photoUrl )
+    let data = await this.profileManager.update(this._udb, email, "photoUrl", photoUrl )
     if (data === null) {
       throw new BadRequestException({
         status: 400,

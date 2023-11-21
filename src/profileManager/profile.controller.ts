@@ -38,7 +38,7 @@ export class ProfileController {
   }
   
   @Put('/photo/update')
-  async updateUserOccupation(@Req() req, @Res() res: Response, @Body() body: userProfileDto) {
+  async updateUserPhotoUrl(@Req() req, @Res() res: Response, @Body() body: userProfileDto) {
     return res
     .status(HttpStatus.OK)
     .json(await this.profileSevice.update_user_profile_photo(req.user, body.photoUrl)) 
