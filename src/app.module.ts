@@ -28,11 +28,11 @@ import { NotificationsController } from './notificationsController.js';
     PaymentsModule,
     BookingsModule,
   ],
-  controllers: [AppController, NotificationsController],
+  controllers: [AppController],
   providers: [
     AppService, 
     DatabaseService,
-    CustomNotificationService
+    // CustomNotificationService
     // {
       // provide: APP_FILTER,
       // useClass: GlobalExceptionFilter,

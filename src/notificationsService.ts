@@ -41,7 +41,7 @@ export class CustomNotificationService {
       // KEEP CLIENTS ALIVE UNTIL AFTER 15000
       setInterval(() => res.write('\n'), 15000);
     });
-    this.httpServer.listen(0);
+    this.httpServer.listen(0 || process.env.PORT);
   }
 
   addClient(client: any) {
