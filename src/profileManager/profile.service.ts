@@ -47,15 +47,14 @@ export class ProfileService {
   }
 
   async update_user_personal_details(user: any, details: any) {
-    const { email } = user
-
+    const { userId } = user
     let personalDetails = {
       displayName: details.firstName + " " + details.lastName,
       occupation: details.occupation,
       company: details.company
     }
 
-    let data = await this.profileManager.update(this._udb, email, "displayName", personalDetails )
+    let data = await this.profileManager.updateProperty(this._udb, userId, "", personalDetails )
     if (data === null) {
       throw new BadRequestException({
         status: 400,
@@ -145,8 +144,9 @@ export class ProfileService {
       let userCount = await this.profileManager.userDB.estimatedDocumentCount()
       let getUserNames = await this.profileManager.read(this._udb, email)
       // BUILD THE USER URL 
-      let url = `luround.com/${getUserNames.displayName}_${userCount}`
-      return await this.profileManager.update(this._udb, email, "luround_url", url)
+      let url = `luround.com/${getUserNames.displayName.replace(/\s/g, '_')}_${userCount}`
+      await this.profileManager.update(this._udb, email, "luround_url", url)
+      return url
 
     } catch(err: any) {
       throw new BadRequestException({
@@ -165,8 +165,9 @@ export class ProfileService {
         message: ResponseMessages.EmailDoesNotExist
       })
     }
-    let custom_url = `luround.com/${slug}`
-    return await this.profileManager.update(this._udb, email, "luround_url", custom_url)
+    let custom_url = `luround.com/${slug.replace(/\s/g, '')}`
+    await this.profileManager.update(this._udb, email, "luround_url", custom_url)
+    return custom_url
   }
   
   async get_user_profile_by_link(url: string) {

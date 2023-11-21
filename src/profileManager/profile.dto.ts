@@ -11,15 +11,15 @@ export class IsCertificateConstraint implements ValidatorConstraintInterface {
   validate(certificates: any, args: ValidationArguments): boolean {
     try {
       if (Array.isArray(certificates)) {
-
+        // console.log(certificates)
         let  certificateName, issuingOrganization, issueDate, validateCertificate, date;
         certificates.forEach(function(certObj) {
-          certificateName = Object.getOwnPropertyDescriptor(certObj, 'certificateName').value
-          issuingOrganization = Object.getOwnPropertyDescriptor(certObj, 'issuingOrganization').value
-          issueDate = Object.getOwnPropertyDescriptor(certObj, 'issueDate').value
+          certificateName = Object.getOwnPropertyDescriptor(certObj, 'certificateName')?.value
+          issuingOrganization = Object.getOwnPropertyDescriptor(certObj, 'issuingOrganization')?.value
+          issueDate = Object.getOwnPropertyDescriptor(certObj, 'issueDate')?.value
           
-          date = new Date(issueDate)
-          if(date.toString() === "Invalid Date") throw Error("issueDate must be a date object. YYYY-MM ")
+          // date = new Date(issueDate)
+          // if(date.toString() === "Invalid Date") throw Error("issueDate must be a date object. YYYY-MM ")
 
           if((certificateName && issuingOrganization && issueDate) !== '' &&
             (certificateName && issuingOrganization && issueDate) !== null &&
@@ -27,7 +27,7 @@ export class IsCertificateConstraint implements ValidatorConstraintInterface {
           { validateCertificate = true } 
           else { 
             validateCertificate = false; 
-            throw Error('certificateName and issuingOrganization fields must not be empty') 
+            throw Error('certificateName, issuingOrganization and issueDate fields must not be empty or undefined') 
           }
         })
         return validateCertificate
@@ -74,6 +74,9 @@ export class userProfileMainDto{
 
   @IsNotEmpty()
   occupation: string
+
+  @IsNotEmpty()
+  company: string
   
   @IsNotEmpty()
   about: string

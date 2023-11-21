@@ -23,7 +23,6 @@ export class UserController {
   // @UseGuards(AuthGuard('google'))
   @Post('/google/signIn')
   async googleLogin(@Res() res: Response, @Req() req: any) {
-    console.log(req)
     return res.status(HttpStatus.OK).json(await this.userService.googleSignIn(req.body)) 
   }
 
