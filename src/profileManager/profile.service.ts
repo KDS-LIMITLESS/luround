@@ -11,27 +11,31 @@ export class ProfileService {
   constructor(private profileManager: DatabaseService) {}
 
   async update_user_certificates(user: any, certificates: any) {
-    const { email } = user
-    let data = await this.profileManager.updateArr(this._udb, email, "certificates", certificates)
-    if (data === null) {
+    try {
+      const { email } = user
+      await this.profileManager.updateArr(this._udb, email, "certificates", certificates).then(() => {
+        return "New certificate added"
+      })
+    } catch(err: any) {
       throw new BadRequestException({
         status: 400,
-        message: ResponseMessages.EmailDoesNotExist
+        message: err.message
       })
     }
-    return "New certificate added"
   }
 
   async update_user_media_links(user:any, media_links: any) {
-    const { email } = user
-    let data = await this.profileManager.updateArr(this._udb, email, "media_links", media_links)
-    if (data === null) {
+    try {
+      const { email } = user
+      await this.profileManager.updateArr(this._udb, email, "media_links", media_links).then(() => {
+        return "New link added"
+      })
+    } catch(err: any) {
       throw new BadRequestException({
         status: 400,
-        message: ResponseMessages.EmailDoesNotExist
+        message: err.message
       })
     }
-    return "New link added"
   }
 
   async update_user_about(user: any, about: string) {
