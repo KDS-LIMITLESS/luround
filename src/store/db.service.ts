@@ -1,5 +1,6 @@
 import { Inject, Injectable } from "@nestjs/common";
-import { Collection, Db, ObjectId, PushOperator } from "mongodb";
+import { Collection, Db, ObjectId, PushOperator, UpdateFilter } from "mongodb";
+
 
 @Injectable()
 export class DatabaseService { 
@@ -67,10 +68,13 @@ export class DatabaseService {
    * @returns 
    */
   async updateArr(db: Collection<Document | any>, email: string, arr_name: string, data: Array<object>) {
+    let update: any;
+     
     data.forEach(async (element) => {
-      console.log(element)
+      update = {$push: {[arr_name]: element} }
       await db.findOneAndUpdate(
-        {email: email}, {$push: {[arr_name]: element} }, 
+        {email: email}, 
+        update, 
         {returnDocument: "after", projection: {password: 0}}
       )
     })

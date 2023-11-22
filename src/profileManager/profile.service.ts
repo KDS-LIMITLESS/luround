@@ -19,7 +19,7 @@ export class ProfileService {
         message: ResponseMessages.EmailDoesNotExist
       })
     }
-    return data
+    return "New certificate added"
   }
 
   async update_user_media_links(user:any, media_links: any) {
@@ -31,7 +31,7 @@ export class ProfileService {
         message: ResponseMessages.EmailDoesNotExist
       })
     }
-    return data
+    return "New link added"
   }
 
   async update_user_about(user: any, about: string) {
