@@ -66,12 +66,14 @@ export class DatabaseService {
    * @param data 
    * @returns 
    */
-  async updateArr(db: Collection<Document | any>, email: string, arr_name: string, data: PushOperator<any>) {
-    let arr = await db.findOneAndUpdate(
-      {email: email}, {$push: {[arr_name]: data[0] } }, 
-      {returnDocument: "after", projection: {password: 0}}
-    )
-    return arr.value
+  async updateArr(db: Collection<Document | any>, email: string, arr_name: string, data: Array<object>) {
+    data.forEach(async (element) => {
+      console.log(element)
+      await db.findOneAndUpdate(
+        {email: email}, {$push: {[arr_name]: element} }, 
+        {returnDocument: "after", projection: {password: 0}}
+      )
+    })
   }
 
   /**
@@ -106,15 +108,16 @@ export class DatabaseService {
   }
 
   /**
-   * Deletes a service from database
+   * Deletes an object in an array
    * @param db Database collection to delete from
-   * @param email 
+   * @param documentId
+   * @param propKey Name of array property to delete item from  
    * @param data A unique value in the user service used to mark a document for removal
    * @returns 
    */
-  async deleteService(db: Collection<Document | any>, email:string,  data: any) {
-    let result = await db.updateOne({email: email, "services.service_name": data},
-      {$pull: {"services": {"service_name": data}}}
+  async deletefromArray(db: Collection<Document | any>, documentId:string, propKey: string, data: any) {
+    let result = await db.updateOne({_id: new ObjectId(documentId)},
+      {$pull: {[propKey]: data}}
   )
     return result
   }

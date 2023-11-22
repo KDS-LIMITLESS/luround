@@ -12,7 +12,7 @@ export class ProfileService {
 
   async update_user_certificates(user: any, certificates: any) {
     const { email } = user
-    let data = await this.profileManager.update(this._udb, email, "certificates", certificates)
+    let data = await this.profileManager.updateArr(this._udb, email, "certificates", certificates)
     if (data === null) {
       throw new BadRequestException({
         status: 400,
@@ -24,7 +24,7 @@ export class ProfileService {
 
   async update_user_media_links(user:any, media_links: any) {
     const { email } = user
-    let data = await this.profileManager.update(this._udb, email, "media_links", media_links)
+    let data = await this.profileManager.updateArr(this._udb, email, "media_links", media_links)
     if (data === null) {
       throw new BadRequestException({
         status: 400,
@@ -181,6 +181,13 @@ export class ProfileService {
       })
     }
     return user
+  }
+
+  async deleteElementFromArray(user: any, arrayName: string, data: any) {
+    const { userId } = user
+    let delElem = await this.profileManager.deletefromArray(this._udb, userId, arrayName, data)
+    if (delElem.modifiedCount === 1) return "Item Deleted"
+    throw new BadRequestException({message: "Item not found in array."})
   }
 }
 
