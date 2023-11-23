@@ -45,7 +45,10 @@ export class UserService {
       media_links: []
     }
     await this.userManager.create(this._udb, new_user)
-    await sendOnboardingMail(user.email, user.firstName)
+    let sendOnboardingEmail = await sendOnboardingMail(user.email, user.firstName)
+    if (sendOnboardingEmail.ErrorCode === 422) {
+      return {message: "User created successfully! However the email you entered is invalid. Change to a valid email address."}
+    }
     // let payload = { email: user.email, picture: user.photoUrl }
     return ResponseMessages.USER_CREATED
   }
