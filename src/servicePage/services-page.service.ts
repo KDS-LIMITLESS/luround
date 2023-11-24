@@ -2,6 +2,7 @@ import { BadRequestException, Inject, Injectable, InternalServerErrorException }
 import ResponseMessages from "../messageConstants.js";
 import { DatabaseService } from "../store/db.service.js";
 import { Encrypter } from "../utils/Encryption.js";
+import { ServicePageDto } from "./servicePage.dto.js";
 
 
 @Injectable()
@@ -12,7 +13,7 @@ export class ServicePageManager {
 
   constructor(private servicePageManager: DatabaseService) {}
 
-  async add_new_service(userId: string, serviceData: any){
+  async add_new_service(userId: string, serviceData: ServicePageDto){
 
     let encryption = new Encrypter(process.env.ENCRYPTION_KEY as string)
     let link = `https://luround.com/${encryption.encrypt(userId)}/${serviceData.service_name.replace(/\s/g, "_")}`     
@@ -24,7 +25,7 @@ export class ServicePageManager {
       duration: serviceData.duration,
       service_charge_virtual: serviceData.service_charge_virtual || null,
       service_charge_in_person: serviceData.service_charge_in_person || null,
-      schedule_type: serviceData.schedule_type,
+      schedule_type: serviceData.service_type,
       service_link: link,
       time: "",
       available_days: ""

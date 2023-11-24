@@ -20,7 +20,6 @@ export class ServicePageDto{
   links: string
 
   @IsNotEmpty()
-  @IsNumber()
   duration: string
 
   @IsOptional()
@@ -30,7 +29,7 @@ export class ServicePageDto{
   service_charge_in_person: string
 
   @IsNotEmpty() @IsEnum(ServiceType)
-  readonly schedule_type: string
+  readonly service_type: string
 
   @IsMongoId()
   @IsOptional()
