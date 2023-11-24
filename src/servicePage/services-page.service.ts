@@ -27,8 +27,9 @@ export class ServicePageManager {
       service_charge_in_person: serviceData.service_charge_in_person || null,
       schedule_type: serviceData.service_type,
       service_link: link,
-      time: "",
-      available_days: ""
+      time: serviceData.time,
+      date: serviceData.date,
+      available_days: serviceData.available_days
     }
     try {
       const new_service = await this.servicePageManager.create(this._spm_db, service)

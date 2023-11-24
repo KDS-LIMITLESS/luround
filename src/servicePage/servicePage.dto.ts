@@ -39,6 +39,9 @@ export class ServicePageDto{
   time: string
 
   @IsNotEmpty()
+  date: string
+
+  @IsNotEmpty()
   available_days: string
 }
 
