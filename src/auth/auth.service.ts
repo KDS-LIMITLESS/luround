@@ -15,10 +15,11 @@ export class AuthService {
   ) {}
 
   async login(user: any ): Promise<object> {    
-    let payload = { email: user.email, sub: user._id, displayName: user.displayName }
+    let payload = { email: user.email, sub: user._id, displayName: user.displayName, media_links: user.media_links }
     return { "accessToken": await this.jwt.signAsync(payload) }
   }
 
+  // validate user details before logging in
    async validateUser(email: string, psw: string) {
     const isUser = await this.userManager.read(this._udb, email)  
     if ( isUser === null || !await this.comparePasswords(psw, isUser.password) ){

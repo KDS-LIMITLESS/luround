@@ -106,7 +106,6 @@ export class PaymentsAPI {
     }
   }
 
-// 4722335
   async verify_flw_payment(query: any ) {
     if (query.status === 'successful') {
       // const transactionDetails = await Transaction.find({ref: query.tx_ref});

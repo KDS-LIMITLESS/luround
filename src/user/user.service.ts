@@ -29,10 +29,6 @@ export class UserService {
   }
 
   async googleSignUp(user: any): Promise<Object> {
-    
-    if (await this.userManager.read(this._udb, user.email)) {
-      throw new BadRequestException({message: ResponseMessages.EmailExists})
-    }
     // Trnsform user details
     let new_user = {
       email: user.email, 
@@ -45,10 +41,8 @@ export class UserService {
       media_links: []
     }
     await this.userManager.create(this._udb, new_user)
-    let sendOnboardingEmail = await sendOnboardingMail(user.email, user.firstName)
-    if (sendOnboardingEmail.ErrorCode === 422) {
-      return {message: "User created successfully! However the email you entered is invalid. Change to a valid email address."}
-    }
+    await sendOnboardingMail(user.email, user.firstName)
+    
     // let payload = { email: user.email, picture: user.photoUrl }
     return ResponseMessages.USER_CREATED
   }
