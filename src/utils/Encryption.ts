@@ -6,7 +6,7 @@ export class Encrypter {
   algorithm;
   key;
   encrytion
-  constructor(encryptionKey) {
+  constructor(encryptionKey: string) {
     this.algorithm = "aes-192-cbc";
     this.key = crypto.scryptSync(encryptionKey, "salt", 24);
   }
