@@ -2,6 +2,7 @@ import { BadRequestException, Injectable, NotFoundException } from "@nestjs/comm
 import { DatabaseService } from "../store/db.service.js";
 import { ServicePageManager } from "../servicePage/services-page.service.js";
 import ResponseMessages from "../messageConstants.js";
+import { BookServiceDto } from "./bookServiceDto.js";
 
 @Injectable()
 export class BookingsManager {
@@ -15,17 +16,17 @@ export class BookingsManager {
   // If payment valid update booked status
 
   // Increase price based on the service duration
-  async book_service(bookingDetail: any, serviceID: string) {
+  async book_service(bookingDetail: BookServiceDto, serviceID: string) {
   
     let serviceDetails = await this.serviceManager.getService(serviceID)
     if (serviceDetails) {
-      let amount;
-      if (bookingDetail.appointment_type === 'In-person' && serviceDetails.service_charge_in_person !== null) {
+      let amount: string;
+      if (bookingDetail.appointment_type === 'In-person' ) {
         amount = serviceDetails.service_charge_in_person
-      } else if(bookingDetail.appointment_type === 'Virtual' && serviceDetails.service_charge_virtual !== null) {
+      } else if (bookingDetail.appointment_type === 'Virtual') {
         amount = serviceDetails.service_charge_virtual
       }
-      bookingDetail = {
+      let booking_Detail = {
         service_id: serviceDetails._id,
         service_name: serviceDetails.service_name,
         service_provider_id: serviceDetails.service_provider_id,
@@ -39,11 +40,11 @@ export class BookingsManager {
         duration: bookingDetail.duration,
         message: bookingDetail.message || null,
         file: bookingDetail.file || null,
-        payment_reference_id: bookingDetail.payment_reference_id,
+        // payment_reference_id: bookingDetail.payment_reference_id,
         booked_status: "PENDING CONFIRMATION",
         created_at: Date.now()
       }
-      let service_booked = await this.bookingsManager.create(this._bKM, bookingDetail)
+      let service_booked = await this.bookingsManager.create(this._bKM, booking_Detail)
       // CHECK FOR PAYMENT CONFIRMED AND SEND NOTIFICATION
       if (service_booked.acknowledged) return {BookingId: service_booked.insertedId}
       throw Error("An error occurred")

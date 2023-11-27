@@ -1,10 +1,6 @@
 import { PartialType } from "@nestjs/mapped-types";
 import { IsEnum, IsMongoId, IsNotEmpty, IsNumber, IsOptional } from "class-validator";
 
-enum ServiceType {
-  Virtual = 'Virtual',
-  In_Person = 'In-Person'
-}
 
 export class ServicePageDto{
   @IsOptional()
@@ -27,9 +23,6 @@ export class ServicePageDto{
 
   @IsOptional()
   service_charge_in_person: string
-
-  @IsNotEmpty() @IsEnum(ServiceType)
-  readonly service_type: string
 
   @IsMongoId()
   @IsOptional()

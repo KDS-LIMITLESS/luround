@@ -25,7 +25,7 @@ export class ServicePageManager {
       duration: serviceData.duration,
       service_charge_virtual: serviceData.service_charge_virtual || null,
       service_charge_in_person: serviceData.service_charge_in_person || null,
-      schedule_type: serviceData.service_type,
+      //schedule_type: serviceData.service_type,
       service_link: link,
       time: serviceData.time,
       date: serviceData.date,
