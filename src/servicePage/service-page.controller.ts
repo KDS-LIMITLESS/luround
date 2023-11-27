@@ -29,12 +29,11 @@ export class ServiceController {
     .json(await this.services.delete_service(query.serviceId)) 
   }
 
-  @SkipAuth()
   @Get('/get-services')
-  async get_user_service(@Query() query: ServiceDto, @Res() res: Response) {
+  async get_user_service(@Req() req, @Res() res: Response) {
     return res
     .status(HttpStatus.OK)
-    .json(await this.services.get_user_services(query.email)) 
+    .json(await this.services.get_user_services(req.user)) 
   }
 
   @SkipAuth()
