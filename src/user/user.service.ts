@@ -40,9 +40,11 @@ export class UserService {
       certificates: [],
       media_links: []
     }
+   
+    await sendOnboardingMail(user.email, user.firstName).catch(() => {
+      throw Error("Invalid Email Address")
+    })
     await this.userManager.create(this._udb, new_user)
-    await sendOnboardingMail(user.email, user.firstName)
-    
     // let payload = { email: user.email, picture: user.photoUrl }
     return ResponseMessages.USER_CREATED
   }
@@ -68,10 +70,11 @@ export class UserService {
         certificates: [],
         media_links: []
       }
+      await sendOnboardingMail(user.email, user.firstName).catch(() => {
+        throw Error("Invalid Email Address")
+      })
       const newuser = (await this.userManager.create(this._udb, new_user)).acknowledged
-
-      // SEND ONBOARDING EMAIL
-      await sendOnboardingMail(user.email, user.firstName)
+      
       return newuser ? {email: user.email, picture: user.photoUrl, created: true} : Error(ResponseMessages.UserNotCreated)
 
     } catch(err: any) {

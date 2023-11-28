@@ -30,10 +30,7 @@ export class UserController {
   @Post('/api/v1/sign-up')
   async localSignUp(@Res() res: Response, @Body() body: UserDto) {
     let createUser = await this.userService.localSignUp(body)
-    if (!createUser === false) {
-      return res.status(HttpStatus.CREATED).json(createUser)
-    }
-    res.status(HttpStatus.INTERNAL_SERVER_ERROR)
+    return res.status(HttpStatus.CREATED).json(createUser)
   }
 
   @SkipAuth()
