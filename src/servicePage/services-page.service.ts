@@ -13,12 +13,12 @@ export class ServicePageManager {
 
   constructor(private servicePageManager: DatabaseService) {}
 
-  async add_new_service(userId: string, serviceData: ServicePageDto){
-
+  async add_new_service(user: any, serviceData: ServicePageDto){
+    const {userId, email, displayName } = user
     let encryption = new Encrypter(process.env.ENCRYPTION_KEY as string)
     let link = `https://luround.com/${encryption.encrypt(userId)}/${serviceData.service_name.replace(/\s/g, "_")}`     
     let service = {
-      service_provider_id: userId, 
+      service_provider_details: { userId, email, displayName },
       service_name: serviceData.service_name,
       description: serviceData.description,
       links: serviceData.links,
@@ -77,7 +77,8 @@ export class ServicePageManager {
   // This function queries and returns all user services where email equals user email
   async get_user_services(user: any) {
     const { userId } = user
-    let user_services = await this.servicePageManager.readAndWriteToArray(this._spm_db, "service_provider_id", userId)
+    let filter_key = 'service_provider_details.userId'
+    let user_services = await this.servicePageManager.readAndWriteToArray(this._spm_db, filter_key, userId)
     if (user_services.length === 0) {
       throw new BadRequestException({
         status: 400,

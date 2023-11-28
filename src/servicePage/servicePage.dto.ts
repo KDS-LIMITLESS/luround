@@ -3,8 +3,6 @@ import { IsEnum, IsMongoId, IsNotEmpty, IsNumber, IsOptional } from "class-valid
 
 
 export class ServicePageDto{
-  @IsOptional()
-  email: string
 
   @IsNotEmpty()
   service_name: string

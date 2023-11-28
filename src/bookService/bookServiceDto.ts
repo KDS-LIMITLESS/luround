@@ -11,12 +11,6 @@ enum AppointmentTypes {
 export class BookServiceDto {
 
   @IsNotEmpty()
-  service_receiver_names: string
-
-  @IsNotEmpty()
-  service_receiver_email: string
-
-  @IsNotEmpty()
   phone_number: string
 
   @IsNotEmpty() @IsEnum(AppointmentTypes)
@@ -36,6 +30,9 @@ export class BookServiceDto {
 
   @IsNotEmpty()
   duration: string
+
+  @IsNotEmpty()
+  location: string
 
   @IsMongoId()
   @IsOptional()

@@ -12,7 +12,7 @@ export class ServiceController {
   async create_service(@Req() req, @Res() res: Response, @Body() body: ServicePageDto) {
     return res
     .status(HttpStatus.CREATED)
-    .json(await this.services.add_new_service(req.user.userId, body)) 
+    .json(await this.services.add_new_service(req.user, body)) 
   }
 
   @Put('/edit')

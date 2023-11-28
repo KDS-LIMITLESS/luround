@@ -8,8 +8,8 @@ export class BookingsController {
   constructor(private bookingsManager: BookingsManager) {}
 
   @Post('/book-service')
-  async bookSevice(@Body() payload: BookServiceDto, @Res() res: Response, @Query() query: ServiceId) {
-    return res.status(200).json(await this.bookingsManager.book_service(payload, query.serviceId))
+  async bookSevice(@Req() req, @Body() payload: BookServiceDto, @Res() res: Response, @Query() query: ServiceId) {
+    return res.status(200).json(await this.bookingsManager.book_service(payload, query.serviceId, req.user))
   }
 
   @Get('/get')

@@ -16,8 +16,9 @@ export class BookingsManager {
   // If payment valid update booked status
 
   // Increase price based on the service duration
-  async book_service(bookingDetail: BookServiceDto, serviceID: string) {
-  
+  async book_service(bookingDetail: BookServiceDto, serviceID: string, user: any) {
+    
+    const { userId, email, displayName } = user
     let serviceDetails = await this.serviceManager.getService(serviceID)
     if (serviceDetails) {
       let amount: string;
@@ -27,22 +28,23 @@ export class BookingsManager {
         amount = serviceDetails.service_charge_virtual
       }
       let booking_Detail = {
-        service_id: serviceDetails._id,
-        service_name: serviceDetails.service_name,
-        service_provider_id: serviceDetails.service_provider_id,
-        service_fee: amount,
-        appointment_type: bookingDetail.appointment_type,
-        service_receiver_names: bookingDetail.service_receiver_names,
-        service_receiver_email: bookingDetail.service_receiver_email,
-        phone_number: bookingDetail.phone_number,
-        date: bookingDetail.date,
-        time: bookingDetail.time,
-        duration: bookingDetail.duration,
-        message: bookingDetail.message || null,
-        file: bookingDetail.file || null,
-        // payment_reference_id: bookingDetail.payment_reference_id,
-        booked_status: "PENDING CONFIRMATION",
-        created_at: Date.now()
+        service_provider_info: serviceDetails.service_provider_details,
+        booking_user_info: {userId, email, displayName, phone_number: bookingDetail.phone_number },
+        service_details: {
+          service_id: serviceDetails._id,
+          service_name: serviceDetails.service_name,
+          service_fee: amount,
+          appointment_type: bookingDetail.appointment_type,
+          date: bookingDetail.date,
+          time: bookingDetail.time,
+          duration: bookingDetail.duration,
+          message: bookingDetail.message || null,
+          file: bookingDetail.file || null,
+          location: bookingDetail.location,
+          // payment_reference_id: bookingDetail.payment_reference_id,
+          booked_status: "PENDING CONFIRMATION",
+          created_at: Date.now()
+        }
       }
       let service_booked = await this.bookingsManager.create(this._bKM, booking_Detail)
       // CHECK FOR PAYMENT CONFIRMED AND SEND NOTIFICATION
@@ -68,14 +70,19 @@ export class BookingsManager {
 
   // RUN THIS FUNCTION IN THE WORKER THREAD AND CACHE THE RESPONSE
   async get_user_service_bookings(userId: string) {
-    let booking = await this.bookingsManager.readAndWriteToArray(this._bKM, 'service_provider_id', userId)
-    if ( booking === null) {
+    let filter1 = 'service_provider_info.userId'
+    let filter2 = 'booking_user_info.userId'
+    let [booked_me, i_booked] = await Promise.all([
+      await this.bookingsManager.readAndWriteToArray(this._bKM, filter1, userId), 
+      await this.bookingsManager.readAndWriteToArray(this._bKM, filter2, userId)
+    ])
+    if ( booked_me[0] === null || i_booked[0] === null) {
       throw new NotFoundException({
         statusCode: 404,
         message: ResponseMessages.BOOKING_ID_NOT_FOUND
       })
     }
-    return booking
+    return [{userBooked: false, details: booked_me}, {userBooked: true, details: i_booked}]
   }
   // refund decorator 
   
