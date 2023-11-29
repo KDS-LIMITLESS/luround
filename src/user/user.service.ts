@@ -40,13 +40,11 @@ export class UserService {
       certificates: [],
       media_links: []
     }
-   
     await sendOnboardingMail(user.email, user.firstName).catch(() => {
       throw Error("Invalid Email Address")
     })
-    await this.userManager.create(this._udb, new_user)
-    // let payload = { email: user.email, picture: user.photoUrl }
-    return ResponseMessages.USER_CREATED
+    let userId = (await this.userManager.create(this._udb, new_user)).insertedId
+    return this.authService.login({ email: user.email, displayName: user.displayName, _id: userId })
   }
 
   async localSignUp(user: UserDto): Promise<object | string>{
