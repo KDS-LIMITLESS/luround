@@ -1,8 +1,9 @@
-import { BadRequestException, Inject, Injectable, InternalServerErrorException } from "@nestjs/common";
+import { BadRequestException, Inject, Injectable, InternalServerErrorException, NotFoundException } from "@nestjs/common";
 import ResponseMessages from "../messageConstants.js";
 import { DatabaseService } from "../store/db.service.js";
 import { Encrypter } from "../utils/Encryption.js";
 import { ServicePageDto } from "./servicePage.dto.js";
+import { ObjectId } from "mongodb";
 
 
 @Injectable()
@@ -60,23 +61,25 @@ export class ServicePageManager {
   // Add created_at and updated_at values
   // Add service link
 
-  async delete_service(id: string) {
-    try {
-      let deleted = await this.servicePageManager.delete(this._spm_db, id )
-      if (deleted.value !== null) return ResponseMessages.ServiceDeleted
-      throw Error
-    } catch(err: any) {
-      throw new BadRequestException({
-        status: 400,
-        message: ResponseMessages.InvalidServiceId
-      })
+  async delete_service(userId: string,  serviceId: string) {
+    let service;
+    //GET CURRENT LOGGED IN USER'S SERVICES
+    let user_services = await this.get_user_services(userId)
+    // FIND FOR A MATCH IN CURRENT USER'S SERVICES
+    for (service of user_services) {
+      console.log(service._id.toString(), serviceId)
+      if (service._id.toString() === serviceId) {
+        return (await this.servicePageManager.delete( this._spm_db, serviceId )).value
+      }
     }
+    throw new NotFoundException({message: ResponseMessages.ServiceNotFound})
+    
+    
     
   }
 
-  // This function queries and returns all user services where email equals user email
-  async get_user_services(user: any) {
-    const { userId } = user
+  // This function queries and returns all user services where user equals userId
+  async get_user_services(userId: string) {
     let filter_key = 'service_provider_details.userId'
     let user_services = await this.servicePageManager.readAndWriteToArray(this._spm_db, filter_key, userId)
     if (user_services.length === 0) {

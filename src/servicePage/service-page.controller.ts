@@ -23,17 +23,17 @@ export class ServiceController {
   }
 
   @Delete('/delete')
-  async delete_service(@Query() query: ServiceDto, @Res() res: Response) {
+  async delete_service(@Req() req, @Query() query: ServiceDto, @Res() res: Response) {
     return res
     .status(HttpStatus.OK)
-    .json(await this.services.delete_service(query.serviceId)) 
+    .json(await this.services.delete_service(req.user.userId, query.serviceId)) 
   }
 
   @Get('/get-services')
   async get_user_service(@Req() req, @Res() res: Response) {
     return res
     .status(HttpStatus.OK)
-    .json(await this.services.get_user_services(req.user)) 
+    .json(await this.services.get_user_services(req.user.userId)) 
   }
 
   @SkipAuth()
