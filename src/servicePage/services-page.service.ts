@@ -2,7 +2,7 @@ import { BadRequestException, Inject, Injectable, InternalServerErrorException, 
 import ResponseMessages from "../messageConstants.js";
 import { DatabaseService } from "../store/db.service.js";
 import { Encrypter } from "../utils/Encryption.js";
-import { ServicePageDto } from "./servicePage.dto.js";
+import { ServiceDto, ServicePageDto } from "./servicePage.dto.js";
 import { ObjectId } from "mongodb";
 
 
@@ -26,7 +26,6 @@ export class ServicePageManager {
       duration: serviceData.duration,
       service_charge_virtual: serviceData.service_charge_virtual || null,
       service_charge_in_person: serviceData.service_charge_in_person || null,
-      //schedule_type: serviceData.service_type,
       service_link: link,
       time: serviceData.time,
       date: serviceData.date,
@@ -42,19 +41,36 @@ export class ServicePageManager {
     }
   }
 
-  async edit_service(data: any, serviceId: string) {
-   
+  async edit_service(user:any, serviceData: ServiceDto, serviceId: string) {
+    const {userId, email, displayName } = user
+    let _us
+    let service = {
+      service_provider_details: { userId, email, displayName },
+      service_name: serviceData.service_name,
+      description: serviceData.description,
+      links: serviceData.links,
+      duration: serviceData.duration,
+      service_charge_virtual: serviceData.service_charge_virtual || null,
+      service_charge_in_person: serviceData.service_charge_in_person || null,
+      time: serviceData.time,
+      date: serviceData.date,
+      available_days: serviceData.available_days
+    }
     try {
       // UPDATE DOCUMENT IN DATABASE IF FOUND.
-      if ((await this.servicePageManager.updateDocument(this._spm_db, serviceId, data)).matchedCount === 1)   
-      return ResponseMessages.ServiceUpdated
-
-      // ID DOES NOT EXISTS OR ID IS NOT VALID ObjectId 
-      throw Error; 
+      let user_services = await this.get_user_services(userId)
+    // FIND FOR A MATCH IN CURRENT USER'S SERVICES
+    for (_us of user_services) {
+      if (_us._id.toString() === serviceId) {
+        await this.servicePageManager.updateDocument(this._spm_db, serviceId, service)
+        return ResponseMessages.ServiceUpdated
+      }
+    }
+    throw new NotFoundException({message: ResponseMessages.ServiceNotFound})
     } catch(err: any) {
       throw new BadRequestException({
-        status: 400,
-        message: ResponseMessages.InvalidServiceId
+        status: 404,
+        message: err.message
       })
     }    
   }
@@ -67,15 +83,11 @@ export class ServicePageManager {
     let user_services = await this.get_user_services(userId)
     // FIND FOR A MATCH IN CURRENT USER'S SERVICES
     for (service of user_services) {
-      console.log(service._id.toString(), serviceId)
       if (service._id.toString() === serviceId) {
         return (await this.servicePageManager.delete( this._spm_db, serviceId )).value
       }
     }
     throw new NotFoundException({message: ResponseMessages.ServiceNotFound})
-    
-    
-    
   }
 
   // This function queries and returns all user services where user equals userId

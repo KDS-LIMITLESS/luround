@@ -16,10 +16,10 @@ export class ServiceController {
   }
 
   @Put('/edit')
-  async update_service(@Query() query: ServiceDto, @Res() res: Response, @Body() serviceData:ServiceDto) {
+  async update_service(@Req() req, @Query() query: ServiceDto, @Res() res: Response, @Body() serviceData:ServiceDto) {
     return res
     .status(HttpStatus.OK)
-    .json(await this.services.edit_service(serviceData, query.serviceId)) 
+    .json(await this.services.edit_service(req.user, serviceData, query.serviceId)) 
   }
 
   @Delete('/delete')
