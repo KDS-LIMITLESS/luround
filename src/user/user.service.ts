@@ -32,7 +32,7 @@ export class UserService {
     // Trnsform user details
     let new_user = {
       email: user.email, 
-      displayName: user.displayName,// user.firstName + " " + user.lastName, 
+      displayName: user.firstName + " " + user.lastName, 
       photoUrl: user.photoUrl, 
       accountCreatedFrom: "GOOGLE",
       occupation: '',
@@ -88,7 +88,7 @@ export class UserService {
     if (isUser) {
       let otp = await generateRandomSixDigitNumber()
       
-      await sendOTP(email, otp)
+      await sendOTP(email, otp, isUser.displayName)
       await this.userManager.updateDocument(this._udb, isUser._id, {otp} )
       return "Update password OTP sent to users email"
     }

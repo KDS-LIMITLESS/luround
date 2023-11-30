@@ -70,19 +70,17 @@ export class BookingsManager {
 
   // RUN THIS FUNCTION IN THE WORKER THREAD AND CACHE THE RESPONSE
   async get_user_service_bookings(userId: string) {
-    let filter1 = 'service_provider_info.userId'
-    let filter2 = 'booking_user_info.userId'
-    let [booked_me, i_booked] = await Promise.all([
-      await this.bookingsManager.readAndWriteToArray(this._bKM, filter1, userId), 
-      await this.bookingsManager.readAndWriteToArray(this._bKM, filter2, userId)
-    ])
-    if ( booked_me[0] === null || i_booked[0] === null) {
-      throw new NotFoundException({
-        statusCode: 404,
-        message: ResponseMessages.BOOKING_ID_NOT_FOUND
-      })
+    try {
+      let filter1 = 'service_provider_info.userId'
+      let filter2 = 'booking_user_info.userId'
+      let [booked_me, i_booked] = await Promise.all([
+        await this.bookingsManager.readAndWriteToArray(this._bKM, filter1, userId), 
+        await this.bookingsManager.readAndWriteToArray(this._bKM, filter2, userId)
+      ])
+      return {userBooked: false, details: booked_me, userBooked1: true, details1: i_booked}
+    } catch (err: any){
+      throw new NotFoundException({message: "Bookings not found"})
     }
-    return [{userBooked: false, details: booked_me}, {userBooked: true, details: i_booked}]
   }
   // refund decorator 
   
