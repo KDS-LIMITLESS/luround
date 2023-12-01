@@ -77,7 +77,7 @@ export class BookingsManager {
         await this.bookingsManager.readAndWriteToArray(this._bKM, filter1, userId), 
         await this.bookingsManager.readAndWriteToArray(this._bKM, filter2, userId)
       ])
-      return {userBooked: false, details: booked_me, userBooked1: true, details1: i_booked}
+        return [{userBooked: false, details: booked_me}, {userBooked: true, details: i_booked}]
     } catch (err: any){
       throw new NotFoundException({message: "Bookings not found"})
     }
