@@ -36,7 +36,12 @@ enum ResponseMessages {
   ServiceUpdated = 'Service Updated Successfully',
 
   InvalidServiceId = 'Invalid Service ID',
-  BOOKING_ID_NOT_FOUND = 'Booking ID not found'
+  BOOKING_ID_NOT_FOUND = 'Booking ID not found',
+  WalletPinCreated = 'Your wallet pin has been created succesfully',
+  Success = 'OK',
+  InvalidWalletPin = "Invalid wallet pin",
+  SetWalletPin = 'You have not set a wallet pin.',
+  WalletDetailAdded = "Bank detail added"
   
 }
 

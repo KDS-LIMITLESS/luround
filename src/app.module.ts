@@ -15,6 +15,7 @@ import { AuthModule } from './auth/auth.module.js';
 import { BookingsModule } from './bookService/bookService.module.js';
 import { CustomNotificationService } from './notificationsService.js';
 import { NotificationsController } from './notificationsController.js';
+import { WalletModule } from './wallet/wallet.module.js';
 
 @Module({
   imports: [
@@ -27,6 +28,7 @@ import { NotificationsController } from './notificationsController.js';
     ServicePageModule,
     PaymentsModule,
     BookingsModule,
+    WalletModule
   ],
   controllers: [AppController],
   providers: [
