@@ -59,12 +59,12 @@ export class ProfileController {
     .json(await this.profileSevice.get_user_profile(query)) 
   }
   
-  // @Get('/certificates/get')
-  // async getUserCertficates(@Req() req , @Res() res: Response ) {
-  //   return res
-  //   .status(HttpStatus.OK)
-  //   .json(await this.profileSevice.get_user_certs(req.user)) 
-  // }
+  @Get('/certificates/get')
+  async getUserCertficates(@Req() req , @Res() res: Response ) {
+    return res
+    .status(HttpStatus.OK)
+    .json(await this.profileSevice.get_user_certs(req.user.userId)) 
+  }
 
   // @Get('/about/get')
   // async getUserAbout(@Req() req,  @Res() res: Response) {

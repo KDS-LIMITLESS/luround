@@ -83,7 +83,7 @@ export class ProfileService {
   
   async get_user_profile(user: any) {
     const { email } = user
-    let userProfile = await this.profileManager.findOneDocument(this._udb, "email", email)
+    let userProfile:any = await this.profileManager.findOneDocument(this._udb, "email", email)
     if (userProfile === null) {
       throw new BadRequestException({
         status: 400,
@@ -94,16 +94,16 @@ export class ProfileService {
     return profile
   }
 
-  // async get_user_certs(email: string) {
-  //   let userProfile = await this.profileManager.findOneDocument(this._udb, "email", email)
-  //   if (userProfile === null) {
-  //     throw new BadRequestException({
-  //       status: 400,
-  //       message: ResponseMessages.EmailDoesNotExist
-  //     })
-  //   }
-  //   return userProfile.certificates
-  // }
+  async get_user_certs(userId: string) {
+    let userProfile: any = await this.profileManager.findOneDocument(this._udb, "_id", userId)
+    if (userProfile === null) {
+      throw new BadRequestException({
+        status: 400,
+        message: ResponseMessages.EmailDoesNotExist
+      })
+    }
+    return userProfile.certificates
+  }
 
   // async get_user_about(email: string) {
   //   let userProfile = await this.profileManager.findOneDocument(this._udb, "email", email)

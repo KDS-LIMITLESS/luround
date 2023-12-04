@@ -19,7 +19,7 @@ export class BookingsManager {
   async book_service(bookingDetail: BookServiceDto, serviceID: string, user: any) {
     
     const { userId, email, displayName } = user
-    let serviceDetails = await this.serviceManager.getService(serviceID)
+    let serviceDetails:any = await this.serviceManager.getService(serviceID)
     if (serviceDetails) {
       let amount: string;
       if (bookingDetail.appointment_type === 'In-person' ) {
@@ -57,7 +57,7 @@ export class BookingsManager {
   }
 
   async get_booked_service_detail(booking_id: string) {
-    let booking = await this.bookingsManager.findOneDocument(this._bKM, "_id", booking_id )
+    let booking:any = await this.bookingsManager.findOneDocument(this._bKM, "_id", booking_id )
     if ( booking === null) {
       throw new NotFoundException({
         statusCode: 404,

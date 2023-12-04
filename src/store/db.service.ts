@@ -18,7 +18,7 @@ export class DatabaseService {
    * @param value Data value to search for in the document.
    * @returns 
    */
-  public async findOneDocument(db:Collection<Document | any>, searchParam: string, value: string) {
+  public async findOneDocument(db:Collection<Document | any>, searchParam: string, value: string): Promise<Document | null> {
     if (searchParam === "_id") {
       const document = await db.findOne({ _id: new ObjectId(value) }, { projection: { password: 0 }})
       return document || null
@@ -139,8 +139,8 @@ export class DatabaseService {
     return profile ? profile : null
   }
 
-  async readAndWriteToArray(db: Collection<Document | any>, searchParam: string, value: string) {
-   const profile = await db.find({ [searchParam]: value }).toArray()
+  async readAndWriteToArray(db: Collection<Document | any>, filterParam: string, value: string) {
+   const profile = await db.find({ [filterParam]: value }).toArray()
     return profile ? profile : null
   }
 

@@ -29,7 +29,7 @@ export class WalletService {
   }
 
   async verify_wallet_pin(userId:string, wallet_pin: string) {
-    const isUser = await this.walletManager.findOneDocument(this._wDB, '_id',  userId)
+    const isUser:any = await this.walletManager.findOneDocument(this._wDB, '_id',  userId)
     if (isUser.wallet_pin) {
       const decrypt_pin = await bcrypt.compare(wallet_pin, isUser.wallet_pin)
       return decrypt_pin === true ? ResponseMessages.Success : ResponseMessages.InvalidWalletPin

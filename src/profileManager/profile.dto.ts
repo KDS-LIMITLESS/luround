@@ -2,17 +2,17 @@ import { Contains, IsArray, IsDate, IsEmail, IsNotEmpty, IsNumber, ValidationArg
   ValidationOptions, 
   ValidatorConstraint, ValidatorConstraintInterface, registerDecorator 
 } from "class-validator";
-import { PartialType, PickType } from '@nestjs/mapped-types'
+import { PartialType } from '@nestjs/mapped-types'
 import { BadRequestException } from "@nestjs/common";
 
 
 @ValidatorConstraint({async: true})
 export class IsCertificateConstraint implements ValidatorConstraintInterface {
-  validate(certificates: any, args: ValidationArguments): boolean {
+  validate(certificates: any, args: ValidationArguments): boolean | Promise<boolean> {
     try {
       if (Array.isArray(certificates)) {
         // console.log(certificates)
-        let  certificateName, issuingOrganization, issueDate, validateCertificate, date;
+        let  certificateName, issuingOrganization, issueDate, validateCertificate;
         certificates.forEach(function(certObj) {
           certificateName = Object.getOwnPropertyDescriptor(certObj, 'certificateName')?.value
           issuingOrganization = Object.getOwnPropertyDescriptor(certObj, 'issuingOrganization')?.value
@@ -43,6 +43,37 @@ export class IsCertificateConstraint implements ValidatorConstraintInterface {
   }
 }
 
+@ValidatorConstraint({async: true})
+export class IsValidLinkPayloadConstraint implements ValidatorConstraintInterface {
+  validate(media_links: any, args: ValidationArguments): boolean | Promise<boolean> {
+    try{
+      if (Array.isArray(media_links)) {
+        let name: string, icon:string, link: string, validateLinkPayload: boolean;
+
+        media_links.forEach(function(m_link) {
+          name = Object.getOwnPropertyDescriptor(m_link, "name")?.value
+          icon = Object.getOwnPropertyDescriptor(m_link, "icon")?.value
+          link = Object.getOwnPropertyDescriptor(m_link, "link")?.value
+
+          if ((name && icon && link) !== undefined && (name && icon && link) !== null) {
+            validateLinkPayload = true
+          } else {
+            validateLinkPayload = false
+            throw Error("link, name and icon fields must not be null or undefined")
+          }
+        })
+        return validateLinkPayload
+      }
+      throw Error("media_links must must be an array")
+    } 
+    catch(err: any) {
+      throw new BadRequestException({
+        message: err.message
+      })
+    }
+  } 
+}
+
 export function IsCertificate(validtionOptions?: ValidationOptions) {
   return function(object: Object, propertyName: string) {
     registerDecorator({
@@ -51,6 +82,18 @@ export function IsCertificate(validtionOptions?: ValidationOptions) {
       options: validtionOptions,
       constraints: [],
       validator: IsCertificateConstraint,
+    });
+  }
+}
+
+export function IsValidLinKPayload(validtionOptions?: ValidationOptions) {
+  return function(object: Object, propertyName: string) {
+    registerDecorator({
+      target: object.constructor,
+      propertyName: propertyName,
+      options: validtionOptions,
+      constraints: [],
+      validator: IsValidLinkPayloadConstraint,
     });
   }
 }
@@ -84,7 +127,7 @@ export class userProfileMainDto{
   @IsCertificate()
   certificates: Array<{[key: string]: any}>
 
-  @IsNotEmpty()
+  @IsValidLinKPayload()
   media_links: Array<{[key: string]: any}>
 
   @IsNotEmpty()
