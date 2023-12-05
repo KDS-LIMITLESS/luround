@@ -71,9 +71,9 @@ export class UserService {
       await sendOnboardingMail(user.email, user.firstName).catch(() => {
         throw Error("Invalid Email Address")
       })
-      const newuser = (await this.userManager.create(this._udb, new_user)).acknowledged
+      const userId = (await this.userManager.create(this._udb, new_user)).insertedId
       
-      return newuser ? {email: user.email, picture: user.photoUrl, created: true} : Error(ResponseMessages.UserNotCreated)
+      return this.authService.login({email: user.email, displayName: new_user.displayName, _id: userId})
 
     } catch(err: any) {
       throw new BadRequestException({
