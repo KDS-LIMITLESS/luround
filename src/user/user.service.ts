@@ -44,7 +44,7 @@ export class UserService {
       throw new BadRequestException({message: "Invalid Email Address"})
     })
     let userId = (await this.userManager.create(this._udb, new_user)).insertedId
-    return this.authService.login({ email: user.email, displayName: user.displayName, _id: userId })
+    return this.authService.login({ email: user.email, displayName: user.displayName, _id: userId, photoUrl: user.photoUrl })
   }
 
   async localSignUp(user: UserDto): Promise<object | string>{
@@ -73,7 +73,7 @@ export class UserService {
       })
       const userId = (await this.userManager.create(this._udb, new_user)).insertedId
       
-      return this.authService.login({email: user.email, displayName: new_user.displayName, _id: userId})
+      return this.authService.login({email: user.email, displayName: new_user.displayName, _id: userId, photoUrl: user.photoUrl})
 
     } catch(err: any) {
       throw new BadRequestException({

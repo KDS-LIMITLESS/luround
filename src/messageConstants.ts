@@ -41,7 +41,9 @@ enum ResponseMessages {
   Success = 'OK',
   InvalidWalletPin = "Invalid wallet pin",
   SetWalletPin = 'You have not set a wallet pin.',
-  WalletDetailAdded = "Bank detail added"
+  WalletDetailAdded = "Bank detail added",
+  ReviewAdded = "Review added successfully",
+  ServiceHasNoReviews = "This service has no reviews yet"
   
 }
 

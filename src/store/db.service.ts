@@ -8,6 +8,7 @@ export class DatabaseService {
   serviceDB = this._db.collection("services")
   bookingsDB = this._db.collection("bookings")
   transactionsDb = this._db.collection("transactions")
+  reviewsDB = this._db.collection("reviews")
   
   constructor(@Inject('MONGO_CONNECTION') private _db:Db) {}
   
@@ -18,7 +19,7 @@ export class DatabaseService {
    * @param value Data value to search for in the document.
    * @returns 
    */
-  public async findOneDocument(db:Collection<Document | any>, searchParam: string, value: string): Promise<Document | null> {
+  public async findOneDocument(db:Collection<Document | any>, searchParam: string, value: string): Promise<any | null> {
     if (searchParam === "_id") {
       const document = await db.findOne({ _id: new ObjectId(value) }, { projection: { password: 0 }})
       return document || null
@@ -67,13 +68,13 @@ export class DatabaseService {
    * @param data 
    * @returns 
    */
-  async updateArr(db: Collection<Document | any>, email: string, arr_name: string, data: Array<object>) {
+  async updateArr(db: Collection<Document | any>, searchParam: string,  value: string, arr_name: string, data: Array<object>) {
     let update: any;
      
     data.forEach(async (element) => {
       update = {$push: {[arr_name]: element} }
       await db.findOneAndUpdate(
-        {email: email}, 
+        {[searchParam]: value}, 
         update, 
         {returnDocument: "after", projection: {password: 0}}
       )

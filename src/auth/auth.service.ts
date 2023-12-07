@@ -15,7 +15,7 @@ export class AuthService {
   ) {}
 
   async login(user: any ): Promise<object> {    
-    let payload = { email: user.email, sub: user._id, displayName: user.displayName, media_links: user.media_links }
+    let payload = { email: user.email, sub: user._id, displayName: user.displayName, photoUrl: user.photoUrl }
     return { "accessToken": await this.jwt.signAsync(payload) }
   }
 

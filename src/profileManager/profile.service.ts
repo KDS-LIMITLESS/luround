@@ -13,7 +13,7 @@ export class ProfileService {
   async update_user_certificates(user: any, certificates: any) {
     try {
       const { email } = user
-      await this.profileManager.updateArr(this._udb, email, "certificates", certificates).then(() => {
+      await this.profileManager.updateArr(this._udb, 'email', email, "certificates", certificates).then(() => {
         return "New certificate added"
       })
     } catch(err: any) {
@@ -27,7 +27,7 @@ export class ProfileService {
   async update_user_media_links(user:any, media_links: any) {
     try {
       const { email } = user
-      await this.profileManager.updateArr(this._udb, email, "media_links", media_links).then(() => {
+      await this.profileManager.updateArr(this._udb, 'email', email, "media_links", media_links).then(() => {
         return "New link added"
       })
     } catch(err: any) {

@@ -14,7 +14,7 @@ export class WalletService {
   async add_bank_details(user: any, bank_details: any) {
     try {
       const { email} = user
-      await this.walletManager.updateArr(this._wDB, email, "bank_details", [bank_details])
+      await this.walletManager.updateArr(this._wDB, 'email', email, "bank_details", [bank_details])
       return ResponseMessages.WalletDetailAdded
     } catch (err: any) {
       throw new BadRequestException({message: "An error occured" })
