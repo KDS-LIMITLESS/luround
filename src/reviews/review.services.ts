@@ -18,7 +18,8 @@ export class ReviewService {
         userName: displayName,
         userPhoto: photoUrl,
         reviewText: reviewData.comment,
-        rating: reviewData.rating
+        rating: reviewData.rating,
+        created_at: Date.now()
       }]
     }
     if(get_service !== null ) {
