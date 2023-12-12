@@ -1,6 +1,8 @@
-import { Body, Controller, HttpStatus, Post, Req, Res } from "@nestjs/common";
+import { Body, Controller, Get, HttpStatus, Post, Req, Res } from "@nestjs/common";
 import { WalletService } from "./wallet.services.js";
 import { UserWalletDto } from "./wallet.dto.js";
+import got from "got";
+import { SkipAuth } from "../auth/jwt.strategy.js";
 
 
 @Controller('api/v1/wallet')
@@ -20,5 +22,16 @@ export class WalletController {
   @Post('verify-wallet-pin')
   async verifyWalletPin(@Req() req, @Res() res, @Body() payload) {
     return res.status(HttpStatus.OK).json(await this.walletManager.verify_wallet_pin(req.user.userId, payload.wallet_pin))
+  }
+
+  @SkipAuth()
+  @Get('get-banks')
+  async getBanks(@Req() req, @Res() res) {
+    const response = await got.get('https://api.flutterwave.com/v3/banks/NG', {
+      headers: {
+        Authorization: `Bearer ${process.env.FLW_SECRET_KEY}`
+      },
+    })
+    return res.status(HttpStatus.OK).json(JSON.parse(response.body))
   }
 }
