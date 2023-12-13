@@ -9,6 +9,7 @@ export class DatabaseService {
   bookingsDB = this._db.collection("bookings")
   transactionsDb = this._db.collection("transactions")
   reviewsDB = this._db.collection("reviews")
+  walletDB = this._db.collection("wallet")
   
   constructor(@Inject('MONGO_CONNECTION') private _db:Db) {}
   
@@ -63,7 +64,7 @@ export class DatabaseService {
   /**
    * Pushes to and updates an array field in specified document
    * @param db 
-   * @param email
+   * @param searchParam
    * @param arr_name Name of arry to push data to 
    * @param data 
    * @returns 

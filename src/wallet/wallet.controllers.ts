@@ -16,7 +16,7 @@ export class WalletController {
 
   @Post('create-wallet-pin')
   async createWalletPin(@Req() req, @Res() res, @Body() payload) {
-    return res.status(HttpStatus.OK).json(await this.walletManager.create_wallet_pin(req.user.userId, payload.wallet_pin))
+    return res.status(HttpStatus.OK).json(await this.walletManager.create_wallet(req.user.userId, payload.wallet_pin))
   }
 
   @Post('verify-wallet-pin')
@@ -33,5 +33,10 @@ export class WalletController {
       },
     })
     return res.status(HttpStatus.OK).json(JSON.parse(response.body))
+  }
+
+  @Get('balance')
+  async getWalletBalance(@Req() req, @Res() res) {
+    return res.status(HttpStatus.OK).json(await this.walletManager.get_wallet_balance(req.user.userId))
   }
 }
