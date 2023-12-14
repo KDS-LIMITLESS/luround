@@ -24,6 +24,25 @@ export class WalletController {
     return res.status(HttpStatus.OK).json(await this.walletManager.verify_wallet_pin(req.user.userId, payload.wallet_pin))
   }
 
+  @Post('reset-wallet-pin')
+  async resetWalletPin(@Req() req, @Res() res, @Body() payload) {
+    return res.status(HttpStatus.OK).json(await this.walletManager.reset_wallet_pin(req.user.userId, payload.old_pin, payload.new_pin))
+  }
+
+  @Post('forgot-wallet-pin')
+  async forgotWalletPin(@Req() req, @Res() res, @Body() payload) {
+    return res.status(HttpStatus.OK).json(await this.walletManager.forgot_wallet_pin(req.user.userId, payload.new_pin, payload.otp))
+  }
+
+  @Get('send-wallet-pin-reset-otp')
+  async sendWaletPinOTP(@Req() req, @Res() res, @Body() payload) {
+    return res.status(HttpStatus.OK).json(await this.walletManager.send_wallet_reset_pin_otp(req.user))
+  }
+  @Post('withdraw-funds')
+  async withdrawFund(@Req() req, @Res() res, @Body() payload) {
+    return res.status(HttpStatus.OK).json(await this.walletManager.withdraw_funds(req.user, payload))
+  }
+
   @SkipAuth()
   @Get('get-banks')
   async getBanks(@Req() req, @Res() res) {
@@ -33,6 +52,11 @@ export class WalletController {
       },
     })
     return res.status(HttpStatus.OK).json(JSON.parse(response.body))
+  }
+
+  @Post('deduct-wallet-balance')
+  async deductWalletBalance(@Req() req, @Res() res, @Body() payload) {
+    return res.status(HttpStatus.OK).json(await this.walletManager.deduct_wallet_balance(req.user.userId, payload.amount))
   }
 
   @Get('balance')

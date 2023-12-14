@@ -44,7 +44,10 @@ enum ResponseMessages {
   WalletDetailAdded = "Bank detail added",
   ReviewAdded = "Review added successfully",
   ServiceHasNoReviews = "This service has no reviews yet",
-  WalletNotFound = "Wallet Not Found"
+  WalletNotFound = "Wallet Not Found",
+  TransactionSuccessful = "Transaction Successful",
+  PinResetSuccessful = "Your wallet pin has been changed",
+  OTPSent = "Otp sent. Please checkyour email."
   
 }
 
