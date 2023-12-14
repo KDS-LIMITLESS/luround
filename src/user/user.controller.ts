@@ -45,6 +45,11 @@ export class UserController {
     return res.status(HttpStatus.OK).json(await this.userService.reset_password(body.email, body.new_password, body.otp))
   }
 
+  @Put('/api/v1/change-password')
+  async changePassword(@Req() req, @Res() res: Response, @Body() body) {
+    return res.status(HttpStatus.OK).json(await this.userService.change_password(req.user.userId, body.old_password, body.new_password))
+  }
+
   @Post('/api/v1/upload-image')
   @UseInterceptors(FileInterceptor('image'))
   async uploadFile(
