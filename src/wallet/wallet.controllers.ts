@@ -1,4 +1,4 @@
-import { Body, Controller, Get, HttpStatus, Post, Req, Res } from "@nestjs/common";
+import { Body, Controller, Get, HttpStatus, Post, Put, Req, Res } from "@nestjs/common";
 import { WalletService } from "./wallet.services.js";
 import { UserWalletDto } from "./wallet.dto.js";
 import got from "got";
@@ -24,12 +24,12 @@ export class WalletController {
     return res.status(HttpStatus.OK).json(await this.walletManager.verify_wallet_pin(req.user.userId, payload.wallet_pin))
   }
 
-  @Post('reset-wallet-pin')
+  @Put('reset-wallet-pin')
   async resetWalletPin(@Req() req, @Res() res, @Body() payload) {
     return res.status(HttpStatus.OK).json(await this.walletManager.reset_wallet_pin(req.user.userId, payload.old_pin, payload.new_pin))
   }
 
-  @Post('forgot-wallet-pin')
+  @Put('forgot-wallet-pin')
   async forgotWalletPin(@Req() req, @Res() res, @Body() payload) {
     return res.status(HttpStatus.OK).json(await this.walletManager.forgot_wallet_pin(req.user.userId, payload.new_pin, payload.otp))
   }
