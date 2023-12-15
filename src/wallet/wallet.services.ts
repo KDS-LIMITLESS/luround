@@ -5,6 +5,7 @@ import ResponseMessages from "../messageConstants.js";
 import { ObjectId } from "mongodb";
 import { got } from "got";
 import { WithdrawalFailed, WithdrawalSuccess, generateRandomSixDigitNumber, sendWalletPinResetOTP } from "../utils/mail.services.js";
+import { WithdrawDTO } from "./wallet.dto.js";
 
 
 @Injectable()
@@ -112,7 +113,7 @@ export class WalletService {
   }
   
   // wite validations.
-  async withdraw_funds(user: any, payload: any) {
+  async withdraw_funds(user: any, payload: WithdrawDTO) {
     const {userId, email, displayName} = user
     try {
       const { wallet_balance } = await this.get_wallet_balance(userId)

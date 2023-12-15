@@ -1,6 +1,6 @@
 import { Body, Controller, Get, HttpStatus, Post, Put, Req, Res } from "@nestjs/common";
 import { WalletService } from "./wallet.services.js";
-import { UserWalletDto } from "./wallet.dto.js";
+import { UserWalletDto, WithdrawDTO } from "./wallet.dto.js";
 import got from "got";
 import { SkipAuth } from "../auth/jwt.strategy.js";
 
@@ -39,7 +39,7 @@ export class WalletController {
     return res.status(HttpStatus.OK).json(await this.walletManager.send_wallet_reset_pin_otp(req.user))
   }
   @Post('withdraw-funds')
-  async withdrawFund(@Req() req, @Res() res, @Body() payload) {
+  async withdrawFund(@Req() req, @Res() res, @Body() payload: WithdrawDTO) {
     return res.status(HttpStatus.OK).json(await this.walletManager.withdraw_funds(req.user, payload))
   }
 
