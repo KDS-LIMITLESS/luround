@@ -17,6 +17,7 @@ import { CustomNotificationService } from './notificationsService.js';
 import { NotificationsController } from './notificationsController.js';
 import { WalletModule } from './wallet/wallet.module.js';
 import { ReviewsModule } from './reviews/review.model.js';
+import { TransactionsModule } from './transaction/transactions.model.js';
 
 @Module({
   imports: [
@@ -30,7 +31,8 @@ import { ReviewsModule } from './reviews/review.model.js';
     PaymentsModule,
     BookingsModule,
     WalletModule,
-    ReviewsModule
+    ReviewsModule,
+    TransactionsModule
   ],
   controllers: [AppController],
   providers: [

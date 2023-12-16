@@ -3,12 +3,17 @@ import { DatabaseService } from "../store/db.service.js";
 import { ServicePageManager } from "../servicePage/services-page.service.js";
 import ResponseMessages from "../messageConstants.js";
 import { BookServiceDto } from "./bookServiceDto.js";
+import { TransactionsManger } from "../transaction/tansactions.service.js";
 
 @Injectable()
 export class BookingsManager {
   _bKM = this.bookingsManager.bookingsDB
   
-  constructor(private bookingsManager: DatabaseService, private serviceManager: ServicePageManager ) {}
+  constructor(
+    private bookingsManager: DatabaseService, 
+    private serviceManager: ServicePageManager,
+    private transactionsManger: TransactionsManger
+  ) {}
   
   // Decorate service with initialize payment 
   // Add the payment_reference to the bookingDetail document
@@ -48,7 +53,20 @@ export class BookingsManager {
       }
       let service_booked = await this.bookingsManager.create(this._bKM, booking_Detail)
       // CHECK FOR PAYMENT CONFIRMED AND SEND NOTIFICATION
-      if (service_booked.acknowledged) return {BookingId: service_booked.insertedId}
+      if (service_booked.acknowledged) {
+        this.transactionsManger.record_transaction(userId, {
+          service_id: serviceDetails._id, service_name: serviceDetails.service_name, 
+          service_fee: amount, transaction_ref: "", transaction_status: "SENT", 
+          affliate_user: serviceDetails.service_provider_details.displayName
+        })
+
+        this.transactionsManger.record_transaction(serviceDetails.service_provider_details.userId, {
+          service_id: serviceDetails._id, service_name: serviceDetails.service_name, 
+          service_fee: amount, transaction_ref: "", transaction_status: "RECEIVED", 
+          affliate_user: displayName
+        })
+        return {BookingId: service_booked.insertedId}
+      } 
       throw Error("An error occurred")
     }
     throw new BadRequestException({

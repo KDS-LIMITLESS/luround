@@ -49,7 +49,8 @@ enum ResponseMessages {
   PinResetSuccessful = "Your wallet pin has been changed",
   OTPSent = "Otp sent. Please checkyour email.",
   PasswordChangeSuccessfull = "Password change successfull",
-  InvalidUserPassword = "Incorret Password"
+  InvalidUserPassword = "Incorret Password",
+  TransactionRecorded = "Transaction saved."
   
 }
 

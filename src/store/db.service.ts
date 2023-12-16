@@ -69,7 +69,7 @@ export class DatabaseService {
    * @param data 
    * @returns 
    */
-  async updateArr(db: Collection<Document | any>, searchParam: string,  value: string, arr_name: string, data: Array<object>) {
+  async updateArr(db: Collection<Document | any>, searchParam: string,  value: any, arr_name: string, data: Array<object>) {
     let update: any;
      
     data.forEach(async (element) => {
