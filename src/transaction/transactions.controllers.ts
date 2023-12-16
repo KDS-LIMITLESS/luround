@@ -8,6 +8,6 @@ export class TransactionsController {
 
   @Get('get')
   async getUserTransactions(@Req() req, @Res() res) {
-    return res.status(HttpStatus.OK).json(this.transactionService.get_user_transactions(req.user.userId))
+    return res.status(HttpStatus.OK).json(await this.transactionService.get_user_transactions(req.user.userId))
   }
 }
