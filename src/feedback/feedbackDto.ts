@@ -3,8 +3,8 @@ import { IsNotEmpty } from "class-validator";
 export class FeedBackDto {
 
   @IsNotEmpty()
-  Subject: string
+  subject: string
 
   @IsNotEmpty()
-  Description: string
+  description: string
 }
