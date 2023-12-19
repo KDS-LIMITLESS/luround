@@ -18,6 +18,7 @@ import { NotificationsController } from './notificationsController.js';
 import { WalletModule } from './wallet/wallet.module.js';
 import { ReviewsModule } from './reviews/review.model.js';
 import { TransactionsModule } from './transaction/transactions.model.js';
+import { FeedBackModule } from './feedback/feedback.module.js';
 
 @Module({
   imports: [
@@ -32,7 +33,8 @@ import { TransactionsModule } from './transaction/transactions.model.js';
     BookingsModule,
     WalletModule,
     ReviewsModule,
-    TransactionsModule
+    TransactionsModule,
+    FeedBackModule
   ],
   controllers: [AppController],
   providers: [

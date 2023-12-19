@@ -50,7 +50,8 @@ enum ResponseMessages {
   OTPSent = "Otp sent. Please checkyour email.",
   PasswordChangeSuccessfull = "Password change successfull",
   InvalidUserPassword = "Incorret Password",
-  TransactionRecorded = "Transaction saved."
+  TransactionRecorded = "Transaction saved.",
+  FeedBackRecorded = "Your feed back has been received."
   
 }
 
