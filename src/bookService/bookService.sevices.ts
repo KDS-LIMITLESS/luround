@@ -25,7 +25,7 @@ export class BookingsManager {
     
     const { userId, email, displayName } = user
     let serviceDetails:any = await this.serviceManager.getService(serviceID)
-    if (serviceDetails) {
+    if (serviceDetails && serviceDetails.service_provider_details.userId !== userId) {
       let amount: string;
       if (bookingDetail.appointment_type === 'In-person' ) {
         amount = serviceDetails.service_charge_in_person
@@ -70,7 +70,7 @@ export class BookingsManager {
       throw Error("An error occurred")
     }
     throw new BadRequestException({
-      message: "An error occurred"
+      message: "An error occurred. Are you booking Yourself?"
     })
   }
 
