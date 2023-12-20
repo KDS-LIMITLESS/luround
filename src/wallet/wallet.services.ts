@@ -125,8 +125,9 @@ export class WalletService {
   // wite validations.
   async withdraw_funds(user: any, payload: WithdrawDTO) {
     const {userId, email, displayName} = user
+    const { wallet_balance } = await this.get_wallet_balance(userId)
     try {
-      const { wallet_balance } = await this.get_wallet_balance(userId)
+      // const { wallet_balance } = await this.get_wallet_balance(userId)
       if (wallet_balance >= payload.amount) {
         await this.verify_wallet_pin(userId, payload.wallet_pin)
         const response  = await got.post('https://api.flutterwave.com/v3/transfers', {
@@ -148,9 +149,9 @@ export class WalletService {
         console.log(responseData)
         return responseData
       } 
-      await WithdrawalFailed(email, displayName, wallet_balance, payload.amount)
       return new BadRequestException({message: 'Your wallet balance is low'})
     } catch(err: any) {
+      await WithdrawalFailed(email, displayName, wallet_balance, payload.amount)
       throw new BadRequestException({message: err.message})
     }
   }
