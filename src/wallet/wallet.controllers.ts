@@ -14,6 +14,11 @@ export class WalletController {
     return res.status(HttpStatus.OK).json(await this.walletManager.add_bank_details(req.user, payload))
   }
 
+  @Get('get-saved-banks')
+  async getSavedBanks(@Req() req, @Res() res) {
+    return res.status(HttpStatus.OK).json(await this.walletManager.get_user_saved_banks(req.user.userId))
+  }
+
   @Post('create-wallet-pin')
   async createWalletPin(@Req() req, @Res() res, @Body() payload) {
     return res.status(HttpStatus.OK).json(await this.walletManager.create_wallet(req.user.userId, payload.wallet_pin))

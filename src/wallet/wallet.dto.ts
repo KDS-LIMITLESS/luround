@@ -14,6 +14,9 @@ export class UserWalletDto {
   @IsNotEmpty()
   bank_name: string
 
+  @IsNotEmpty()
+  bank_code: string
+
   @IsString()
   @IsNotEmpty()
   country: string

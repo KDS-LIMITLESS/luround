@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post, Query, Req, Res } from "@nestjs/common";
+import { Body, Controller, Get, HttpStatus, Param, Post, Query, Req, Res } from "@nestjs/common";
 import { Request, Response } from "express";
 import { PaymentsAPI } from "../payments/paystack.sevices.js";
 import { SkipAuth } from "../auth/jwt.strategy.js";
@@ -22,7 +22,8 @@ export class Payments {
   @Get('initialize-flw-payment')
   async initializeFlutterwavepayments(@Req() req: Request, @Res() res: Response, @Body() body) {
     let get_payment_link:any = await PaymentsAPI.initiate_flw_payment(req.body.amount, req.user, body.phone_number)
-    res.redirect(301, get_payment_link.data.link)
+    // res.redirect(301, get_payment_link.data.link)
+    return res.status(HttpStatus.OK).json({payment_link: get_payment_link.data.link})
   }
 
   @SkipAuth()

@@ -26,6 +26,16 @@ export class WalletService {
     }    
   }
 
+  async get_user_saved_banks(userId: string) {
+    try {
+      let user = await this.databaseManger.findOneDocument(this._uWDB, "_id", userId )
+      if (user === null) throw new BadRequestException(ResponseMessages.EmailDoesNotExist)
+      return user.bank_details
+    } catch (err: any) {
+      throw new BadRequestException({message: err.message})
+    }
+  }
+
   async create_wallet(userId: string, pin: string) {
     try {
       const pin_hash = await bcrypt.hash(pin, 12)
