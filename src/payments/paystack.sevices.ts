@@ -86,7 +86,7 @@ export class PaymentsAPI {
           tx_ref: tx_ref,
           amount: amount,
           currency: "NGN",
-          redirect_url: `http://localhost:3000/api/v1/payments/verify-flw-payment`,
+          redirect_url: `https://luround.onrender.com/api/v1/payments/verify-flw-payment`,
           meta: {
             consumer_id: req.userId,
             consumer_name: req.displayName,
