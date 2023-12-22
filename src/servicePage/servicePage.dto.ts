@@ -1,5 +1,5 @@
 import { PartialType } from "@nestjs/mapped-types";
-import { IsEnum, IsMongoId, IsNotEmpty, IsNumber, IsOptional } from "class-validator";
+import { IsArray, IsEnum, IsMongoId, IsNotEmpty, IsNumber, IsOptional } from "class-validator";
 
 
 export class ServicePageDto{
@@ -34,6 +34,10 @@ export class ServicePageDto{
 
   @IsNotEmpty()
   available_days: string
+
+  @IsNotEmpty()
+  @IsArray()
+  available_time: []
 }
 
 export class ServiceDto extends PartialType(ServicePageDto) {}
