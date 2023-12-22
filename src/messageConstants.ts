@@ -34,6 +34,7 @@ enum ResponseMessages {
   ServiceDeleted = 'Service Deleted Successfully',
 
   ServiceUpdated = 'Service Updated Successfully',
+  PaymentNotResolved = 'Your payment was not resolved. Please contact us at support@luround.com to resolve this payment',
 
   InvalidServiceId = 'Invalid Service ID',
   BOOKING_ID_NOT_FOUND = 'Booking ID not found',

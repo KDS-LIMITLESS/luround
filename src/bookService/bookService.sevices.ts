@@ -1,9 +1,10 @@
-import { BadRequestException, Injectable, NotFoundException } from "@nestjs/common";
+import { BadRequestException, Injectable, InternalServerErrorException, NotFoundException } from "@nestjs/common";
 import { DatabaseService } from "../store/db.service.js";
 import { ServicePageManager } from "../servicePage/services-page.service.js";
 import ResponseMessages from "../messageConstants.js";
 import { BookServiceDto } from "./bookServiceDto.js";
 import { TransactionsManger } from "../transaction/tansactions.service.js";
+import { PaymentsAPI } from "../payments/paystack.sevices.js";
 
 @Injectable()
 export class BookingsManager {
@@ -12,7 +13,8 @@ export class BookingsManager {
   constructor(
     private bookingsManager: DatabaseService, 
     private serviceManager: ServicePageManager,
-    private transactionsManger: TransactionsManger
+    private transactionsManger: TransactionsManger,
+    private paymentsManager: PaymentsAPI
   ) {}
   
   // Decorate service with initialize payment 
@@ -22,12 +24,15 @@ export class BookingsManager {
 
   // Increase price based on the service duration
   async book_service(bookingDetail: BookServiceDto, serviceID: string, user: any) {
-    
+    // GET UNIQUE TRANSACTION REFERENCE CODE
+    let tx_ref = await this.paymentsManager.generateUniqueTransactionCode("LUROUND")
     const { userId, email, displayName } = user
+    // CHECK IF SERVICE IS VALID AND EXISTS 
     let serviceDetails:any = await this.serviceManager.getService(serviceID)
+    // CHECK IF USER IS TRYING TO BOOK THEMSELVES
     if (serviceDetails && serviceDetails.service_provider_details.userId !== userId) {
       let amount: string;
-      if (bookingDetail.appointment_type === 'In-person' ) {
+      if (bookingDetail.appointment_type === 'In-Person' ) {
         amount = serviceDetails.service_charge_in_person
       } else if (bookingDetail.appointment_type === 'Virtual') {
         amount = serviceDetails.service_charge_virtual
@@ -35,6 +40,8 @@ export class BookingsManager {
       let booking_Detail = {
         service_provider_info: serviceDetails.service_provider_details,
         booking_user_info: {userId, email, displayName, phone_number: bookingDetail.phone_number },
+        booked_status: "PENDING CONFIRMATION",
+        payment_reference_id: tx_ref,
         service_details: {
           service_id: serviceDetails._id,
           service_name: serviceDetails.service_name,
@@ -46,28 +53,39 @@ export class BookingsManager {
           message: bookingDetail.message || null,
           file: bookingDetail.file || null,
           location: bookingDetail.location,
-          // payment_reference_id: bookingDetail.payment_reference_id,
-          booked_status: "PENDING CONFIRMATION",
           created_at: Date.now()
         }
       }
       let service_booked = await this.bookingsManager.create(this._bKM, booking_Detail)
+      
       // CHECK FOR PAYMENT CONFIRMED AND SEND NOTIFICATION
       if (service_booked.acknowledged) {
+        // *********INITIATE AND RECORD PAYMENT *************
+        let response: any = await PaymentsAPI.initiate_flw_payment(amount, user, bookingDetail.phone_number, tx_ref, 
+          {
+            service_name: serviceDetails.service_name, 
+            payment_receiver: serviceDetails.service_provider_details.displayName,
+            payment_receiver_id: serviceDetails.service_provider_details.userId
+          }
+        )
+        // ******** RECORD TRANSACTION *********
+
+        // CURRENT LOGGED IN USER TRANSACTION DETAIL
         this.transactionsManger.record_transaction(userId, {
           service_id: serviceDetails._id, service_name: serviceDetails.service_name, 
-          service_fee: amount, transaction_ref: "", transaction_status: "SENT", 
+          service_fee: amount, transaction_ref: tx_ref, transaction_status: "SENT", 
           affliate_user: serviceDetails.service_provider_details.displayName
         })
 
+        // SERVICE PROVIDER TRANSACTION DETAIL
         this.transactionsManger.record_transaction(serviceDetails.service_provider_details.userId, {
           service_id: serviceDetails._id, service_name: serviceDetails.service_name, 
-          service_fee: amount, transaction_ref: "", transaction_status: "RECEIVED", 
+          service_fee: amount, transaction_ref: tx_ref, transaction_status: "RECEIVED", 
           affliate_user: displayName
         })
-        return {BookingId: service_booked.insertedId}
+        return {BookingId: service_booked.insertedId, booking_payment_link: response.data.link}
       } 
-      throw Error("An error occurred")
+      throw new InternalServerErrorException({message: "An error occured. Service not booked"})
     }
     throw new BadRequestException({
       message: "An error occurred. Are you booking Yourself?"
@@ -88,6 +106,7 @@ export class BookingsManager {
 
   // RUN THIS FUNCTION IN THE WORKER THREAD AND CACHE THE RESPONSE
   async get_user_service_bookings(userId: string) {
+    // The booked_me variable contains only services with bookigs status set to successful.
     try {
       let filter1 = 'service_provider_info.userId'
       let filter2 = 'booking_user_info.userId'

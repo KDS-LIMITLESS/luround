@@ -15,7 +15,7 @@ export class ServicePageManager {
   constructor(private servicePageManager: DatabaseService) {}
 
   async add_new_service(user: any, serviceData: ServicePageDto){
-    const {userId, email, displayName } = user
+    const { userId, email, displayName } = user
     let encryption = new Encrypter(process.env.ENCRYPTION_KEY as string)
     let link = `https://luround.com/${encryption.encrypt(userId)}/${serviceData.service_name.replace(/\s/g, "_")}`     
     let service = {

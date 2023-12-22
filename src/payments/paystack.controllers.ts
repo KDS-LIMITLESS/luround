@@ -19,12 +19,12 @@ export class Payments {
     return res.status(200).json(await PaymentsAPI.verifyPayment(query.ref_id))
   }
 
-  @Get('initialize-flw-payment')
-  async initializeFlutterwavepayments(@Req() req: Request, @Res() res: Response, @Body() body) {
-    let get_payment_link:any = await PaymentsAPI.initiate_flw_payment(req.body.amount, req.user, body.phone_number)
-    // res.redirect(301, get_payment_link.data.link)
-    return res.status(HttpStatus.OK).json({payment_link: get_payment_link.data.link})
-  }
+  // @Get('initialize-flw-payment')
+  // async initializeFlutterwavepayments(@Req() req: Request, @Res() res: Response, @Body() body) {
+  //   let response: any = await PaymentsAPI.initiate_flw_payment(req.body.amount, req.user, body.phone_number)
+  //   // res.redirect(301, get_payment_link.data.link)
+  //   return res.status(HttpStatus.OK).json({payment_link: response.data.link})
+  // }
 
   @SkipAuth()
   @Get('verify-flw-payment')
