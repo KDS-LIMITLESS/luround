@@ -4,6 +4,7 @@ import got from "got";
 import Flutterwave from 'flutterwave-node-v3';
 import { DatabaseService } from "../store/db.service.js";
 import ResponseMessages from "../messageConstants.js";
+import { paymentFailed, paymentSuccess } from "../utils/mail.services.js";
 
 const flw = new Flutterwave(process.env.FLW_PUBLIC_KEY, process.env.FLW_SECRET_KEY)
 
@@ -118,15 +119,15 @@ export class PaymentsAPI {
     if (
       response.data.status === "successful"
       && response.data.amount === response.data.charged_amount
-      && response.data.currency === "NGN") 
-      {
-        let transaction_details = {
-          transaction_reference: response.data.tx_ref,
-          payee_info: {email: response.data.customer.email, userId: response.data.meta.consumer_id, displayName: response.data.meta.consumer_name },
-          payment_receiver_info: {display_name: response.data.meta.payment_receiver_name, userId: response.data.meta.payment_receiver_id},
-          amount_paid: response.data.charged_amount,
-          created_at: response.data.created_at,
-        }
+      && response.data.currency === "NGN"
+    ){
+      let transaction_details = {
+        transaction_reference: response.data.tx_ref,
+        payee_info: {email: response.data.customer.email, userId: response.data.meta.consumer_id, displayName: response.data.meta.consumer_name },
+        payment_receiver_info: {display_name: response.data.meta.payment_receiver_name, userId: response.data.meta.payment_receiver_id},
+        amount_paid: response.data.charged_amount,
+        created_at: response.data.created_at,
+      }
         // get booking where transaction_ref matches response.data.tx_ref
         let get_booking_reference = await this.databaseManager.findOneDocument(this._bkDb, "payment_reference_id", query.tx_ref)
         console.log(get_booking_reference)
@@ -136,10 +137,12 @@ export class PaymentsAPI {
           await this.databaseManager.updateProperty(this._bkDb, get_booking_reference._id, "booked_status", {booked_status: "SUCCESSFUL"})
           // SAVE PAYMENT DETAILS TO DATABASE
           let payment_ref_id = (await this.databaseManager.create(this._pdb, transaction_details)).insertedId
+          await paymentSuccess(response.data.customer.email, response.data.meta.consumer_name, response.data.meta.payment_receiver_name, response.data.charged_amount, response.data.meta.service_name )
           return {booking_status: "Success", payment_ref_id, transaction_ref: response.data.tx_ref }
         }
         throw new BadRequestException({message: ResponseMessages.PaymentNotResolved})
     } else {
+        await paymentFailed(response.data.customer.email, response.data.meta.consumer_name, response.data.meta.payment_receiver_name, response.data.charged_amount, response.data.meta.service_name )
         throw new Error("Payment Failed")
       }
     }

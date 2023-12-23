@@ -83,6 +83,31 @@ export async function WithdrawalFailed(to:string, name: string, wallet_balance: 
   });
 }
 
+export async function paymentSuccess(to:string, name: string, service_provider: string, amount: number, service_booked: string) {
+  return mail.sendEmail({
+    From: 'cc@uppist.com',
+    To: to,
+    Subject: 'Payment Successful',
+    HtmlBody: `<p>Hi <b>${name}</b>, </p>
+      <p>Your payment of ${amount} to ${service_provider} for <b>${service_booked} was successful.</b></P>
+      <p>For 24/7 Support: support@luround.com | 0913xxxxxx3</p>`,
+    MessageStream: 'outbound'
+  });
+}
+
+export async function paymentFailed(to:string, name: string, service_provider: string, amount: number, service_booked: string) {
+  return mail.sendEmail({
+    From: 'cc@uppist.com',
+    To: to,
+    Subject: 'Payment Failed',
+    HtmlBody: `<p>Hi <b>${name}</b>, </p>
+      <p>Your payment of ${amount} to ${service_provider} for <b>${service_booked} failed.</b>
+      Please try again at a later time.</P>
+      <p>For 24/7 Support: support@luround.com | 0913xxxxxx3</p>`,
+    MessageStream: 'outbound'
+  });
+}
+
 export async function generateRandomSixDigitNumber(): Promise<number> {
   const min = 100000; 
   const max = 999999;
