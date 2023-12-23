@@ -57,7 +57,7 @@ export class WalletService {
 
   async get_wallet_balance(userId: string){
     let getWallet =  await this.databaseManger.findOneDocument(this._wDB, "_id", userId)
-    return getWallet ?  {wallet_balance: getWallet.wallet_balance} : null
+    return getWallet ?  {wallet_balance: getWallet.wallet_balance, has_wallet_pin: getWallet.has_wallet_pin} : null
   }
 
   async reset_wallet_pin(userId: string, old_pin: string, new_pin: string) {

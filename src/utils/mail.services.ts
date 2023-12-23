@@ -27,8 +27,6 @@ export async function sendOnboardingMail(to:string, name: string) {
   });
 }
 
-
-
 export async function sendOTP(to:string, OTP: number, name: string) {
   return mail.sendEmail({
     From: 'cc@uppist.com',
@@ -89,7 +87,7 @@ export async function paymentSuccess(to:string, name: string, service_provider: 
     To: to,
     Subject: 'Payment Successful',
     HtmlBody: `<p>Hi <b>${name}</b>, </p>
-      <p>Your payment of ${amount} to ${service_provider} for <b>${service_booked} was successful.</b></P>
+      <p>Your payment of <b>${amount}</b> to ${service_provider} for <b>${service_booked}</b> was successful.</P>
       <p>For 24/7 Support: support@luround.com | 0913xxxxxx3</p>`,
     MessageStream: 'outbound'
   });
@@ -101,7 +99,7 @@ export async function paymentFailed(to:string, name: string, service_provider: s
     To: to,
     Subject: 'Payment Failed',
     HtmlBody: `<p>Hi <b>${name}</b>, </p>
-      <p>Your payment of ${amount} to ${service_provider} for <b>${service_booked} failed.</b>
+      <p>Your payment of <b> ${amount} </b> to ${service_provider} for <b>${service_booked}</b> failed.
       Please try again at a later time.</P>
       <p>For 24/7 Support: support@luround.com | 0913xxxxxx3</p>`,
     MessageStream: 'outbound'
