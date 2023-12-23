@@ -40,7 +40,7 @@ export class WalletService {
     try {
       const pin_hash = await bcrypt.hash(pin, 12)
       if (pin.length !== 4) throw new BadRequestException({message: "Pin length must be four digits."})
-      await this.databaseManger.create(this._wDB, {"_id": new ObjectId(userId), 'wallet_pin': pin_hash, wallet_balance: 0})
+      await this.databaseManger.create(this._wDB, {"_id": new ObjectId(userId), 'wallet_pin': pin_hash, wallet_balance: 0, has_wallet_pin: true})
       return ResponseMessages.WalletPinCreated
     } catch(err: any) {
       throw new BadRequestException({message: err.message})

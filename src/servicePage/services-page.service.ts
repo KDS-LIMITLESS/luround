@@ -55,7 +55,8 @@ export class ServicePageManager {
       service_charge_in_person: serviceData.service_charge_in_person || null,
       time: serviceData.time,
       date: serviceData.date,
-      available_days: serviceData.available_days
+      available_days: serviceData.available_days,
+      available_time: serviceData.available_time
     }
     try {
       // UPDATE DOCUMENT IN DATABASE IF FOUND.
