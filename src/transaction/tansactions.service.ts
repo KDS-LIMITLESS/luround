@@ -11,6 +11,7 @@ export class TransactionsManger {
   constructor(private databaseManger: DatabaseService) {}
 
   async record_transaction(userId: string, payload: any) {
+    let dt = new Date()
     let transaction = {
       service_id: payload.service_id,
       service_name: payload.service_name,
@@ -18,7 +19,8 @@ export class TransactionsManger {
       affliate_user: payload.affliate_user,
       transaction_status: payload.transaction_status,
       transaction_ref: payload.transaction_ref,
-      transaction_date: Date.now()
+      transaction_date: Date.now(),
+      transaction_time: dt.getHours() + ":" + dt.getMinutes() + ":" + dt.getSeconds()
     }
     let find_user_transactions = await this.databaseManger.findOneDocument(this._tDB, "_id", userId)
     if (find_user_transactions !== null) {
