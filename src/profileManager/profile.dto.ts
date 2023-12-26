@@ -135,6 +135,9 @@ export class userProfileMainDto{
 
   @IsNotEmpty()
   url: string
+
+  @IsNotEmpty()
+  logo_url: string
 }
 
 export class CertificateValidationDto {

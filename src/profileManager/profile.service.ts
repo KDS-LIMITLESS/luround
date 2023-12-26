@@ -55,7 +55,8 @@ export class ProfileService {
     let personalDetails = {
       displayName: details.firstName + " " + details.lastName,
       occupation: details.occupation,
-      company: details.company
+      company: details.company,
+      logo_url: details.logo_url
     }
 
     let data = await this.profileManager.updateProperty(this._udb, userId, "", personalDetails )

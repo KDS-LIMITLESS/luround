@@ -13,12 +13,11 @@ import { ServicePageModule } from './servicePage/service-page.module.js';
 import { PaymentsModule } from './payments/paystack.module.js';
 import { AuthModule } from './auth/auth.module.js';
 import { BookingsModule } from './bookService/bookService.module.js';
-import { CustomNotificationService } from './notificationsService.js';
-import { NotificationsController } from './notificationsController.js';
 import { WalletModule } from './wallet/wallet.module.js';
 import { ReviewsModule } from './reviews/review.model.js';
 import { TransactionsModule } from './transaction/transactions.model.js';
 import { FeedBackModule } from './feedback/feedback.module.js';
+import { NotificationModule } from './notifications/notification.module.js';
 
 @Module({
   imports: [
@@ -34,7 +33,8 @@ import { FeedBackModule } from './feedback/feedback.module.js';
     WalletModule,
     ReviewsModule,
     TransactionsModule,
-    FeedBackModule
+    FeedBackModule,
+    NotificationModule
   ],
   controllers: [AppController],
   providers: [
