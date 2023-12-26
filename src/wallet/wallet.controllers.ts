@@ -66,6 +66,8 @@ export class WalletController {
 
   @Get('balance')
   async getWalletBalance(@Req() req, @Res() res) {
-    return res.status(HttpStatus.OK).json(await this.walletManager.get_wallet_balance(req.user.userId))
+    let balance = await this.walletManager.get_wallet_balance(req.user.userId)
+    if (balance === null) return res.status(HttpStatus.OK).json({message: "User has no wallet"})
+    return res.status(HttpStatus.OK).json(balance)
   }
 }
