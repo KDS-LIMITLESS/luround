@@ -103,7 +103,7 @@ export class WalletService {
       }
       return new BadRequestException({message: 'Wallet balance is too low for this transaction'})  
     } catch (err: any){
-      throw new BadRequestException({message: 'You have not created a luround wallet.'})
+      throw new BadRequestException({message: err.message})
     }
   }
 
@@ -111,14 +111,14 @@ export class WalletService {
   async increase_wallet_balance(userId: string, amount: number) {
     try {
       let { wallet_balance } = await this.get_wallet_balance(userId)
-      if (wallet_balance !== null && wallet_balance > amount) {
+      if ( wallet_balance !== null ) {
         wallet_balance += amount
         await this.databaseManger.updateProperty(this._wDB, userId, 'wallet_ballance', {wallet_balance})
         return ResponseMessages.TransactionSuccessful
       }
       return new BadRequestException({message: 'Wallet balance is too low for this transaction'})  
     } catch (err: any) {
-      throw new BadRequestException({message: 'You have not created a luround wallet.'})
+      throw new BadRequestException({message: err.message})
     }
   }
   
