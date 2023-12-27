@@ -1,5 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import { DatabaseService } from "../store/db.service.js";
+import { Encrypter } from "../utils/Encryption.js";
+
 
 @Injectable()
 export class QuotesService {
@@ -9,6 +11,7 @@ export class QuotesService {
   constructor(private databaseManager: DatabaseService) {}
 
   async send_quote(user: any, service_id: string, data: any) {
+    let encryption = new Encrypter(process.env.ENCRYPTION_KEY as string)
     const service_details = await this.databaseManager.findOneDocument(this._sdb, "_id", service_id)
     const service_provider = await this.databaseManager.findOneDocument(this._udb, "_id", service_details.service_provider_details.userId)
 
@@ -29,9 +32,11 @@ export class QuotesService {
         quote_date: Date.now(),
         due_date: data.due_date,
       },
+      quote_link: `https://luround.com/quote/${service_details.service_name.replace(/\s/g, "_")}/${encryption.encrypt(user.userId)}`,
       notes: data.note || ''
     }
-    return (await this.databaseManager.create(this._qdb, quote_details)).insertedId
+    let quote = await this.databaseManager.create(this._qdb, quote_details)
+    return {quoteId: quote.insertedId, quote_link: quote_details.quote_link}
   }
 
   async get_sent_quotes(userId: string) {

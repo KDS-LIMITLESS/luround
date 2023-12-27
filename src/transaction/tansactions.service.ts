@@ -33,6 +33,6 @@ export class TransactionsManger {
 
   async get_user_transactions(userId: string) {
     let get_transactions = await this.databaseManger.findOneDocument(this._tDB, "_id", userId)
-    return get_transactions ? get_transactions.transactions : null
+    return get_transactions ? get_transactions.transactions : []
   }
 }
