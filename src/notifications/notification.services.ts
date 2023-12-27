@@ -1,11 +1,17 @@
-
-import { initializeApp } from "firebase-admin/app";
+import { Injectable } from "@nestjs/common";
+import { applicationDefault, initializeApp } from "firebase-admin/app";
 import { getMessaging } from "firebase-admin/messaging";
 
-const app = initializeApp()
 
+@Injectable()
 export class NotificationService {
-  constructor() {}
+  constructor() {
+    process.env.GOOGLE_APPLICATION_CREDENTIALS
+    initializeApp({
+      credential: applicationDefault(),
+      projectId: process.env.FCM_PROJECT_ID
+    })
+  }
 
   async send_notification(userNToken: string) {
     const message = {

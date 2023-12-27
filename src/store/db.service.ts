@@ -12,6 +12,7 @@ export class DatabaseService {
   walletDB = this._db.collection("wallet")
   feedbackDB = this._db.collection("feedback")
   payment = this._db.collection("payments")
+  quotes = this._db.collection("quotes")
   
   constructor(@Inject('MONGO_CONNECTION') private _db:Db) {}
   
