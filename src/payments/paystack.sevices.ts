@@ -5,6 +5,7 @@ import Flutterwave from 'flutterwave-node-v3';
 import { DatabaseService } from "../store/db.service.js";
 import ResponseMessages from "../messageConstants.js";
 import { paymentFailed, paymentSuccess } from "../utils/mail.services.js";
+import { WalletService } from "../wallet/wallet.services.js";
 
 const flw = new Flutterwave(process.env.FLW_PUBLIC_KEY, process.env.FLW_SECRET_KEY)
 
@@ -14,7 +15,7 @@ export class PaymentsAPI {
   _bkDb = this.databaseManager.bookingsDB
   _pdb = this.databaseManager.payment
 
-  constructor(private databaseManager: DatabaseService) {}
+  constructor(private databaseManager: DatabaseService, private walletService: WalletService) {}
 
   static async initializePayment(email: string, amount: string): Promise<any> {
     const data = JSON.stringify({
@@ -130,11 +131,12 @@ export class PaymentsAPI {
       }
         // get booking where transaction_ref matches response.data.tx_ref
         let get_booking_reference = await this.databaseManager.findOneDocument(this._bkDb, "payment_reference_id", query.tx_ref)
-        console.log(get_booking_reference)
         // update the booked_status to successful. 
         if (get_booking_reference !== null) {
           // UPDATE MATCHING BOOKING STATUS
           await this.databaseManager.updateProperty(this._bkDb, get_booking_reference._id, "booked_status", {booked_status: "SUCCESSFUL"})
+          // SET WALLET BALANCE
+          await this.walletService.increase_wallet_balance(response.data.payment_receiver_id, response.data.charged_amount)
           // SAVE PAYMENT DETAILS TO DATABASE
           let payment_ref_id = (await this.databaseManager.create(this._pdb, transaction_details)).insertedId
           await paymentSuccess(response.data.customer.email, response.data.meta.consumer_name, response.data.meta.payment_receiver_name, response.data.charged_amount, response.data.meta.service_name )

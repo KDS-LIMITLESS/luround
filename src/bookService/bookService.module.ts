@@ -5,6 +5,7 @@ import { DatabaseService } from "../store/db.service.js";
 import { ServicePageManager } from "../servicePage/services-page.service.js";
 import { TransactionsManger } from "../transaction/tansactions.service.js";
 import { PaymentsAPI } from "../payments/paystack.sevices.js";
+import { WalletService } from "../wallet/wallet.services.js";
 
 @Module({
   imports: [],
@@ -14,7 +15,8 @@ import { PaymentsAPI } from "../payments/paystack.sevices.js";
     DatabaseService, 
     ServicePageManager, 
     TransactionsManger,
-    PaymentsAPI
+    PaymentsAPI,
+    WalletService
   ]
 })
 

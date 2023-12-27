@@ -108,8 +108,8 @@ export class BookingsManager {
   async get_user_service_bookings(userId: string) {
     // The booked_me variable contains only services with bookigs status set to successful.
     try {
-      let filter1 = 'service_provider_info.userId'
-      let filter2 = 'booking_user_info.userId'
+      let filter1 = 'service_provider_info.userId' // The service provider being booked
+      let filter2 = 'booking_user_info.userId' // The user booking the service
       let [booked_me, i_booked] = await Promise.all([
         await this.bookingsManager.readAndWriteToArray(this._bKM, filter1, userId), 
         await this.bookingsManager.readAndWriteToArray(this._bKM, filter2, userId)

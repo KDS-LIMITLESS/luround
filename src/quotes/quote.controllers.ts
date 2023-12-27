@@ -1,4 +1,4 @@
-import { Body, Controller, Get, HttpStatus, Post, Query, Req, Res } from "@nestjs/common";
+import { Body, Controller, Delete, Get, HttpStatus, Post, Query, Req, Res } from "@nestjs/common";
 import { QuotesService } from "./quote.services.js";
 
 @Controller('api/v1/quotes')
@@ -19,5 +19,10 @@ export class QuoteControllers {
   @Get('received-quotes')
   async getReceivedQuotes(@Req() req, @Res() res) {
     return res.status(HttpStatus.OK).json(await this.quoteService.get_received_quotes(req.user.userId))
+  }
+
+  @Delete('delete-quote')
+  async deleteQuote(@Req() req, @Res() res, @Query() query) {
+    return res.status(HttpStatus.OK).json(await this.quoteService.delete_quote(query.quote_id))
   }
 }

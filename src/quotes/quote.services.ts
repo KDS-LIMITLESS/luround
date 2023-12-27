@@ -46,4 +46,8 @@ export class QuotesService {
   async get_received_quotes(userId: string) {
     return await this.databaseManager.readAndWriteToArray(this._qdb, "service_provider_userId", userId)
   }
+
+  async delete_quote(quote_id: string) {
+    return (await this.databaseManager.delete(this._qdb, quote_id)).value
+  }
 }
