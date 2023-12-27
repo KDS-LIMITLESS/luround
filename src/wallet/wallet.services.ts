@@ -30,7 +30,7 @@ export class WalletService {
     try {
       let user = await this.databaseManger.findOneDocument(this._uWDB, "_id", userId )
       if (user === null) throw new BadRequestException(ResponseMessages.EmailDoesNotExist)
-      return user.bank_details
+      return user.bank_details || "User has no saved bank-detail"
     } catch (err: any) {
       throw new BadRequestException({message: err.message})
     }
