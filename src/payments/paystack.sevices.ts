@@ -129,6 +129,7 @@ export class PaymentsAPI {
         amount_paid: response.data.charged_amount,
         created_at: response.data.created_at,
       }
+      console.log(response.data.meta.payment_receiver_id)
         // get booking where transaction_ref matches response.data.tx_ref
         let get_booking_reference = await this.databaseManager.findOneDocument(this._bkDb, "payment_reference_id", query.tx_ref)
         // update the booked_status to successful. 
@@ -136,7 +137,7 @@ export class PaymentsAPI {
           // UPDATE MATCHING BOOKING STATUS
           await this.databaseManager.updateProperty(this._bkDb, get_booking_reference._id, "booked_status", {booked_status: "SUCCESSFUL"})
           // SET WALLET BALANCE
-          await this.walletService.increase_wallet_balance(response.data.payment_receiver_id, response.data.charged_amount)
+          await this.walletService.increase_wallet_balance(response.data.meta.payment_receiver_id, response.data.charged_amount)
           // SAVE PAYMENT DETAILS TO DATABASE
           let payment_ref_id = (await this.databaseManager.create(this._pdb, transaction_details)).insertedId
           await paymentSuccess(response.data.customer.email, response.data.meta.consumer_name, response.data.meta.payment_receiver_name, response.data.charged_amount, response.data.meta.service_name )
