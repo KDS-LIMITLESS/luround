@@ -3,10 +3,12 @@ import { DatabaseService } from "../store/db.service.js";
 import * as bcrypt from 'bcrypt'
 import ResponseMessages from "../messageConstants.js";
 import { ObjectId } from "mongodb";
+import Flutterwave from 'flutterwave-node-v3';
 import { got } from "got";
 import { WithdrawalFailed, WithdrawalSuccess, generateRandomSixDigitNumber, sendWalletPinResetOTP } from "../utils/mail.services.js";
 import { WithdrawDTO } from "./wallet.dto.js";
 
+const flw = new Flutterwave(process.env.FLW_PUBLIC_KEY, process.env.FLW_SECRET_KEY)
 
 @Injectable()
 export class WalletService {
@@ -151,10 +153,38 @@ export class WalletService {
       } 
       return new BadRequestException({message: 'Your wallet balance is low'})
     } catch(err: any) {
+      console.log(err)
       await WithdrawalFailed(email, displayName, wallet_balance, payload.amount)
       throw new BadRequestException({message: err.message})
     }
   }
+
+  async transfer(user: any, payload: any) {
+    const {userId, email, displayName} = user
+    const { wallet_balance } = await this.get_wallet_balance(userId)
+    if (wallet_balance >= payload.amount) {
+      const details = {
+        account_bank: payload.account_bank,
+        account_number: payload.account_number,
+        amount: payload.amount,
+        currency: "NGN",
+        narration: "Luround Funds Withdrawal",
+        //reference: generateTransactionReference(),
+      };
+      flw.Transfer.initiate(details)
+        .then(async () => {
+          await this.deduct_wallet_balance(userId, payload.amount)
+          await WithdrawalSuccess(email, displayName, wallet_balance, payload.amount)
+          console.log(details)
+          return details
+        })
+        .catch(console.log("Error", details));
+    }
+    return new BadRequestException({message: 'Your wallet balance is low'})
+
+  }
+    
+    
   // on successful balance withdrawal    (Transfer API), deduct wallet balance.
   // on successful payment verification (Verify Payments API) increase wallet balance.
 }
