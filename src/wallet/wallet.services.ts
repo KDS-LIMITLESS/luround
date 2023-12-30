@@ -171,16 +171,23 @@ export class WalletService {
         narration: "Luround Funds Withdrawal",
         //reference: generateTransactionReference(),
       };
-      flw.Transfer.initiate(details)
-        .then(async () => {
-          await this.deduct_wallet_balance(userId, payload.amount)
-          await WithdrawalSuccess(email, displayName, wallet_balance, payload.amount)
-          console.log(details)
-          return details
-        })
-        .catch(console.log("Error", details));
+      let transfer = await flw.Transfer.initiate(details)
+      console.log(transfer)
+      if(transfer.status === "success") {
+        await this.deduct_wallet_balance(userId, payload.amount)
+        await WithdrawalSuccess(email, displayName, wallet_balance, payload.amount)
+        return transfer
+      }
+      return new BadRequestException({mesage: transfer.message})
+
     }
-    return new BadRequestException({message: 'Your wallet balance is low'})
+    //     .then(async () => {
+    //       
+    //       console.log(details)
+    //       return details
+    //     })
+    //     .catch((err: any) => {return err.message});
+    // }
 
   }
     
