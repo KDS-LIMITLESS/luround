@@ -125,7 +125,7 @@ export class BookingsManager {
   async cancel_booking(booking_id: string) {}
 
   async reschedule_booking(booking_id: string, new_date: string, new_time: string) {
-    let schedule_details = {date: new_date, time: new_time}
+    let schedule_details = {"service_details.date": new_date, "service_details.time": new_time}
     let update;
     Object.keys(schedule_details).forEach(async (key) => {
       update = await this.bookingsManager.updateProperty(this._bKM, booking_id, key, schedule_details)
