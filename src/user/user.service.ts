@@ -39,13 +39,14 @@ export class UserService {
       occupation: '',
       about: '',
       certificates: [],
-      media_links: []
+      media_links: [],
+      user_nToken: user.user_nToken
     }
     await sendOnboardingMail(user.email, user.firstName).catch(() => {
       throw new BadRequestException({message: "Invalid Email Address"})
     })
     let userId = (await this.databaseManager.create(this._udb, new_user)).insertedId
-    return this.authService.login({ email: user.email, displayName: user.displayName, _id: userId, photoUrl: user.photoUrl })
+    return this.authService.login({ email: user.email, displayName: user.displayName, _id: userId, photoUrl: user.photoUrl, user_nToken: new_user.user_nToken })
   }
 
   async localSignUp(user: UserDto): Promise<object | string>{
@@ -67,14 +68,15 @@ export class UserService {
         occupation: '',
         about: '',
         certificates: [],
-        media_links: []
+        media_links: [],
+        user_nToken: user.user_nToken
       }
       await sendOnboardingMail(user.email, user.firstName).catch(() => {
         throw Error("Invalid Email Address")
       })
       const userId = (await this.databaseManager.create(this._udb, new_user)).insertedId
       
-      return this.authService.login({email: user.email, displayName: new_user.displayName, _id: userId, photoUrl: user.photoUrl})
+      return this.authService.login({email: user.email, displayName: new_user.displayName, _id: userId, photoUrl: user.photoUrl, user_nToken: new_user.user_nToken})
 
     } catch(err: any) {
       throw new BadRequestException({

@@ -39,4 +39,6 @@ export class UserDto{
   @IsEmpty()
   media_links: null
 
+  user_nToken: string
+
 }

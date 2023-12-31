@@ -178,7 +178,7 @@ export class WalletService {
         await WithdrawalSuccess(email, displayName, wallet_balance, payload.amount)
         return transfer
       }
-      return new BadRequestException({mesage: transfer.message})
+      throw new BadRequestException({mesage: transfer.message})
 
     }
     //     .then(async () => {
