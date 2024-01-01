@@ -30,7 +30,6 @@ export class AuthService {
       })
     }
     const {password, ...userDetails} = isUser
-    console.log(userDetails)
     return userDetails
   }
 
