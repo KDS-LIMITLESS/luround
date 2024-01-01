@@ -16,7 +16,7 @@ export class AuthService {
 
   async login(user: any): Promise<object> {    
     let payload = { email: user.email, sub: user._id, displayName: user.displayName, photoUrl: user.photoUrl, user_nToken: user.user_nToken }
-    await this.userManager.updateDocument(this._udb, user._id, payload.user_nToken)
+    await this.userManager.updateDocument(this._udb, user._id, {user_nToken: payload.user_nToken || ""})
     return { "accessToken": await this.jwt.signAsync(payload) }
   }
 
@@ -30,6 +30,7 @@ export class AuthService {
       })
     }
     const {password, ...userDetails} = isUser
+    console.log(userDetails)
     return userDetails
   }
 
