@@ -19,6 +19,7 @@ import { TransactionsModule } from './transaction/transactions.model.js';
 import { FeedBackModule } from './feedback/feedback.module.js';
 import { NotificationModule } from './notifications/notification.module.js';
 import { QuoteModule } from './quotes/quote.module.js';
+import { InvoiceModule } from './invoice/invoice.moodule.js';
 
 @Module({
   imports: [
@@ -36,7 +37,8 @@ import { QuoteModule } from './quotes/quote.module.js';
     TransactionsModule,
     FeedBackModule,
     NotificationModule,
-    QuoteModule
+    QuoteModule,
+    InvoiceModule
   ],
   controllers: [AppController],
   providers: [

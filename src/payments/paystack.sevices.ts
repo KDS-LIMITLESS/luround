@@ -14,6 +14,7 @@ const flw = new Flutterwave(process.env.FLW_PUBLIC_KEY, process.env.FLW_SECRET_K
 export class PaymentsAPI {
   _bkDb = this.databaseManager.bookingsDB
   _pdb = this.databaseManager.payment
+  _idb = this.databaseManager.invoiceDB
 
   constructor(private databaseManager: DatabaseService, private walletService: WalletService) {}
 
@@ -129,24 +130,32 @@ export class PaymentsAPI {
         amount_paid: response.data.charged_amount,
         created_at: response.data.created_at,
       }
-      console.log(response.data.meta.payment_receiver_id)
-        // get booking where transaction_ref matches response.data.tx_ref
-        let get_booking_reference = await this.databaseManager.findOneDocument(this._bkDb, "payment_reference_id", query.tx_ref)
-        // update the booked_status to successful. 
-        if (get_booking_reference !== null) {
-          // UPDATE MATCHING BOOKING STATUS
-          await this.databaseManager.updateProperty(this._bkDb, get_booking_reference._id, "booked_status", {booked_status: "SUCCESSFUL"})
-          // SET WALLET BALANCE
-          await this.walletService.increase_wallet_balance(response.data.meta.payment_receiver_id, response.data.charged_amount)
-          // SAVE PAYMENT DETAILS TO DATABASE
+      if (query.tx_ref.startsWith("LUROUND-INVOICE")) {
+        let get_invoice = await this.databaseManager.findOneDocument(this._idb, "payment_reference_id", query.tx_ref)
+        if (get_invoice !== null) {
+          await this.databaseManager.updateProperty(this._idb, get_invoice._id, "payment_status", {payment_status: "SUCCESSFUL"})
           let payment_ref_id = (await this.databaseManager.create(this._pdb, transaction_details)).insertedId
           await paymentSuccess(response.data.customer.email, response.data.meta.consumer_name, response.data.meta.payment_receiver_name, response.data.charged_amount, response.data.meta.service_name )
           return {booking_status: "Success", payment_ref_id, transaction_ref: response.data.tx_ref }
         }
-        throw new BadRequestException({message: ResponseMessages.PaymentNotResolved})
+      }
+        // get booking where transaction_ref matches response.data.tx_ref
+      let get_booking_reference = await this.databaseManager.findOneDocument(this._bkDb, "payment_reference_id", query.tx_ref)
+      // update the booked_status to successful. 
+      if (get_booking_reference !== null) {
+        // UPDATE MATCHING BOOKING STATUS
+        await this.databaseManager.updateProperty(this._bkDb, get_booking_reference._id, "booked_status", {booked_status: "SUCCESSFUL"})
+        // SET WALLET BALANCE
+        await this.walletService.increase_wallet_balance(response.data.meta.payment_receiver_id, response.data.charged_amount)
+        // SAVE PAYMENT DETAILS TO DATABASE
+        let payment_ref_id = (await this.databaseManager.create(this._pdb, transaction_details)).insertedId
+        await paymentSuccess(response.data.customer.email, response.data.meta.consumer_name, response.data.meta.payment_receiver_name, response.data.charged_amount, response.data.meta.service_name )
+        return {booking_status: "Success", payment_ref_id, transaction_ref: response.data.tx_ref }
+      }
+      throw new BadRequestException({message: ResponseMessages.PaymentNotResolved})
     } else {
         await paymentFailed(response.data.customer.email, response.data.meta.consumer_name, response.data.meta.payment_receiver_name, response.data.charged_amount, response.data.meta.service_name )
-        throw new Error("Payment Failed")
+        throw new BadRequestException({message: "Payment Failed"})
       }
     }
   }
