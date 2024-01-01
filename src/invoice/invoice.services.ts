@@ -35,10 +35,10 @@ export class InvoiceService {
         rate: invoice_data.rate,
         duration: invoice_data.duration,
         discount: invoice_data.discount,
-        quote_date: Date.now(),
+        invoice_date: Date.now(),
         due_date: invoice_data.due_date,
       },
-      quote_link: `https://luround.com/invoice/${service_details.service_name.replace(/\s/g, "_")}/${encryption.encrypt(user.userId)}`,
+      invoice_link: `https://luround.com/invoice/${service_details.service_name.replace(/\s/g, "_")}/${encryption.encrypt(user.userId)}`,
       notes: invoice_data.note || ''
     }
 
@@ -50,7 +50,7 @@ export class InvoiceService {
       }
     )
     let create_invoice = await this.databaseManager.create(this._idb, invoice)
-    return {quoteId: create_invoice.insertedId, quote_link: invoice.quote_link, invoice_payment_link: response.data.link}
+    return {Invoice_id: create_invoice.insertedId, invoice_link: invoice.invoice_link, invoice_payment_link: response.data.link}
   }
 
   async get_paid_invoices(userId: string) {
