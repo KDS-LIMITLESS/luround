@@ -1,11 +1,12 @@
-import { Injectable } from "@nestjs/common";
+import { Injectable, InternalServerErrorException } from "@nestjs/common";
 import { applicationDefault, initializeApp } from "firebase-admin/app";
 import { getMessaging } from "firebase-admin/messaging";
-
+import { DatabaseService } from "../store/db.service.js";
 
 @Injectable()
 export class NotificationService {
-  constructor() {
+  _ndb = this.databaseService.notificationsDB
+  constructor(private databaseService: DatabaseService) {
     process.env.GOOGLE_APPLICATION_CREDENTIALS
     initializeApp({
       credential: applicationDefault(),
@@ -13,7 +14,7 @@ export class NotificationService {
     })
   }
 
-  async send_notification(userNToken: string) {
+  async send_test_notification(userNToken: string) {
     const message = {
       notification: {
         title: "Luround Notification",
@@ -22,8 +23,28 @@ export class NotificationService {
       token: userNToken
     }
 
-    let sendNotification = await getMessaging().send(message)
-    console.log(sendNotification)
-    return sendNotification
+    this.send_notification(message)
+  }
+
+  async send_notification(message: any) {
+    try {
+      let sendNotification = await getMessaging().send(message)
+      return sendNotification
+    } catch(err: any) {
+      throw new InternalServerErrorException({message: err})
+    }
+  }
+
+  async construct_notification_detail(user_nToken: string, title: string, body: string) {
+    const message = {
+      notification: {
+        title: title,
+        body: body
+      },
+      token: user_nToken
+    }
+    this.send_notification(message)
   }
 }
+
+

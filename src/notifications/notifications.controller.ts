@@ -7,8 +7,13 @@ export class NotificationController {
   
   constructor(private notificationService: NotificationService) {}
 
-  @Post('send-notification')
-  async sendNotification(@Req() req, @Res() res, @Body() body ) {
+  @Post('send-test-notification')
+  async sendTestNotification(@Req() req, @Res() res, @Body() body ) {
     return res.status(HttpStatus.OK).json(await this.notificationService.send_notification(body.user_nToken))
+  }
+
+  @Post('send-notification')
+  async sendNotification(@Req() req, @Res() res, @Body() payload ) {
+    return res.status(HttpStatus.OK).json(await this.notificationService.construct_notification_detail(payload.user_nToken, payload.title, payload.body))
   }
 }
