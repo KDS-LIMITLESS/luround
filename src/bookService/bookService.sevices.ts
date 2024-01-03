@@ -5,6 +5,7 @@ import ResponseMessages from "../messageConstants.js";
 import { BookServiceDto } from "./bookServiceDto.js";
 import { TransactionsManger } from "../transaction/tansactions.service.js";
 import { PaymentsAPI } from "../payments/paystack.sevices.js";
+import { UserService } from "../user/user.service.js";
 
 @Injectable()
 export class BookingsManager {
@@ -14,7 +15,8 @@ export class BookingsManager {
     private bookingsManager: DatabaseService, 
     private serviceManager: ServicePageManager,
     private transactionsManger: TransactionsManger,
-    private paymentsManager: PaymentsAPI
+    private paymentsManager: PaymentsAPI,
+    private userService: UserService
   ) {}
   
   // Decorate service with initialize payment 
@@ -83,7 +85,14 @@ export class BookingsManager {
           service_fee: amount, transaction_ref: tx_ref, transaction_status: "RECEIVED", 
           affliate_user: displayName
         })
-        return {BookingId: service_booked.insertedId, booking_payment_link: response.data.link}
+        // GET SERVICE PROVIDER DEVICE NOTIFICATION TOKEN 
+        let user_nToken = await this.userService.get_user_notification_token(serviceDetails.service_provider_details.userId)
+        return {
+          nUserId: serviceDetails.service_provider_details.userId,
+          user_nToken, 
+          BookingId: service_booked.insertedId, 
+          booking_payment_link: response.data.link
+        }
       } 
       throw new InternalServerErrorException({message: "An error occured. Service not booked"})
     }

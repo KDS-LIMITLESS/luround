@@ -125,7 +125,11 @@ export class UserService {
     }
     throw new BadRequestException({ message: "Invalid OTP"})
   }
- 
+  
+  async get_user_notification_token(userId: string) {
+    let user = await this.databaseManager.findOneDocument(this._udb, "_id", userId)
+    return user.user_nToken
+  }
 
   async deleteUserAccount() {}
 }

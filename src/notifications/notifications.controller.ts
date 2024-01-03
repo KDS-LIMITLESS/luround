@@ -14,6 +14,6 @@ export class NotificationController {
 
   @Post('send-notification')
   async sendNotification(@Req() req, @Res() res, @Body() payload ) {
-    return res.status(HttpStatus.OK).json(await this.notificationService.construct_notification_detail(payload.user_nToken, payload.title, payload.body))
+    return res.status(HttpStatus.OK).json(await this.notificationService.construct_notification_detail(payload.notification_userId, payload.user_nToken, payload.title, payload.body))
   }
 }
