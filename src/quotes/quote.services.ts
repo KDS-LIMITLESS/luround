@@ -22,24 +22,23 @@ export class QuotesService {
       service_provider_userId: user_detail._id,
       phone_number: data.phone_number,
       quote_link: `https://luround.com/quote/${encryption.encrypt(user.userId)}`,
-      notes: data.note || ''
+      notes: data.notes || '',
+      due_date: data.due_date
     }
-    const product_details = [{
-      // service_name: user_detail.service_name,
-      service_name: data.product_detail.service_name,
-      meeting_type: data.product_detail.meeting_type,
-      service_decription: data.product_detail.description || "",
-      rate: data.product_detail.rate,
-      duration: data.product_detail.duration,
-      discount: data.product_detail.discount,
-      quote_date: Date.now(),
-      due_date: data.product_detail.due_date,
-      note: data.product_detail.note || "",
-      vat: data.product_detail.vat
-    }]
+    // const product_details = [{
+    //   // service_name: user_detail.service_name,
+    //   service_name: data.product_detail.service_name,
+    //   meeting_type: data.product_detail.meeting_type,
+    //   service_decription: data.product_detail.description || "",
+    //   rate: data.product_detail.rate,
+    //   duration: data.product_detail.duration,
+    //   discount: data.product_detail.discount,
+    //   quote_date: Date.now(),
+    //   vat: data.product_detail.vat
+    // }]
       
     let quote = await this.databaseManager.create(this._qdb, quote_details)
-    await this.databaseManager.updateArr(this._qdb, "_id", new ObjectId(quote.insertedId), "product_details", product_details)
+    await this.databaseManager.updateArr(this._qdb, "_id", new ObjectId(quote.insertedId), "product_details", data.product_detail)
     return {quoteId: quote.insertedId, quote_link: quote_details.quote_link}
   }
 
