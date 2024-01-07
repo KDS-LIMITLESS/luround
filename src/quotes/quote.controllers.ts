@@ -8,7 +8,7 @@ export class QuoteControllers {
 
   @Post('send-quote')
   async sendQuote(@Req() req, @Res() res, @Body() payload, @Query() query) {
-    return res.status(HttpStatus.OK).json(await this.quoteService.send_quote(req.user, query.service_id, payload))
+    return res.status(HttpStatus.OK).json(await this.quoteService.send_quote(req.user, query.service_provider_email, payload))
   }
 
   @Get('sent-quotes')
