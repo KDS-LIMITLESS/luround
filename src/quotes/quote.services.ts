@@ -23,7 +23,11 @@ export class QuotesService {
       phone_number: data.phone_number,
       quote_link: `https://luround.com/quote/${encryption.encrypt(user.userId)}`,
       notes: data.notes || '',
-      due_date: data.due_date
+      due_date: data.due_date,
+      sub_total: data.sub_total,
+      discount: data.discount,
+      vat: data.vat,
+      total: data.total
     }
     // const product_details = [{
     //   // service_name: user_detail.service_name,
