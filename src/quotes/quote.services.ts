@@ -16,9 +16,11 @@ export class QuotesService {
     const user_detail: any = await this.databaseManager.findOneDocument(this._udb, "email", email)
 
     const quote_details = {
-      userId: user.userId,
-      service_provider_name: user_detail.displayName,
-      service_provider_email: user_detail.email,
+      // userId: user.userId,
+      user_email: user.email || data.user_email,
+      user_name: user.displayName || data.user_name,
+      service_provider_name: user_detail.displayName || data.send_to,
+      service_provider_email: user_detail.email || data.send_to_email,
       service_provider_userId: user_detail._id,
       phone_number: data.phone_number,
       quote_link: `https://luround.com/quote/${encryption.encrypt(user.userId)}`,
