@@ -54,6 +54,12 @@ export class QuotesDto {
 
   @IsNotEmpty()
   total: string
+
+  @IsNotEmpty()
+  duration: string
+
+  @IsNotEmpty()
+  appointment_type: string
 }
 
 export class EmailDto {

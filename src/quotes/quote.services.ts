@@ -23,7 +23,7 @@ export class QuotesService {
       service_provider_email: user_detail.email || data.send_to_email,
       service_provider_userId: user_detail._id,
       phone_number: data.phone_number,
-      quote_link: `https://luround.com/quote/${encryption.encrypt(user.userId)}`,
+      // quote_link: `https://luround.com/quote/${encryption.encrypt(user.userId)}`,
       notes: data.notes || '',
       due_date: data.due_date,
       sub_total: data.sub_total,
@@ -45,7 +45,7 @@ export class QuotesService {
       
     let quote = await this.databaseManager.create(this._qdb, quote_details)
     await this.databaseManager.updateArr(this._qdb, "_id", new ObjectId(quote.insertedId), "product_details", data.product_detail)
-    return {quoteId: quote.insertedId, quote_link: quote_details.quote_link}
+    return {quoteId: quote.insertedId }
   }
 
   async get_sent_quotes(userId: string) {
