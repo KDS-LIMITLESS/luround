@@ -1,7 +1,7 @@
 import { Body, Controller, Delete, Get, HttpStatus, Post, Query, Req, Res } from "@nestjs/common";
 import { QuotesService } from "./quote.services.js";
 import { QuotesDto, EmailDto } from "./quotesDto.js";
-import { SkipAuth } from "src/auth/jwt.strategy.js";
+import { SkipAuth } from "../auth/jwt.strategy.js";
 
 @Controller('api/v1/quotes')
 export class QuoteControllers {

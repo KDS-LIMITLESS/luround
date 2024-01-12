@@ -101,8 +101,12 @@ export class BookingsManager {
     // })
   }
 
-  async book_custom_service() {
-    
+  async confirm_booking(booking_id: string) {
+    try {
+      return await this.bookingsManager.updateProperty(this._bKM, booking_id, "booked_status", {booked_status: "CONFIRMED"})
+    } catch(err: any){
+      throw new BadRequestException({message: "Booking not updated"})
+    }
   }
 
   async get_booked_service_detail(booking_id: string) {
