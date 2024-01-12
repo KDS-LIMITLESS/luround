@@ -1,6 +1,6 @@
 import { PickType } from "@nestjs/mapped-types";
 import { File } from "buffer";
-import { IsEnum, IsNotEmpty, IsDate, IsOptional, IsMongoId } from "class-validator";
+import { IsEnum, IsNotEmpty, IsDate, IsOptional, IsMongoId, IsEmail } from "class-validator";
 import { ServicePageDto } from "../servicePage/servicePage.dto.js";
 
 enum AppointmentTypes {
@@ -23,7 +23,7 @@ export class BookServiceDto {
   message: string 
 
   @IsNotEmpty()
-  date: Date
+  date: any
 
   @IsNotEmpty()
   time: string
@@ -36,7 +36,13 @@ export class BookServiceDto {
 
   @IsMongoId()
   @IsOptional()
-  bookingId: string
+  bookingId?: string
+
+  @IsEmail() @IsOptional()
+  email: string
+
+  @IsOptional()
+  user_name: string
 } 
 
 export class BookingId extends PickType(BookServiceDto, ['bookingId'] as const) {}

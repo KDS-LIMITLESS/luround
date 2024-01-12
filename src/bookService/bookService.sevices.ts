@@ -32,7 +32,7 @@ export class BookingsManager {
     // CHECK IF SERVICE IS VALID AND EXISTS 
     let serviceDetails:any = await this.serviceManager.getService(serviceID)
     // CHECK IF USER IS TRYING TO BOOK THEMSELVES
-    if (serviceDetails && serviceDetails.service_provider_details.userId !== userId) {
+    // if (serviceDetails && serviceDetails.service_provider_details.userId !== userId) {
       let amount: string;
       if (bookingDetail.appointment_type === 'In-Person' ) {
         amount = serviceDetails.service_charge_in_person
@@ -63,13 +63,13 @@ export class BookingsManager {
       // CHECK FOR PAYMENT CONFIRMED AND SEND NOTIFICATION
       if (service_booked.acknowledged) {
         // *********INITIATE AND RECORD PAYMENT *************
-        let response: any = await PaymentsAPI.initiate_flw_payment(amount, user, bookingDetail.phone_number, tx_ref, 
-          {
-            service_name: serviceDetails.service_name, 
-            payment_receiver: serviceDetails.service_provider_details.displayName,
-            payment_receiver_id: serviceDetails.service_provider_details.userId
-          }
-        )
+        // let response: any = await PaymentsAPI.initiate_flw_payment(amount, user, bookingDetail.phone_number, tx_ref, 
+        //   {
+        //     service_name: serviceDetails.service_name, 
+        //     payment_receiver: serviceDetails.service_provider_details.displayName,
+        //     payment_receiver_id: serviceDetails.service_provider_details.userId
+        //   }
+        // )
         // ******** RECORD TRANSACTION *********
 
         // CURRENT LOGGED IN USER TRANSACTION DETAIL
@@ -91,14 +91,18 @@ export class BookingsManager {
           nUserId: serviceDetails.service_provider_details.userId,
           user_nToken, 
           BookingId: service_booked.insertedId, 
-          booking_payment_link: response.data.link
+          // booking_payment_link: response.data.link
         }
       } 
       throw new InternalServerErrorException({message: "An error occured. Service not booked"})
-    }
-    throw new BadRequestException({
-      message: "An error occurred. Are you booking Yourself?"
-    })
+    // }
+    // throw new BadRequestException({
+    //   message: "An error occurred. Are you booking Yourself?"
+    // })
+  }
+
+  async book_custom_service() {
+    
   }
 
   async get_booked_service_detail(booking_id: string) {
