@@ -1,15 +1,17 @@
 import { Body, Controller, Delete, Get, HttpStatus, Post, Query, Req, Res } from "@nestjs/common";
 import { QuotesService } from "./quote.services.js";
 import { QuotesDto, EmailDto } from "./quotesDto.js";
+import { SkipAuth } from "src/auth/jwt.strategy.js";
 
 @Controller('api/v1/quotes')
 export class QuoteControllers {
 
   constructor(private quoteService: QuotesService) {}
 
+  @SkipAuth()
   @Post('send-quote')
   async sendQuote(@Req() req, @Res() res, @Body() payload: QuotesDto, @Query() query: EmailDto) {
-    return res.status(HttpStatus.OK).json(await this.quoteService.send_quote(req.user, query.service_provider_email, payload))
+    return res.status(HttpStatus.OK).json(await this.quoteService.send_quote(query.service_provider_email, payload))
   }
 
   @Get('sent-quotes')

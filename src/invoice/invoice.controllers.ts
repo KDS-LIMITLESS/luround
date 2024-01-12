@@ -8,7 +8,7 @@ export class InvoiceControllers {
 
   @Post('generate-invoice')
   async sendQuote(@Req() req, @Res() res, @Body() payload: InvoiceDto, @Query() query) {
-    return res.status(HttpStatus.OK).json(await this.invoiceService.generate_invoice(req.user, payload, query.service_id))
+    return res.status(HttpStatus.OK).json(await this.invoiceService.generate_invoice(req.user, payload))
   }
 
   @Get('paid-invoices')

@@ -15,10 +15,10 @@ export class InvoiceService {
   constructor(private databaseManager: DatabaseService,  private bookingService: BookingsManager) {}
 
   // Add payment link to invoice.
-  async generate_invoice(user: any, invoice_data: any, email: string) {
+  async generate_invoice(user: any, invoice_data: any) {
     const time = new Date()
     // let encryption = new Encrypter(process.env.ENCRYPTION_KEY as string)
-    const service_provider: any = await this.databaseManager.findOneDocument(this._udb, "email", email)
+    // const service_provider: any = await this.databaseManager.findOneDocument(this._udb, "email", email)
 
     // let tx_ref = await this.paymentsManager.generateUniqueTransactionCode("LUROUND-INVOICE")
 
