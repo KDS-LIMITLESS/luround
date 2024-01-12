@@ -13,6 +13,8 @@ export class BookServiceDto {
   @IsNotEmpty()
   phone_number: string
 
+  displayName: string
+
   @IsNotEmpty() @IsEnum(AppointmentTypes)
   appointment_type: string
 

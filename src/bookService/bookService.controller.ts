@@ -2,11 +2,13 @@ import { Controller, Get, Post, Put, Query, Req, Res, Body, Delete } from "@nest
 import { Response } from "express";
 import { BookingsManager } from "./bookService.sevices.js";
 import { BookServiceDto, ServiceId, BookingId } from "./bookServiceDto.js";
+import { SkipAuth } from "../auth/jwt.strategy.js";
 
 @Controller('api/v1/booking')
 export class BookingsController {
   constructor(private bookingsManager: BookingsManager) {}
 
+  @SkipAuth()
   @Post('/book-service')
   async bookSevice(@Req() req, @Body() payload: BookServiceDto, @Res() res: Response, @Query() query: ServiceId) {
     return res.status(200).json(await this.bookingsManager.book_service(payload, query.serviceId, req.user))

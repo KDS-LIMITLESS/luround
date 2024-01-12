@@ -25,10 +25,10 @@ export class BookingsManager {
   // If payment valid update booked status
 
   // Increase price based on the service duration
-  async book_service(bookingDetail: BookServiceDto, serviceID: string, user: any) {
+  async book_service(bookingDetail: BookServiceDto, serviceID: string, user: any ) {
     // GET UNIQUE TRANSACTION REFERENCE CODE
     let tx_ref = await this.paymentsManager.generateUniqueTransactionCode("LUROUND")
-    const { userId, email, displayName } = user
+    // const { userId, email, displayName } = user
     // CHECK IF SERVICE IS VALID AND EXISTS 
     let serviceDetails:any = await this.serviceManager.getService(serviceID)
     // CHECK IF USER IS TRYING TO BOOK THEMSELVES
@@ -41,7 +41,13 @@ export class BookingsManager {
       }
       let booking_Detail = {
         service_provider_info: serviceDetails.service_provider_details,
-        booking_user_info: {userId, email, displayName, phone_number: bookingDetail.phone_number },
+        // booking_user_info: {userId, email, displayName, phone_number: bookingDetail.phone_number },
+        booking_user_info: {
+          userId: "" || user.userId,
+          email: bookingDetail.email || user.email, 
+          displayName: bookingDetail.displayName || user.displayName, 
+          phone_number: bookingDetail.phone_number 
+        },
         booked_status: "PENDING CONFIRMATION",
         payment_reference_id: tx_ref,
         service_details: {
@@ -73,17 +79,17 @@ export class BookingsManager {
         // ******** RECORD TRANSACTION *********
 
         // CURRENT LOGGED IN USER TRANSACTION DETAIL
-        this.transactionsManger.record_transaction(userId, {
-          service_id: serviceDetails._id, service_name: serviceDetails.service_name, 
-          service_fee: amount, transaction_ref: tx_ref, transaction_status: "SENT", 
-          affliate_user: serviceDetails.service_provider_details.displayName
-        })
+        // this.transactionsManger.record_transaction(userId, {
+        //   service_id: serviceDetails._id, service_name: serviceDetails.service_name, 
+        //   service_fee: amount, transaction_ref: tx_ref, transaction_status: "SENT", 
+        //   affliate_user: serviceDetails.service_provider_details.displayName
+        // })
 
         // SERVICE PROVIDER TRANSACTION DETAIL
         this.transactionsManger.record_transaction(serviceDetails.service_provider_details.userId, {
           service_id: serviceDetails._id, service_name: serviceDetails.service_name, 
           service_fee: amount, transaction_ref: tx_ref, transaction_status: "RECEIVED", 
-          affliate_user: displayName
+          affliate_user: bookingDetail.displayName
         })
         // GET SERVICE PROVIDER DEVICE NOTIFICATION TOKEN 
         let user_nToken = await this.userService.get_user_notification_token(serviceDetails.service_provider_details.userId)
