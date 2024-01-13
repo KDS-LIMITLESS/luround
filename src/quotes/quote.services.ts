@@ -1,7 +1,8 @@
-import { Injectable } from "@nestjs/common";
+import { BadRequestException, Injectable } from "@nestjs/common";
 import { DatabaseService } from "../store/db.service.js";
 import { Encrypter } from "../utils/Encryption.js";
 import { ObjectId } from "mongodb";
+import ResponseMessages from "../messageConstants.js";
 
 
 @Injectable()
@@ -11,52 +12,73 @@ export class QuotesService {
   _sdb = this.databaseManager.serviceDB
   constructor(private databaseManager: DatabaseService) {}
 
-  async send_quote(email: string, data: any) {
-    let encryption = new Encrypter(process.env.ENCRYPTION_KEY as string)
-    const user_detail: any = await this.databaseManager.findOneDocument(this._udb, "email", email)
+  async send_quote(user: any, data: any) {
+    // let encryption = new Encrypter(process.env.ENCRYPTION_KEY as string)
 
     const quote_details = {
       // userId: user.userId,
-      user_email: data.user_email,
-      user_name: data.user_name,
-      service_provider_name: user_detail.displayName || data.send_to,
-      service_provider_email: user_detail.email || data.send_to_email,
-      service_provider_userId: user_detail._id,
+      send_to_name: data.send_to_name,
+      send_to_email: data.send_to_email,
       phone_number: data.phone_number,
       // quote_link: `https://luround.com/quote/${encryption.encrypt(user.userId)}`,
-      notes: data.notes || '',
       due_date: data.due_date,
+      quote_date: data.quote_date,
       sub_total: data.sub_total,
       discount: data.discount,
       vat: data.vat,
-      total: data.total
+      total: data.total,
+      appointment_type: data.appointment_type,
+      status: data.status,
+      note: data.note || '',
+      service_provider: {
+        name: user.displayName,
+        email: user.email ,
+        userId: user.userId
+      } 
     }
-    // const product_details = [{
-    //   // service_name: user_detail.service_name,
-    //   service_name: data.product_detail.service_name,
-    //   meeting_type: data.product_detail.meeting_type,
-    //   service_decription: data.product_detail.description || "",
-    //   rate: data.product_detail.rate,
-    //   duration: data.product_detail.duration,
-    //   discount: data.product_detail.discount,
-    //   quote_date: Date.now(),
-    //   vat: data.product_detail.vat
-    // }]
-      
     let quote = await this.databaseManager.create(this._qdb, quote_details)
     await this.databaseManager.updateArr(this._qdb, "_id", new ObjectId(quote.insertedId), "product_details", data.product_detail)
     return {quoteId: quote.insertedId }
   }
 
+  async get_saved_quotes(userId: string) {
+    return await this._qdb.find({"status": "SAVED", "service_provider.userId": userId }).toArray()
+  }
+
   async get_sent_quotes(userId: string) {
-    return await this.databaseManager.readAndWriteToArray(this._qdb, "userId", userId)
+    return await this._qdb.find({"status": "SENT", "service_provider.userId": userId }).toArray()
   }
 
   async get_received_quotes(userId: string) {
-    return await this.databaseManager.readAndWriteToArray(this._qdb, "service_provider_userId", userId)
+    return await this._qdb.find({"quote_to.userId": userId, "staTus": "REQUEST"}).toArray()
   }
 
   async delete_quote(quote_id: string) {
     return (await this.databaseManager.delete(this._qdb, quote_id)).value
   }
+
+  async request_quote(data:any, serviceId:string) {
+    const service = await this.databaseManager.findOneDocument(this._sdb, "_id", serviceId)
+    if (service !== null) {
+      const quote_details = {
+        user_email: data.user_email,
+        full_name: data.full_name,
+        quote_to: {
+          userId: service.service_provider_details.userId,
+          email: service.service_provider_details.email,
+          displayName: service.service_provider_details.displayName
+        },
+        phone_number: data.phone_number,
+        service_name: service.service_name,
+        appointment_type: data.appointment_type,
+        budget: data.budget,
+        file: data.file || "",
+        note: data.note || "",
+        status: "REQUEST"
+      }
+      return await this.databaseManager.create(this._qdb, quote_details)
+    }
+    throw new BadRequestException({message: ResponseMessages.ServiceNotFound})
+  }
+    
 }

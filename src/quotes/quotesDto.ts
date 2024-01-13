@@ -1,5 +1,6 @@
 import { BadRequestException } from "@nestjs/common";
-import { IsArray, IsDate, IsEmail, IsNotEmpty, ValidationArguments, ValidationOptions, ValidatorConstraint, ValidatorConstraintInterface, registerDecorator } from "class-validator";
+import { PartialType } from "@nestjs/mapped-types";
+import { IsArray, IsDate, IsEmail, IsEnum, IsNotEmpty, IsOptional, ValidationArguments, ValidationOptions, ValidatorConstraint, ValidatorConstraintInterface, registerDecorator } from "class-validator";
 
 @ValidatorConstraint({async: true})
 class ProductDetailConstraint implements ValidatorConstraintInterface {
@@ -32,13 +33,34 @@ function IsProduct(validationOptions?: ValidationOptions) {
   }
 }
 
+enum AppointmentTypes {
+  virtual = 'Virtual',
+  in_person = 'In-Person'
+}
+
+
+enum Status {
+  sent = 'SENT',
+  saved = 'SAVED'
+}
+
+
 export class QuotesDto {
+
+  @IsNotEmpty()
+  send_to_name: string
+
+  @IsNotEmpty()
+  send_to_email: string
 
   @IsNotEmpty()
   phone_number: string
 
   @IsNotEmpty()
   due_date: Date
+
+  @IsNotEmpty()
+  quote_date: any
 
   @IsArray() @IsProduct()
   product_detail: []
@@ -56,13 +78,31 @@ export class QuotesDto {
   total: string
 
   @IsNotEmpty()
-  duration: string
+  appointment_type: string
+
+  @IsOptional()
+  note: string
+
+  @IsNotEmpty() @IsEnum(Status)
+  status: string
+}
+
+
+export class RequestQuoteDto {
+  @IsNotEmpty() @IsEmail()
+  user_email: string
 
   @IsNotEmpty()
+  full_name: string
+
+  @IsNotEmpty()
+  phone_number: string
+
+  @IsNotEmpty() @IsEnum(AppointmentTypes)
   appointment_type: string
+
+  @IsOptional()
+  note: string
 }
 
-export class EmailDto {
-  @IsEmail() @IsNotEmpty()
-  service_provider_email: string
-}
+export class QuotesOptionalDto extends PartialType(QuotesDto) {}
