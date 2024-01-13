@@ -1,6 +1,6 @@
 import { Body, Controller, Delete, Get, HttpStatus, Post, Query, Req, Res } from "@nestjs/common";
 import { QuotesService } from "./quote.services.js";
-import { QuotesDto,  RequestQuoteDto } from "./quotesDto.js";
+import { QuotesDto,  QuotesOptionalDto,  RequestQuoteDto } from "./quotesDto.js";
 import { SkipAuth } from "../auth/jwt.strategy.js";
 
 @Controller('api/v1/quotes')
@@ -17,6 +17,11 @@ export class QuoteControllers {
   @Post('request-quote')
   async requestQuote(@Res() res, @Body() payload: RequestQuoteDto, @Query() query) {
     return res.status(HttpStatus.OK).json(await this.quoteService.request_quote(payload, query.serviceId))
+  }
+
+  @Post('save-quote')
+  async saveQuote(@Req() req, @Res() res, @Body() payload: QuotesOptionalDto) {
+    return res.status(HttpStatus.OK).json(await this.quoteService.send_quote(req.user, payload))
   }
 
   @Get('sent-quotes')
