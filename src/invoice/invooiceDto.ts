@@ -71,7 +71,7 @@ export class InvoiceDto {
   phone_number: string
 
   @IsNotEmpty()
-  due_date: Date
+  due_date: any
 
   @IsArray() @IsValidBookingData()
   booking_detail: []
