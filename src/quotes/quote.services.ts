@@ -50,7 +50,7 @@ export class QuotesService {
   }
 
   async get_received_quotes(userId: string) {
-    return await this._qdb.find({"quote_to.userId": userId, "staTus": "REQUEST"}).toArray()
+    return await this._qdb.find({"quote_to.userId": userId, "status": "REQUEST"}).toArray()
   }
 
   async delete_quote(quote_id: string) {
