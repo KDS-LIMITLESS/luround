@@ -18,7 +18,12 @@ export class CRMService {
   }
 
   async get_user_contacts(userId: string) {
-    let { contacts } = await this.databaseService.findOneDocument(this._crmdb, "_id", userId)
-    return contacts
+    try {
+      let { contacts } = await this.databaseService.findOneDocument(this._crmdb, "_id", userId)
+      return contacts
+    } catch (err) {
+      return []
+    }
+    
   }
 }
