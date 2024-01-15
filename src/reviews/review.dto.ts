@@ -11,8 +11,8 @@ export class ReviewDTO {
 
   @IsNotEmpty()
   @IsMongoId()
-  serviceId: string
+  userId: string
 }
 
 export class ReviewPickDTO extends PickType(ReviewDTO, ['comment', 'rating'] as const) {}
-export class ReviewPickServiceIdDTO extends PickType(ReviewDTO, ['serviceId']) {}
+export class ReviewPickServiceIdDTO extends PickType(ReviewDTO, ['userId']) {}

@@ -9,11 +9,11 @@ export class ReviewsController {
 
   @Post('add-review')
   async addReviews(@Req() req, @Res() res, @Body() payload: ReviewPickDTO, @Query() query: ReviewPickServiceIdDTO) {
-    return res.status(HttpStatus.OK).json(await this.reviewsService.review(req.user, query.serviceId, payload))
+    return res.status(HttpStatus.OK).json(await this.reviewsService.review(req.user, query.userId, payload))
   }
 
-  @Get('service-reviews')
+  @Get('get-user-reviews')
   async getServiceReviews(@Res() res, @Query() query: ReviewPickServiceIdDTO) {
-    return res.status(HttpStatus.OK).json(await this.reviewsService.get_service_reviews(query.serviceId))
+    return res.status(HttpStatus.OK).json(await this.reviewsService.get_user_reviews(query.userId))
   }
 }
