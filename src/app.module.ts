@@ -20,6 +20,8 @@ import { FeedBackModule } from './feedback/feedback.module.js';
 import { NotificationModule } from './notifications/notification.module.js';
 import { QuoteModule } from './quotes/quote.module.js';
 import { InvoiceModule } from './invoice/invoice.moodule.js';
+import { ReceiptModule } from './receipt/receipt.moodule.js';
+import { CRMModule } from './crm/crm.module.js';
 
 @Module({
   imports: [
@@ -38,7 +40,9 @@ import { InvoiceModule } from './invoice/invoice.moodule.js';
     FeedBackModule,
     NotificationModule,
     QuoteModule,
-    InvoiceModule
+    InvoiceModule,
+    ReceiptModule,
+    CRMModule
   ],
   controllers: [AppController],
   providers: [

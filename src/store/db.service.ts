@@ -15,6 +15,8 @@ export class DatabaseService {
   quotes = this._db.collection("quotes")
   invoiceDB = this._db.collection("invoice")
   notificationsDB = this._db.collection("notifications")
+  receiptsDB = this._db.collection("receipts")
+  crmDB = this._db.collection("crm")
   
   constructor(@Inject('MONGO_CONNECTION') private _db:Db) {}
   
