@@ -12,7 +12,7 @@ export class ReviewsController {
     return res.status(HttpStatus.OK).json(await this.reviewsService.review(req.user, query.userId, payload))
   }
 
-  @Get('get-user-reviews')
+  @Get('user-reviews')
   async getServiceReviews(@Res() res, @Query() query: ReviewPickServiceIdDTO) {
     return res.status(HttpStatus.OK).json(await this.reviewsService.get_user_reviews(query.userId))
   }
