@@ -19,12 +19,12 @@ export class ReceiptControllers {
 
   @Get('receipts')
   async getReceipts(@Req() req, @Res() res) {
-    return res.status(HttpStatus.OK).json(await this.receiptService.get_receipts(req.userId))
+    return res.status(HttpStatus.OK).json(await this.receiptService.get_receipts(req.user.userId))
   }
 
-  @Get('saved-receipt')
+  @Get('saved-receipts')
   async getSavedReceipts(@Req() req, @Res() res) {
-    return res.status(HttpStatus.OK).json(await this.receiptService.get_saved_receipts(req.userId))
+    return res.status(HttpStatus.OK).json(await this.receiptService.get_saved_receipts(req.user.userId))
   }
 
   @Delete('delete-receipt')

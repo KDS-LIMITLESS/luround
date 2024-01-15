@@ -17,10 +17,10 @@ export class ReceiptService {
 
       service_provider_name: displayName,
       service_provider_email: email,
-      service_provider_userId: userId,
+      service_provider_userId: new ObjectId(userId),
 
       phone_number: receipt_data.phone_number,
-      payment_status: receipt_data.status,
+      payment_status: receipt_data.payment_status,
       discount: receipt_data.discount,
       vat: receipt_data.vat,
       sub_total: receipt_data.sub_total,
@@ -36,11 +36,12 @@ export class ReceiptService {
   }
 
   async get_receipts(userId: string) {
-    return await this._rpdb.find({"userId": userId, "payment_status": "SENT"}).toArray()
+    console.log(userId)
+    return await this._rpdb.find({"service_provider_userId": new ObjectId(userId), "payment_status": "SENT"}).toArray()
   }
 
   async get_saved_receipts(userId: string) {
-    return await this._rpdb.find({"userId": userId, "payment_status": "DRAFT"}).toArray()
+    return await this._rpdb.find({"service_provider_userId": new ObjectId(userId), "payment_status": "DRAFT"}).toArray()
   }
 
   async delete_receipt(receipt_id: string) {
