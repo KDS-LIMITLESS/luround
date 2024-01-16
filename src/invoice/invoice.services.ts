@@ -67,7 +67,7 @@ export class InvoiceService {
     return await this._idb.find({"userId": userId, "payment_status": "PENDING"}).toArray()
   }
 
-  async delete_quote(quote_id: string) {
-    return (await this.databaseManager.delete(this._idb, quote_id)).value
+  async delete_quote(invoice_id: string) {
+    return (await this.databaseManager.delete(this._idb, invoice_id)).value
   }
 }

@@ -23,6 +23,6 @@ export class InvoiceControllers {
 
   @Delete('delete-invoice')
   async deleteQuote(@Req() req, @Res() res, @Query() query) {
-    return res.status(HttpStatus.OK).json(await this.invoiceService.delete_quote(query.quote_id))
+    return res.status(HttpStatus.OK).json(await this.invoiceService.delete_quote(query.invoice_id))
   }
 }
