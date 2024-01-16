@@ -1,10 +1,10 @@
-import { Body, Controller, FileTypeValidator, Get, HttpStatus, 
-  ParseFilePipe, Post, Put, Req, Res, UploadedFile, UseGuards, UseInterceptors 
+import { Body, Controller,  Get, HttpStatus, UseGuards,
+  Post, Put, Req, Res, // UploadedFile,ParseFilePipe , UseInterceptors, FileTypeValidator,
 } from '@nestjs/common';
 import { UserService } from './user.service.js';
 import { Response } from 'express';
-import { FileInterceptor } from '@nestjs/platform-express';
-import { uploadImage } from '../utils/cloudinary-upload.services.js';
+// import { FileInterceptor } from '@nestjs/platform-express';
+// import { uploadImage } from '../utils/cloudinary-upload.services.js';
 import { UserDto } from './user.dto.js';
 import { SkipAuth } from '../auth/jwt.strategy.js';
 import { AuthGuard } from '@nestjs/passport';
@@ -50,27 +50,27 @@ export class UserController {
     return res.status(HttpStatus.OK).json(await this.userService.change_password(req.user.userId, body.old_password, body.new_password))
   }
 
-  @Post('/api/v1/upload-image')
-  @UseInterceptors(FileInterceptor('image'))
-  async uploadFile(
-    @UploadedFile( 
-      new ParseFilePipe({
-        validators: [
-          // new MaxFileSizeValidator({maxSize: 100000}),
-          new FileTypeValidator({fileType: 'image/jpeg'})
-        ]
-      })
-    )
-    file: Express.Multer.File,
-    @Res() res: Response
-  ){
-    try {
-      let uploadFile = await uploadImage(file.buffer)
-      return res.status(HttpStatus.CREATED).json(uploadFile)
+  // @Post('/api/v1/upload-image')
+  // @UseInterceptors(FileInterceptor('image'))
+  // async uploadFile(
+  //   @UploadedFile( 
+  //     new ParseFilePipe({
+  //       validators: [
+  //         // new MaxFileSizeValidator({maxSize: 100000}),
+  //         new FileTypeValidator({fileType: 'image/jpeg'})
+  //       ]
+  //     })
+  //   )
+  //   file: Express.Multer.File,
+  //   @Res() res: Response
+  // ){
+  //   try {
+  //     let uploadFile = await uploadImage(file.buffer)
+  //     return res.status(HttpStatus.CREATED).json(uploadFile)
 
-    } catch (err: any){
-      return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json(err.message)
-    }
-  }
+  //   } catch (err: any){
+  //     return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json(err.message)
+  //   }
+  // }
 
 }
