@@ -26,9 +26,11 @@ export class InvoiceService {
       // userId: user.userId,
       send_to: invoice_data.send_to,
       sent_to_email: invoice_data.send_to_email,
-      service_provider_name: user.displayName,
-      service_provider_email: user.email,
-      service_provider_userId: user.userId,
+      service_provider: {
+        name: user.displayName,
+        email: user.email ,
+        userId: user.userId
+      },
       phone_number: invoice_data.phone_number,
       // payment_reference_id: tx_ref,
       payment_status: "PENDING",
@@ -60,11 +62,11 @@ export class InvoiceService {
   }
 
   async get_paid_invoices(userId: string) {
-    return await this._idb.find({"userId": userId, "payment_status": "SUCCESSFUL"}).toArray()
+    return await this._idb.find({"service_provider.userId": userId, "payment_status": "SUCCESSFUL"}).toArray()
   }
 
   async get_unpaid_invoices(userId: string) {
-    return await this._idb.find({"userId": userId, "payment_status": "PENDING"}).toArray()
+    return await this._idb.find({"service_provider.userId": userId, "payment_status": "PENDING"}).toArray()
   }
 
   async delete_quote(invoice_id: string) {
