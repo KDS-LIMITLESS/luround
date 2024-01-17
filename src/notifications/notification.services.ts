@@ -61,7 +61,12 @@ export class NotificationService {
   }
 
   async get_user_notifications(userId: string) {
-    let user_notifications = await this._ndb.find({'_id': new ObjectId(userId)}).toArray()
-    return user_notifications[0]['notifications']
+    try {
+      let user_notifications = await this._ndb.find({'_id': new ObjectId(userId)}).toArray()
+      return user_notifications[0]['notifications']
+    } catch (err: any) {
+      return []
+    }
+   
   }
 }

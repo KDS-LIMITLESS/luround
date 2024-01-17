@@ -94,7 +94,7 @@ export class BookingsManager {
         // GET SERVICE PROVIDER DEVICE NOTIFICATION TOKEN 
         let user_nToken = await this.userService.get_user_notification_token(serviceDetails.service_provider_details.userId)
         return {
-          nUserId: serviceDetails.service_provider_details.userId,
+          userId: serviceDetails.service_provider_details.userId,
           user_nToken, 
           BookingId: service_booked.insertedId, 
           // booking_payment_link: response.data.link
