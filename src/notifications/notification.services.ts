@@ -54,10 +54,10 @@ export class NotificationService {
     const id = new ObjectId(userId)
     if (await this.databaseService.findOneDocument(this._ndb, "_id", userId)) {
       console.log(userId)
-      await this.databaseService.updateArr(this._ndb, "_id", id, "notifications", [{title, body}])
+      await this.databaseService.updateArr(this._ndb, "_id", id, "notifications", [{title, body, created_at:Date.now()}])
       return "Array updated"
     }
-    return await this.databaseService.create(this._ndb, {"_id": id, notifications: [{title, body}]})
+    return await this.databaseService.create(this._ndb, {"_id": id, notifications: [{title, body, created_at: Date.now()}]})
   }
 
   async get_user_notifications(userId: string) {
