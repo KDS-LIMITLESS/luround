@@ -43,9 +43,9 @@ export class BookingsManager {
         service_provider_info: serviceDetails.service_provider_details,
         // booking_user_info: {userId, email, displayName, phone_number: bookingDetail.phone_number },
         booking_user_info: {
-          userId: "" || user.userId,
-          email: bookingDetail.email || user.email, 
-          displayName: bookingDetail.displayName || user.displayName, 
+          // userId: "" || user.userId,
+          email: bookingDetail.email,
+          displayName: bookingDetail.displayName, 
           phone_number: bookingDetail.phone_number 
         },
         booked_status: "PENDING CONFIRMATION",
