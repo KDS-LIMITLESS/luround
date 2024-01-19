@@ -1,14 +1,19 @@
-import { Body, Controller, Res, Req, HttpStatus, Post, Query, Get, Delete } from "@nestjs/common";
+import { Body, Controller, Res, Req, HttpStatus, Post, Query, Get, Delete, Put } from "@nestjs/common";
 import { InvoiceService } from "./invoice.services.js";
-import { InvoiceDto } from "./invooiceDto.js";
+import { InvoiceDto, InvoicePaymentDto } from "./invooiceDto.js";
 
 @Controller('api/v1/invoice')
 export class InvoiceControllers {
   constructor(private invoiceService: InvoiceService) {}
 
   @Post('generate-invoice')
-  async sendQuote(@Req() req, @Res() res, @Body() payload: InvoiceDto, @Query() query) {
+  async sendInvoice(@Req() req, @Res() res, @Body() payload: InvoiceDto, @Query() query) {
     return res.status(HttpStatus.OK).json(await this.invoiceService.generate_invoice(req.user, payload))
+  }
+
+  @Put('add-invoice-payment-detail')
+  async invoicePaymentDetails(@Req() req, @Res() res, @Body() payload: InvoicePaymentDto, @Query() query) {
+    return res.status(HttpStatus.OK).json(await this.invoiceService.enter_invoice_payment(query.invoiceId, payload))
   }
 
   @Get('paid-invoices')

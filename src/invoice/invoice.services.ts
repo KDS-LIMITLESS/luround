@@ -77,6 +77,15 @@ export class InvoiceService {
     return await this._idb.find({"service_provider.userId": userId, "payment_status": "PENDING"}).toArray()
   }
 
+  async enter_invoice_payment(invoice_id: string, data: any) {
+    const payment_details = {
+      amount_paid: data.amount_paid,
+      payment_method: data.payment_method
+    }
+    await this.databaseManager.updateDocument(this._idb, invoice_id, payment_details)
+    return await this.databaseManager.updateProperty(this._idb, invoice_id, "payment_status", {payment_status: "SUCCESSFUL"})
+  }
+  
   async delete_quote(invoice_id: string) {
     return (await this.databaseManager.delete(this._idb, invoice_id)).value
   }

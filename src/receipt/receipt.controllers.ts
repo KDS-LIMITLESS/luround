@@ -17,12 +17,12 @@ export class ReceiptControllers {
     return res.status(HttpStatus.OK).json(await this.receiptService.generate_receipt(req.user, payload))
   }
 
-  @Get('receipts')
+  @Get('resend-receipt')
   async resendReceipts(@Req() req, @Res() res) {
     return res.status(HttpStatus.OK).json(await this.receiptService.update_receipt_status(req.query.receiptId))
   }
 
-  @Put('resend-receipts')
+  @Get('receipts')
   async getReceipts(@Req() req, @Res() res) {
     return res.status(HttpStatus.OK).json(await this.receiptService.get_receipts(req.user.userId))
   }

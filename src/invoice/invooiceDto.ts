@@ -1,5 +1,5 @@
 import { BadRequestException } from "@nestjs/common";
-import { IsArray, IsDate, IsEmail, IsNotEmpty, ValidationArguments, ValidationOptions, ValidatorConstraint, ValidatorConstraintInterface, registerDecorator } from "class-validator";
+import { IsArray, IsDate, IsEmail, IsNotEmpty, ValidationArguments, ValidationOptions, ValidatorConstraint, ValidatorConstraintInterface, isNotEmpty, registerDecorator } from "class-validator";
 
 @ValidatorConstraint({async: true})
 class InvoiceDetailConstraint implements ValidatorConstraintInterface {
@@ -88,6 +88,15 @@ export class InvoiceDto {
   @IsNotEmpty()
   total: string
 }
+
+export class InvoicePaymentDto {
+  @IsNotEmpty()
+  amount_paid: string
+
+  @IsNotEmpty()
+  payment_method: string
+}
+
 
 export class EmailDto {
   @IsEmail() @IsNotEmpty()
