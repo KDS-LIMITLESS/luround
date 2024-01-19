@@ -1,4 +1,4 @@
-import { Body, Controller, Res, Req, HttpStatus, Post, Query, Get, Delete } from "@nestjs/common";
+import { Body, Controller, Res, Req, HttpStatus, Post, Query, Get, Delete, Put } from "@nestjs/common";
 import { ReceiptService } from "./receipt.services.js";
 import { ReceiptDto, ReceiptPartialDTO } from "./receiptDto.js";
 
@@ -13,11 +13,16 @@ export class ReceiptControllers {
   }
 
   @Post('save-receipt')
-  async saveReceipt(@Req() req, @Res() res, @Body() payload: ReceiptPartialDTO) {
+  async saveReceipt(@Req() req, @Res() res, @Body() payload: ReceiptDto) {
     return res.status(HttpStatus.OK).json(await this.receiptService.generate_receipt(req.user, payload))
   }
 
   @Get('receipts')
+  async resendReceipts(@Req() req, @Res() res) {
+    return res.status(HttpStatus.OK).json(await this.receiptService.update_receipt_status(req.query.receiptId))
+  }
+
+  @Put('resend-receipts')
   async getReceipts(@Req() req, @Res() res) {
     return res.status(HttpStatus.OK).json(await this.receiptService.get_receipts(req.user.userId))
   }

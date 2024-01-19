@@ -3,6 +3,7 @@ import { DatabaseService } from "../store/db.service.js";
 import { Encrypter } from "../utils/Encryption.js";
 import { ObjectId } from "mongodb";
 import ResponseMessages from "../messageConstants.js";
+import { ProfileService } from "../profileManager/profile.service.js";
 
 
 @Injectable()
@@ -10,10 +11,14 @@ export class QuotesService {
   _qdb = this.databaseManager.quotes
   _udb = this.databaseManager.userDB
   _sdb = this.databaseManager.serviceDB
-  constructor(private databaseManager: DatabaseService) {}
+  constructor(private databaseManager: DatabaseService, private userProfile: ProfileService) {}
 
   async send_quote(user: any, data: any) {
     // let encryption = new Encrypter(process.env.ENCRYPTION_KEY as string)
+    const user_mLinks = await this.userProfile.get_user_media_links(user.email)
+
+    const phone_number = user_mLinks.find((obj) => Object.getOwnPropertyDescriptor(obj, "github")) || ""
+    const address = user_mLinks.find((obj) => Object.getOwnPropertyDescriptor(obj, "address")) || ""
 
     const quote_details = {
       // userId: user.userId,
@@ -32,8 +37,10 @@ export class QuotesService {
       note: data.note || '',
       service_provider: {
         name: user.displayName,
-        email: user.email ,
-        userId: user.userId
+        email: user.email,
+        userId: user.userId,
+        phone_number: phone_number['phone_number'] || "",
+        address: address['address'] || ""
       } 
     }
     let quote = await this.databaseManager.create(this._qdb, quote_details)
@@ -59,6 +66,11 @@ export class QuotesService {
 
   async request_quote(data:any, serviceId:string) {
     const service = await this.databaseManager.findOneDocument(this._sdb, "_id", serviceId)
+    const user_mLinks = await this.userProfile.get_user_media_links(service.service_provider_details.email)
+
+    const phone_number = user_mLinks.find((obj) => Object.getOwnPropertyDescriptor(obj, "github")) || ""
+    const address = user_mLinks.find((obj) => Object.getOwnPropertyDescriptor(obj, "address")) || ""
+
     if (service !== null) {
       const quote_details = {
         user_email: data.user_email,
@@ -66,7 +78,9 @@ export class QuotesService {
         quote_to: {
           userId: service.service_provider_details.userId,
           email: service.service_provider_details.email,
-          displayName: service.service_provider_details.displayName
+          displayName: service.service_provider_details.displayName,
+          phone_number: phone_number['phone_number'] || "",
+          address: address['address'] || ""
         },
         phone_number: data.phone_number,
         service_name: service.service_name,

@@ -4,6 +4,7 @@ import { DatabaseService } from "../store/db.service.js";
 import { Encrypter } from "../utils/Encryption.js";
 import { ObjectId } from "mongodb";
 import { BookingsManager } from "../bookService/bookService.sevices.js";
+import { ProfileService } from "../profileManager/profile.service.js";
 
 
 @Injectable()
@@ -12,11 +13,16 @@ export class InvoiceService {
   _idb = this.databaseManager.invoiceDB
   _sdb = this.databaseManager.serviceDB
   _udb = this.databaseManager.userDB
-  constructor(private databaseManager: DatabaseService,  private bookingService: BookingsManager) {}
+  constructor(private databaseManager: DatabaseService,  private bookingService: BookingsManager, private userProfile: ProfileService) {}
 
   // Add payment link to invoice.
   async generate_invoice(user: any, invoice_data: any) {
     const time = new Date()
+    const user_mLinks = await this.userProfile.get_user_media_links(user.email)
+
+    const phone_number = user_mLinks.find((obj) => Object.getOwnPropertyDescriptor(obj, "github")) || ""
+    const address = user_mLinks.find((obj) => Object.getOwnPropertyDescriptor(obj, "address")) || ""
+
     // let encryption = new Encrypter(process.env.ENCRYPTION_KEY as string)
     // const service_provider: any = await this.databaseManager.findOneDocument(this._udb, "email", email)
 
@@ -29,7 +35,9 @@ export class InvoiceService {
       service_provider: {
         name: user.displayName,
         email: user.email ,
-        userId: user.userId
+        userId: user.userId,
+        phone_number: phone_number['phone_number'] || "",
+        address: address['address'] || ""
       },
       phone_number: invoice_data.phone_number,
       // payment_reference_id: tx_ref,

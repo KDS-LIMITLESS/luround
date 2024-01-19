@@ -1,16 +1,22 @@
 import { Injectable } from "@nestjs/common";
 import { DatabaseService } from "../store/db.service.js";
 import { ObjectId } from "mongodb";
+import { ProfileService } from "../profileManager/profile.service.js";
 
 
 @Injectable()
 export class ReceiptService {
 
   _rpdb = this.databaseManager.receiptsDB
-  constructor(private databaseManager: DatabaseService ) {}
+  constructor(private databaseManager: DatabaseService, private userProfile: ProfileService) {}
 
   async generate_receipt(user: any, receipt_data: any) {
     const {displayName, userId, email} = user
+    const user_mLinks = await this.userProfile.get_user_media_links(email)
+
+    const phone_number = user_mLinks.find((obj) => Object.getOwnPropertyDescriptor(obj, "github")) || ""
+    const address = user_mLinks.find((obj) => Object.getOwnPropertyDescriptor(obj, "address")) || ""
+
     const receipt = {
       send_to: receipt_data.send_to,
       sent_to_email: receipt_data.send_to_email,
@@ -18,6 +24,8 @@ export class ReceiptService {
       service_provider_name: displayName,
       service_provider_email: email,
       service_provider_userId: new ObjectId(userId),
+      service_provider_phone_number: phone_number['phone_number'] || "",
+      service_provider_address: address['address'] || "",
 
       phone_number: receipt_data.phone_number,
       payment_status: receipt_data.payment_status,
@@ -46,5 +54,9 @@ export class ReceiptService {
 
   async delete_receipt(receipt_id: string) {
     return (await this.databaseManager.delete(this._rpdb, receipt_id)).value
+  }
+
+  async update_receipt_status(receipt_id: string) {
+    return await this.databaseManager.updateProperty(this._rpdb, receipt_id, "payment_status", {payment_status: "SENT"})
   }
 }

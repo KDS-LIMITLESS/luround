@@ -129,17 +129,17 @@ export class ProfileService {
   //   return userProfile.occupation
   // }
 
-  // async get_user_media_links(email: string) {
-  //   // const {email} = req
-  //   let userProfile = await this.profileManager.findOneDocument(this._udb, "email", email)
-  //   if (userProfile === null) {
-  //     throw new BadRequestException({
-  //       status: 400,
-  //       message: ResponseMessages.EmailDoesNotExist
-  //     })
-  //   }
-  //   return userProfile.media_links
-  // }
+  async get_user_media_links(email: string): Promise<[]> {
+    // const {email} = req
+    let userProfile = await this.profileManager.findOneDocument(this._udb, "email", email)
+    if (userProfile === null  || userProfile.media_links === undefined) {
+      throw new BadRequestException({
+        status: 400,
+        message: "An error occured"
+      })
+    }
+    return userProfile.media_links
+  }
 
   async generate_user_url(user: any) {
     const { email } = user
