@@ -105,18 +105,19 @@ export class ServicePageManager {
     return user_services
   }
 
-  async getService(email: string) {
+  async getService(url: string) {
     try {
       //FIND AND RETURN SERVICE
-      let service = await this._spm_db.find({"service_provider_details.email": email}).toArray()
-      if (service !== null ) return service
-
-      // ID DOES NOT EXISTS OR ID IS NOT VALID ObjectId
-      throw Error
+      let user_url = await this.servicePageManager.findOneDocument(this._udb, "luround_url", url)
+      if(user_url !== null) {
+        return await this._spm_db.find({"service_provider_details.email": user_url.email}).toArray()
+      }
+      throw new BadRequestException({message: "Invalid user Url"})
+     
     } catch (err: any) {
       throw new BadRequestException({
         status: 400,
-        message: ResponseMessages.InvalidServiceId
+        message: err.message
       })
     }
   }
