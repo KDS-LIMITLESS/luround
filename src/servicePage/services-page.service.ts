@@ -105,10 +105,10 @@ export class ServicePageManager {
     return user_services
   }
 
-  async getService(id: string) {
+  async getService(email: string) {
     try {
       //FIND AND RETURN SERVICE
-      let service = await this.servicePageManager.findOneDocument(this._spm_db, "_id", id)
+      let service = await this._spm_db.find({"service_provider_details.email": email}).toArray()
       if (service !== null ) return service
 
       // ID DOES NOT EXISTS OR ID IS NOT VALID ObjectId

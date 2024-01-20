@@ -37,10 +37,10 @@ export class ServiceController {
   }
 
   @SkipAuth()
-  @Get('/get-service')
-  async get_service(@Query() query: ServiceDto, @Res() res: Response) {
+  @Get('/get-user-services')
+  async get_service(@Query() query, @Res() res: Response) {
     return res
     .status(HttpStatus.OK)
-    .json(await this.services.getService(query.serviceId)) 
+    .json(await this.services.getService(query.email)) 
   }
 }
