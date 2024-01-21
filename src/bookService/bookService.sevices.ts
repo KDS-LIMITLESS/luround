@@ -30,7 +30,7 @@ export class BookingsManager {
     let tx_ref = await this.paymentsManager.generateUniqueTransactionCode("LUROUND")
     // const { userId, email, displayName } = user
     // CHECK IF SERVICE IS VALID AND EXISTS 
-    let serviceDetails:any = await this.serviceManager.getService(serviceID)
+    let serviceDetails:any = await this.serviceManager.get_service_by_id(serviceID)
     // CHECK IF USER IS TRYING TO BOOK THEMSELVES
     // if (serviceDetails && serviceDetails.service_provider_details.userId !== userId) {
       let amount: string;

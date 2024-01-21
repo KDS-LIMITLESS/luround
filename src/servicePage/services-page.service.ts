@@ -105,6 +105,22 @@ export class ServicePageManager {
     return user_services
   }
 
+  async get_service_by_id(id: string) {
+    try {
+      //FIND AND RETURN SERVICE
+      let service = await this.servicePageManager.findOneDocument(this._spm_db, "_id", id)
+      if (service !== null ) return service
+
+      // ID DOES NOT EXISTS OR ID IS NOT VALID ObjectId
+      throw Error
+    } catch (err: any) {
+      throw new BadRequestException({
+        status: 400,
+        message: ResponseMessages.InvalidServiceId
+      })
+    }
+  }
+
   async getService(url: string) {
     try {
       //FIND AND RETURN SERVICE
