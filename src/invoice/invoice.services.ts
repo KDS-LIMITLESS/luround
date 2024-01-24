@@ -30,7 +30,7 @@ export class InvoiceService {
 
     const invoice = {
       // userId: user.userId,
-      send_to: invoice_data.send_to_name,
+      send_to_name: invoice_data.send_to_name,
       sent_to_email: invoice_data.send_to_email,
       service_provider: {
         name: user.displayName,
