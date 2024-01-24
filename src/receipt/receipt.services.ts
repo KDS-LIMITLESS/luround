@@ -39,7 +39,7 @@ export class ReceiptService {
     }
 
     let new_receipt = await this.databaseManager.create(this._rpdb, receipt)
-    await this.databaseManager.updateArr(this._rpdb, "_id", new ObjectId(new_receipt.insertedId), "service_detail", receipt_data.service_detail)
+    await this.databaseManager.updateArr(this._rpdb, "_id", new ObjectId(new_receipt.insertedId), "product_detail", receipt_data.product_detail)
     return new_receipt    
   }
 

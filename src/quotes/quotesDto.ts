@@ -8,7 +8,9 @@ class ProductDetailConstraint implements ValidatorConstraintInterface {
     if (Array.isArray(product_detail)) {
       let validateProduct 
       product_detail.forEach(function(obj) {
-        if ("service_name" in obj && "meeting_type" in obj && "description" in obj && "rate" in obj && "duration" in obj && "discount" in obj && "total" in obj) {
+        if ("service_name" in obj && "service_id" in obj && "appointment_type" in obj && "description" in obj && "rate" in obj && "duration" in obj &&
+          "discount" in obj && "total" in obj && "phone_number" in obj && "date" in obj &&  "time" in obj &&  "location" in obj &&  "message" in obj
+        ){
           validateProduct = true
         } else {
           validateProduct = false

@@ -4,12 +4,12 @@ import { IsArray, IsDate, IsEmail, IsEnum, IsNotEmpty, IsOptional, ValidationArg
 
 @ValidatorConstraint({async: true})
 class ReceiptDetailConstraint implements ValidatorConstraintInterface {
-  validate(service_detail: any, validationArguments?: ValidationArguments): boolean | Promise<boolean> {
+  validate(product_detail: any, validationArguments?: ValidationArguments): boolean | Promise<boolean> {
 
-    if (Array.isArray(service_detail)) { 
+    if (Array.isArray(product_detail)) { 
       let validateProduct = true; 
     
-      service_detail.forEach(function(obj) {
+      product_detail.forEach(function(obj) {
         // Check if all required properties are present and not empty
         const requiredProperties = ["service_name", "appointment_type", "rate", "duration", "discount", "total"];
         const hasAllProperties = requiredProperties.every(prop => prop in obj );
@@ -26,7 +26,7 @@ class ReceiptDetailConstraint implements ValidatorConstraintInterface {
       });
       return validateProduct
     } 
-    throw new BadRequestException({ message: "service_detail must be an array"})
+    throw new BadRequestException({ message: "product_detail must be an array"})
   }
 }
 
@@ -50,7 +50,7 @@ enum ReceiptStatus {
 export class ReceiptDto {
 
   @IsNotEmpty()
-  send_to: string
+  send_to_name: string
 
   @IsNotEmpty() @IsEmail()
   send_to_email: string
@@ -62,7 +62,7 @@ export class ReceiptDto {
   payment_status: string
 
   @IsArray() @IsValidReceiptServiceData()
-  service_detail: []
+  product_detail: []
 
   @IsNotEmpty()
   sub_total: string

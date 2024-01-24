@@ -30,7 +30,7 @@ export class InvoiceService {
 
     const invoice = {
       // userId: user.userId,
-      send_to: invoice_data.send_to,
+      send_to: invoice_data.send_to_name,
       sent_to_email: invoice_data.send_to_email,
       service_provider: {
         name: user.displayName,
@@ -49,6 +49,7 @@ export class InvoiceService {
       // invoice_link: `https://luround.com/invoice/${encryption.encrypt(user.userId)}`,
       note: invoice_data.note,
       due_date: invoice_data.due_date,
+      date: Date.now()
       // time: `${time.getHours()}:${time.getMinutes()}:${time.getSeconds()}`
     }
 
@@ -59,10 +60,10 @@ export class InvoiceService {
     //     payment_receiver_id: service_details.service_provider_details.userId
     //   }
     // )
-    let book_service = await this.bookingService.book_service(invoice_data.booking_detail[0], invoice_data.booking_detail[0].serviceID, {userId: user.userId, email: user.email, displayName: user.displayName})
+    let book_service = await this.bookingService.book_service(invoice_data.product_detail[0], invoice_data.product_detail[0].service_id, {userId: user.userId, email: user.email, displayName: user.displayName})
     if (book_service.BookingId) {
       let create_invoice = await this.databaseManager.create(this._idb, invoice)
-      await this.databaseManager.updateArr(this._idb, "_id", new ObjectId(create_invoice.insertedId), "booking_detail", invoice_data.booking_detail)
+      await this.databaseManager.updateArr(this._idb, "_id", new ObjectId(create_invoice.insertedId), "product_detail", invoice_data.product_detail)
       return book_service
     }
     throw new BadRequestException({message: "Invoice Not sent"})
