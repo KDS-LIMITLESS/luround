@@ -18,7 +18,7 @@ export class ReceiptService {
     const address = user_mLinks.find((obj) => Object.getOwnPropertyDescriptor(obj, "address")) || ""
 
     const receipt = {
-      send_to: receipt_data.send_to,
+      send_to_name: receipt_data.send_to_name,
       sent_to_email: receipt_data.send_to_email,
 
       service_provider_name: displayName,
