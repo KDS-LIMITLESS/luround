@@ -50,6 +50,7 @@ export class BookingsManager {
         },
         booked_status: "PENDING CONFIRMATION",
         payment_reference_id: tx_ref,
+        payment_proof: bookingDetail.payment_proof,
         service_details: {
           service_id: serviceDetails._id,
           service_name: serviceDetails.service_name,
