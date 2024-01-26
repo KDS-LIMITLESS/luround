@@ -2,6 +2,7 @@ import { Injectable } from "@nestjs/common";
 import { DatabaseService } from "../store/db.service.js";
 import { ObjectId } from "mongodb";
 import { ProfileService } from "../profileManager/profile.service.js";
+import { generateRandomSixDigitNumber } from "../utils/mail.services.js";
 
 
 @Injectable()
@@ -15,10 +16,13 @@ export class ReceiptService {
     const user_mLinks = await this.userProfile.get_user_media_links(email)
     const user_profile = await this.userProfile.get_user_profile(user)
 
+    const receipt_id = await generateRandomSixDigitNumber()
+
     const phone_number = user_mLinks.find((obj) => obj['name'] === 'Mobile') || ""
     const address = user_mLinks.find((obj) => obj['name'] === 'Location') || ""
 
     const receipt = {
+      receipt_id,
       send_to_name: receipt_data.send_to_name,
       sent_to_email: receipt_data.send_to_email,
 

@@ -5,6 +5,7 @@ import { Encrypter } from "../utils/Encryption.js";
 import { ObjectId } from "mongodb";
 import { BookingsManager } from "../bookService/bookService.sevices.js";
 import { ProfileService } from "../profileManager/profile.service.js";
+import { generateRandomSixDigitNumber } from "../utils/mail.services.js";
 
 
 @Injectable()
@@ -20,6 +21,8 @@ export class InvoiceService {
     const time = new Date()
     const user_mLinks = await this.userProfile.get_user_media_links(user.email)
     const user_profile = await this.userProfile.get_user_profile(user)
+    const invoice_id = await generateRandomSixDigitNumber()
+
 
     const phone_number = user_mLinks.find((obj) => obj['name'] === 'Mobile') || ""
     const address = user_mLinks.find((obj) => obj['name'] === 'Location') || ""
@@ -30,6 +33,7 @@ export class InvoiceService {
     // let tx_ref = await this.paymentsManager.generateUniqueTransactionCode("LUROUND-INVOICE")
 
     const invoice = {
+      invoice_id,
       // userId: user.userId,
       send_to_name: invoice_data.send_to_name,
       sent_to_email: invoice_data.send_to_email,

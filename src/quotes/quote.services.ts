@@ -4,6 +4,7 @@ import { Encrypter } from "../utils/Encryption.js";
 import { ObjectId } from "mongodb";
 import ResponseMessages from "../messageConstants.js";
 import { ProfileService } from "../profileManager/profile.service.js";
+import { generateRandomSixDigitNumber } from "../utils/mail.services.js";
 
 
 @Injectable()
@@ -17,11 +18,14 @@ export class QuotesService {
     // let encryption = new Encrypter(process.env.ENCRYPTION_KEY as string)
     const user_mLinks = await this.userProfile.get_user_media_links(user.email)
     const user_profile = await this.userProfile.get_user_profile(user)
+    const quote_id = await generateRandomSixDigitNumber()
+
 
     const phone_number = user_mLinks.find((obj) => obj['name'] === 'Mobile') || ""
     const address = user_mLinks.find((obj) => obj['name'] === 'Location') || ""
 
     const quote_details = {
+      quote_id,
       // userId: user.userId,
       send_to_name: data.send_to_name,
       send_to_email: data.send_to_email,
@@ -68,22 +72,30 @@ export class QuotesService {
   }
 
   async request_quote(data:any, serviceId:string) {
+    
     const service = await this.databaseManager.findOneDocument(this._sdb, "_id", serviceId)
     const user_mLinks = await this.userProfile.get_user_media_links(service.service_provider_details.email)
 
-    const phone_number = user_mLinks.find((obj) => Object.getOwnPropertyDescriptor(obj, "github")) || ""
-    const address = user_mLinks.find((obj) => Object.getOwnPropertyDescriptor(obj, "address")) || ""
+    let user = {email: service.service_provider_details.email}
+    const user_profile = await this.userProfile.get_user_profile(user)
+
+    const quote_id = await generateRandomSixDigitNumber()
+
+    const phone_number = user_mLinks.find((obj) => obj['name'] === 'Mobile') || ""
+    const address = user_mLinks.find((obj) => obj['name'] === 'Location') || ""
 
     if (service !== null) {
       const quote_details = {
+        quote_id,
         user_email: data.user_email,
         full_name: data.full_name,
         quote_to: {
           userId: service.service_provider_details.userId,
           email: service.service_provider_details.email,
           displayName: service.service_provider_details.displayName,
-          phone_number: phone_number['phone_number'] || "",
-          address: address['address'] || ""
+          phone_number: phone_number['link'] || "",
+          address: address['link'] || "",
+          logo_url: user_profile.logo_url
         },
         phone_number: data.phone_number,
         service_name: service.service_name,
@@ -91,7 +103,8 @@ export class QuotesService {
         budget: data.budget,
         file: data.file || "",
         note: data.note || "",
-        status: "REQUEST"
+        status: "REQUEST",
+        created_at: Date.now()
       }
       return await this.databaseManager.create(this._qdb, quote_details)
     }
