@@ -16,9 +16,10 @@ export class QuotesService {
   async send_quote(user: any, data: any) {
     // let encryption = new Encrypter(process.env.ENCRYPTION_KEY as string)
     const user_mLinks = await this.userProfile.get_user_media_links(user.email)
+    const user_profile = await this.userProfile.get_user_profile(user)
 
-    const phone_number = user_mLinks.find((obj) => Object.getOwnPropertyDescriptor(obj, "github")) || ""
-    const address = user_mLinks.find((obj) => Object.getOwnPropertyDescriptor(obj, "address")) || ""
+    const phone_number = user_mLinks.find((obj) => obj['name'] === 'Mobile') || ""
+    const address = user_mLinks.find((obj) => obj['name'] === 'Location') || ""
 
     const quote_details = {
       // userId: user.userId,
@@ -35,12 +36,14 @@ export class QuotesService {
       appointment_type: data.appointment_type,
       status: data.status,
       note: data.note || '',
+      created_at: Date.now(),
       service_provider: {
         name: user.displayName,
         email: user.email,
         userId: user.userId,
-        phone_number: phone_number['phone_number'] || "",
-        address: address['address'] || ""
+        phone_number: phone_number['link'] || "",
+        address: address['link'] || "",
+        logo_url: user_profile.logo_url
       } 
     }
     let quote = await this.databaseManager.create(this._qdb, quote_details)

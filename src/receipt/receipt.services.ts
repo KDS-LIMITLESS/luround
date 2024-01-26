@@ -13,9 +13,10 @@ export class ReceiptService {
   async generate_receipt(user: any, receipt_data: any) {
     const {displayName, userId, email} = user
     const user_mLinks = await this.userProfile.get_user_media_links(email)
+    const user_profile = await this.userProfile.get_user_profile(user)
 
-    const phone_number = user_mLinks.find((obj) => Object.getOwnPropertyDescriptor(obj, "github")) || ""
-    const address = user_mLinks.find((obj) => Object.getOwnPropertyDescriptor(obj, "address")) || ""
+    const phone_number = user_mLinks.find((obj) => obj['name'] === 'Mobile') || ""
+    const address = user_mLinks.find((obj) => obj['name'] === 'Location') || ""
 
     const receipt = {
       send_to_name: receipt_data.send_to_name,
@@ -24,8 +25,9 @@ export class ReceiptService {
       service_provider_name: displayName,
       service_provider_email: email,
       service_provider_userId: new ObjectId(userId),
-      service_provider_phone_number: phone_number['phone_number'] || "",
-      service_provider_address: address['address'] || "",
+      service_provider_phone_number: phone_number['link'] || "",
+      service_provider_address: address['link'] || "",
+      service_provider_logo_url: user_profile.logo_url,
 
       phone_number: receipt_data.phone_number,
       payment_status: receipt_data.payment_status,
@@ -36,6 +38,7 @@ export class ReceiptService {
       note: receipt_data.note,
       mode_of_payment: receipt_data.mode_of_payment,
       receipt_date: receipt_data.receipt_date,
+      created_at: Date.now()
     }
 
     let new_receipt = await this.databaseManager.create(this._rpdb, receipt)

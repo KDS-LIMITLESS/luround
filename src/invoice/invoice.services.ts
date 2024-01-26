@@ -19,9 +19,10 @@ export class InvoiceService {
   async generate_invoice(user: any, invoice_data: any) {
     const time = new Date()
     const user_mLinks = await this.userProfile.get_user_media_links(user.email)
+    const user_profile = await this.userProfile.get_user_profile(user)
 
-    const phone_number = user_mLinks.find((obj) => Object.getOwnPropertyDescriptor(obj, "github")) || ""
-    const address = user_mLinks.find((obj) => Object.getOwnPropertyDescriptor(obj, "address")) || ""
+    const phone_number = user_mLinks.find((obj) => obj['name'] === 'Mobile') || ""
+    const address = user_mLinks.find((obj) => obj['name'] === 'Location') || ""
 
     // let encryption = new Encrypter(process.env.ENCRYPTION_KEY as string)
     // const service_provider: any = await this.databaseManager.findOneDocument(this._udb, "email", email)
@@ -36,8 +37,9 @@ export class InvoiceService {
         name: user.displayName,
         email: user.email ,
         userId: user.userId,
-        phone_number: phone_number['phone_number'] || "",
-        address: address['address'] || ""
+        phone_number: phone_number['link'] || "",
+        address: address['link'] || "",
+        logo_url: user_profile.logo_url
       },
       phone_number: invoice_data.phone_number,
       // payment_reference_id: tx_ref,
@@ -49,7 +51,7 @@ export class InvoiceService {
       // invoice_link: `https://luround.com/invoice/${encryption.encrypt(user.userId)}`,
       note: invoice_data.note,
       due_date: invoice_data.due_date,
-      date: Date.now()
+      created_at: Date.now()
       // time: `${time.getHours()}:${time.getMinutes()}:${time.getSeconds()}`
     }
 
