@@ -47,7 +47,7 @@ export class ReceiptService {
 
     let new_receipt = await this.databaseManager.create(this._rpdb, receipt)
     await this.databaseManager.updateArr(this._rpdb, "_id", new ObjectId(new_receipt.insertedId), "product_detail", receipt_data.product_detail)
-    return {new_receipt, service_provider_address: address['link'] || '', service_provider_phone_number: phone_number['link'] || ''} 
+    return {new_receipt, receipt_id, service_provider_address: address['link'] || '', service_provider_phone_number: phone_number['link'] || ''} 
   }
 
   async get_receipts(userId: string) {

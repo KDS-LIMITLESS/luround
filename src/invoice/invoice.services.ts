@@ -70,7 +70,7 @@ export class InvoiceService {
     if (book_service.BookingId) {
       let create_invoice = await this.databaseManager.create(this._idb, invoice)
       await this.databaseManager.updateArr(this._idb, "_id", new ObjectId(create_invoice.insertedId), "product_detail", invoice_data.product_detail)
-      return {book_service, service_provider_address: address['link'] || '', service_provider_phone_number: phone_number['link'] || ''}
+      return {book_service, invoice_id, service_provider_address: address['link'] || '', service_provider_phone_number: phone_number['link'] || ''}
     }
     throw new BadRequestException({message: "Invoice Not sent"})
     
