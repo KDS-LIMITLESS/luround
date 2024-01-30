@@ -27,7 +27,7 @@ class InvoiceDetailConstraint implements ValidatorConstraintInterface {
     
       product_detail.forEach(function(obj) {
         // Check if all required properties are present and not empty
-        const requiredProperties = ["booking_user_name", "booking_user_email", "service_id", "service_name", "appointment_type", "description", "rate", "duration", "discount", "total", "phone_number", "date", "time", "location", "message"];
+        const requiredProperties = ["displayName", "email", "service_id", "service_name", "appointment_type", "description", "rate", "duration", "discount", "total", "phone_number", "date", "time", "location", "message"];
         const hasAllProperties = requiredProperties.every(prop => prop in obj );
     
         if (hasAllProperties) {
