@@ -73,7 +73,7 @@ export class InvoiceService {
     //     payment_receiver_id: service_details.service_provider_details.userId
     //   }
     // )
-    let book_service = await this.bookingService.book_service(invoice_data.product_detail[0], invoice_data.product_detail[0].service_id, {userId: user.userId, email: user.email, displayName: user.displayName})
+    let book_service = await this.bookingService.book_service(invoice_data.product_detail[0], invoice_data.product_detail[0].service_id, {userId: user.userId, email: user.email, displayName: user.displayName}, invoice_id)
     if (book_service.BookingId) {
       let create_invoice = await this.databaseManager.create(this._idb, invoice)
       await this.databaseManager.updateArr(this._idb, "_id", new ObjectId(create_invoice.insertedId), "product_detail", invoice_data.product_detail)
@@ -108,6 +108,7 @@ export class InvoiceService {
       service_fee: data.amount_paid, transaction_ref: tx_ref, transaction_status: "RECEIVED", 
       affliate_user: invoice.send_to_name
     })
+    await this.bookingService.confirm_booking_with_invoice_id(invoice.invoice_id)
     return await this.databaseManager.updateProperty(this._idb, invoice_id, "payment_status", {payment_status: "SUCCESSFUL"})
   }
   

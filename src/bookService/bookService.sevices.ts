@@ -25,9 +25,10 @@ export class BookingsManager {
   // If payment valid update booked status
 
   // Increase price based on the service duration
-  async book_service(bookingDetail: BookServiceDto, serviceID: string, user: any ) {
+  async book_service(bookingDetail: BookServiceDto, serviceID: string, user: any, invoice_id?:any ) {
     // GET UNIQUE TRANSACTION REFERENCE CODE
     let tx_ref = await this.paymentsManager.generateUniqueTransactionCode("BOOKING")
+
     // const { userId, email, displayName } = user
     // CHECK IF SERVICE IS VALID AND EXISTS 
     let serviceDetails:any = await this.serviceManager.get_service_by_id(serviceID)
@@ -51,6 +52,7 @@ export class BookingsManager {
         booked_status: "PENDING CONFIRMATION",
         payment_reference_id: tx_ref,
         payment_proof: bookingDetail.payment_proof,
+        invoice_id: invoice_id || "",
         service_details: {
           service_id: serviceDetails._id,
           service_name: serviceDetails.service_name,
@@ -87,11 +89,7 @@ export class BookingsManager {
         // })
 
         // SERVICE PROVIDER TRANSACTION DETAIL
-        this.transactionsManger.record_transaction(serviceDetails.service_provider_details.userId, {
-          service_id: serviceDetails._id, service_name: serviceDetails.service_name, 
-          service_fee: amount, transaction_ref: tx_ref, transaction_status: "RECEIVED", 
-          affliate_user: bookingDetail.displayName
-        })
+        
         // GET SERVICE PROVIDER DEVICE NOTIFICATION TOKEN 
         let user_nToken = await this.userService.get_user_notification_token(serviceDetails.service_provider_details.userId)
         return {
@@ -110,7 +108,28 @@ export class BookingsManager {
 
   async confirm_booking(booking_id: string) {
     try {
-      return await this.bookingsManager.updateProperty(this._bKM, booking_id, "booked_status", {booked_status: "CONFIRMED"})
+
+      let get_booking = await this.bookingsManager.findOneDocument(this._bKM, "_id", booking_id)
+      console.log(get_booking !== null)
+      if (get_booking !== null) {
+        await this.transactionsManger.record_transaction(get_booking.service_provider_info.userId, {
+          service_id: get_booking.service_details.service_id, service_name: get_booking.service_details.service_name, 
+          service_fee: get_booking.service_details.service_fee, transaction_ref: get_booking.payment_reference_id, transaction_status: "RECEIVED", 
+          affliate_user: get_booking.booking_user_info.displayName
+        })
+        return await this.bookingsManager.updateProperty(this._bKM, booking_id, "booked_status", {booked_status: "CONFIRMED"})
+      } 
+    } catch(err: any){
+      throw new BadRequestException({message: "Booking not updated"})
+    }
+  }
+
+  async confirm_booking_with_invoice_id(invoice_id: string) {
+    try {
+      let get_booking = await this.bookingsManager.findOneDocument(this._bKM, "invoice_id", invoice_id)
+      if (get_booking !== null ) {
+        return await this.bookingsManager.updateProperty(this._bKM, get_booking._id, "booked_status", {booked_status: "CONFIRMED"})
+      }
     } catch(err: any){
       throw new BadRequestException({message: "Booking not updated"})
     }
