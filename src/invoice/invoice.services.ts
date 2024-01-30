@@ -6,6 +6,7 @@ import { ObjectId } from "mongodb";
 import { BookingsManager } from "../bookService/bookService.sevices.js";
 import { ProfileService } from "../profileManager/profile.service.js";
 import { generateRandomSixDigitNumber } from "../utils/mail.services.js";
+import { TransactionsManger } from "../transaction/tansactions.service.js";
 
 
 @Injectable()
@@ -14,7 +15,13 @@ export class InvoiceService {
   _idb = this.databaseManager.invoiceDB
   _sdb = this.databaseManager.serviceDB
   _udb = this.databaseManager.userDB
-  constructor(private databaseManager: DatabaseService,  private bookingService: BookingsManager, private userProfile: ProfileService) {}
+  constructor(
+    private databaseManager: DatabaseService,  
+    private bookingService: BookingsManager, 
+    private userProfile: ProfileService,
+    private paymentsManager: PaymentsAPI,
+    private transactionsManger: TransactionsManger,
+  ) {}
 
   // Add payment link to invoice.
   async generate_invoice(user: any, invoice_data: any) {
@@ -84,12 +91,23 @@ export class InvoiceService {
     return await this._idb.find({"service_provider.userId": userId, "payment_status": "PENDING"}).toArray()
   }
 
+  async get_invoice(invoice_id: string) {
+    return await this.databaseManager.findOneDocument(this._idb, "_id", invoice_id)
+  }
+
   async enter_invoice_payment(invoice_id: string, data: any) {
+    let tx_ref = await this.paymentsManager.generateUniqueTransactionCode("INVOICE")
+
     const payment_details = {
       amount_paid: data.amount_paid,
       payment_method: data.payment_method
     }
-    await this.databaseManager.updateDocument(this._idb, invoice_id, payment_details)
+    let [invoice, _] = await Promise.all([await this.get_invoice(invoice_id), await this.databaseManager.updateDocument(this._idb, invoice_id, payment_details) ])
+    await this.transactionsManger.record_transaction(invoice.service_provider.userId, {
+      service_id: invoice.product_detail[0].service_id, service_name: invoice.product_detail[0].service_name, 
+      service_fee: data.amount_paid, transaction_ref: tx_ref, transaction_status: "RECEIVED", 
+      affliate_user: invoice.send_to_name
+    })
     return await this.databaseManager.updateProperty(this._idb, invoice_id, "payment_status", {payment_status: "SUCCESSFUL"})
   }
   

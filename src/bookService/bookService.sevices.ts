@@ -27,7 +27,7 @@ export class BookingsManager {
   // Increase price based on the service duration
   async book_service(bookingDetail: BookServiceDto, serviceID: string, user: any ) {
     // GET UNIQUE TRANSACTION REFERENCE CODE
-    let tx_ref = await this.paymentsManager.generateUniqueTransactionCode("LUROUND")
+    let tx_ref = await this.paymentsManager.generateUniqueTransactionCode("BOOKING")
     // const { userId, email, displayName } = user
     // CHECK IF SERVICE IS VALID AND EXISTS 
     let serviceDetails:any = await this.serviceManager.get_service_by_id(serviceID)
@@ -54,7 +54,7 @@ export class BookingsManager {
         service_details: {
           service_id: serviceDetails._id,
           service_name: serviceDetails.service_name,
-          service_fee: amount,
+          service_fee: bookingDetail.total || amount,
           appointment_type: bookingDetail.appointment_type,
           date: bookingDetail.date,
           time: bookingDetail.time,

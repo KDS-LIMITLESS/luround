@@ -47,6 +47,9 @@ export class BookServiceDto {
 
   @IsOptional()
   user_name: string
+
+  @IsOptional()
+  total: string
 } 
 
 export class BookingId extends PickType(BookServiceDto, ['bookingId'] as const) {}

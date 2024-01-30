@@ -27,7 +27,7 @@ class InvoiceDetailConstraint implements ValidatorConstraintInterface {
     
       product_detail.forEach(function(obj) {
         // Check if all required properties are present and not empty
-        const requiredProperties = ["service_id", "appointment_type", "description", "rate", "duration", "discount", "total", "phone_number", "date", "time", "location", "message"];
+        const requiredProperties = ["booking_user_name", "booking_user_email", "service_id", "service_name", "appointment_type", "description", "rate", "duration", "discount", "total", "phone_number", "date", "time", "location", "message"];
         const hasAllProperties = requiredProperties.every(prop => prop in obj );
     
         if (hasAllProperties) {
@@ -36,7 +36,7 @@ class InvoiceDetailConstraint implements ValidatorConstraintInterface {
         } else {
           validateProduct = false;
           throw new BadRequestException({
-            message: "service_id, appointment_type, location, message, description, rate, duration, discount, phone_number total, fields must not be empty"
+            message: "service_id, service_name, booking_user_email, booking_user_name, appointment_type, location, message, description, rate, duration, discount, phone_number total, fields must not be empty"
           });
         }
       });
