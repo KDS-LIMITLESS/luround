@@ -95,15 +95,16 @@ export class ProfileController {
   //   .status(HttpStatus.OK)
   //   .json(await this.profileSevice.get_user_media_links(req.user))
   // }
-  
-  @Put('/generate-url')
-  async generateUserUrl( @Req() req, @Res() res: Response) {
-    return res
-    .status(HttpStatus.OK)
-    .json(await this.profileSevice.generate_user_url(req.user))
-  }
 
-  @Delete('/delete-user-link')
+  /**   DEPRECIATED */
+  // @Put('/generate-url')
+  // async generateUserUrl( @Req() req, @Res() res: Response) {
+  //   return res
+  //   .status(HttpStatus.OK)
+  //   .json(await this.profileSevice.generate_user_url(req.user))
+  // }
+
+  // @Delete('/delete-user-link')
   async deleteUserLink(@Req() req, @Res() res: Response, @Body() payload: userProfileDto ) {
     return res.status(HttpStatus.OK).json(await this.profileSevice.deleteElementFromArray(req.user, "media_links", payload))
   }

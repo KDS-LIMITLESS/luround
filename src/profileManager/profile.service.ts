@@ -149,7 +149,7 @@ export class ProfileService {
       let userCount = await this.profileManager.userDB.estimatedDocumentCount()
       let getUserNames = await this.profileManager.read(this._udb, email)
       // BUILD THE USER URL 
-      let url = `luround.com/profile/${getUserNames.displayName.replace(/\s/g, '_')}_${userCount}`
+      let url = `https://www.luround.com/profile/${getUserNames.displayName.replace(/\s/g, '_')}_${userCount}`
       await this.profileManager.update(this._udb, email, "luround_url", url)
       return url
 
@@ -170,7 +170,7 @@ export class ProfileService {
         message: ResponseMessages.EmailDoesNotExist
       })
     }
-    let custom_url = `luround.com/profile/${slug.replace(/\s/g, '')}`
+    let custom_url = `https://www.luround.com/profile/${slug.replace(/\s/g, '')}`
     await this.profileManager.update(this._udb, email, "luround_url", custom_url)
     return custom_url
   }

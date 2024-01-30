@@ -6,6 +6,7 @@ import { generateRandomSixDigitNumber, sendOTP, sendOnboardingMail } from '../ut
 import ResponseMessages from '../messageConstants.js';
 import { UserDto } from './user.dto.js';
 import * as bcrypt from 'bcrypt'
+import { ProfileService } from '../profileManager/profile.service.js';
 
 
 @Injectable()
@@ -14,6 +15,7 @@ export class UserService {
   constructor( 
     private authService: AuthService, 
     private databaseManager: DatabaseService,
+    private profileService: ProfileService,
     private jwt: JwtService
   ) {}
 
@@ -46,6 +48,7 @@ export class UserService {
       throw new BadRequestException({message: "Invalid Email Address"})
     })
     let userId = (await this.databaseManager.create(this._udb, new_user)).insertedId
+    await this.profileService.generate_user_url(user)
     return this.authService.login({ email: user.email, displayName: user.displayName, _id: userId, photoUrl: user.photoUrl, user_nToken: new_user.user_nToken })
   }
 
@@ -75,7 +78,7 @@ export class UserService {
         throw Error("Invalid Email Address")
       })
       const userId = (await this.databaseManager.create(this._udb, new_user)).insertedId
-      
+      await this.profileService.generate_user_url(user)
       return this.authService.login({email: user.email, displayName: new_user.displayName, _id: userId, photoUrl: user.photoUrl, user_nToken: new_user.user_nToken})
 
     } catch(err: any) {

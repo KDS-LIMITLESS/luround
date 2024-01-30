@@ -8,6 +8,7 @@ import { PaymentsAPI } from "../payments/paystack.sevices.js";
 import { WalletService } from "../wallet/wallet.services.js";
 import { UserService } from "../user/user.service.js";
 import { AuthService } from "../auth/auth.service.js";
+import { ProfileService } from "../profileManager/profile.service.js";
 
 @Module({
   imports: [],
@@ -20,7 +21,8 @@ import { AuthService } from "../auth/auth.service.js";
     PaymentsAPI,
     WalletService,
     UserService,
-    AuthService
+    AuthService,
+    ProfileService
   ]
 })
 
