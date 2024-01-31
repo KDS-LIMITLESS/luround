@@ -73,22 +73,22 @@ export class InvoiceService {
     //     payment_receiver_id: service_details.service_provider_details.userId
     //   }
     // )
-    let book_service = await this.bookingService.book_service(invoice_data.product_detail[0], invoice_data.product_detail[0].service_id, {userId: user.userId, email: user.email, displayName: user.displayName}, invoice_id)
-    if (book_service.BookingId) {
+    try {
       let create_invoice = await this.databaseManager.create(this._idb, invoice)
       await this.databaseManager.updateArr(this._idb, "_id", new ObjectId(create_invoice.insertedId), "product_detail", invoice_data.product_detail)
-      return {book_service, invoice_id, service_provider_address: address['link'] || '', service_provider_phone_number: phone_number['link'] || ''}
+      return { invoice_id, service_provider_address: address['link'] || '', service_provider_phone_number: phone_number['link'] || ''}
+
+    } catch (err: any) {
+      throw new BadRequestException({message: "Invoice Not sent"})
     }
-    throw new BadRequestException({message: "Invoice Not sent"})
-    
   }
 
   async get_paid_invoices(userId: string) {
-    return await this._idb.find({"service_provider.userId": userId, "payment_status": "SUCCESSFUL"}).toArray()
+    return (await this._idb.find({"service_provider.userId": userId, "payment_status": "SUCCESSFUL"}).toArray()).reverse()
   }
 
   async get_unpaid_invoices(userId: string) {
-    return await this._idb.find({"service_provider.userId": userId, "payment_status": "PENDING"}).toArray()
+    return (await this._idb.find({"service_provider.userId": userId, "payment_status": "PENDING"}).toArray()).reverse()
   }
 
   async get_invoice(invoice_id: string) {
@@ -100,16 +100,35 @@ export class InvoiceService {
 
     const payment_details = {
       amount_paid: data.amount_paid,
-      payment_method: data.payment_method
+      payment_method: data.payment_method,
+      tx_ref
     }
-    let [invoice, _] = await Promise.all([await this.get_invoice(invoice_id), await this.databaseManager.updateDocument(this._idb, invoice_id, payment_details) ])
-    await this.transactionsManger.record_transaction(invoice.service_provider.userId, {
-      service_id: invoice.product_detail[0].service_id, service_name: invoice.product_detail[0].service_name, 
-      service_fee: data.amount_paid, transaction_ref: tx_ref, transaction_status: "RECEIVED", 
-      affliate_user: invoice.send_to_name
-    })
-    await this.bookingService.confirm_booking_with_invoice_id(invoice.invoice_id)
-    return await this.databaseManager.updateProperty(this._idb, invoice_id, "payment_status", {payment_status: "SUCCESSFUL"})
+    try {
+      let [invoice, _] = await Promise.all([await this.get_invoice(invoice_id), await this.databaseManager.updateDocument(this._idb, invoice_id, payment_details) ])
+      console.log(invoice)
+      await this.transactionsManger.record_transaction(invoice.service_provider.userId, {
+        service_id: invoice.product_detail[0].service_id, service_name: invoice.product_detail[0].service_name, 
+        service_fee: data.amount_paid, transaction_ref: payment_details.tx_ref, transaction_status: "RECEIVED", 
+        affliate_user: invoice.send_to_name
+      })
+      let book_service = await this.bookingService.book_service(
+        invoice.product_detail[0], 
+        invoice.product_detail[0].service_id, 
+        {
+          userId: invoice.service_provider.userId, 
+          email: invoice.service_provider.email, 
+          displayName: invoice.service_provider.displayName
+        }, 
+        invoice.invoice_id, invoice.amount_paid,
+        payment_details.tx_ref
+      )
+
+      await this.bookingService.confirm_booking_with_invoice_id(invoice.invoice_id)
+      return {book_service, product_detail: await this.databaseManager.updateProperty(this._idb, invoice_id, "payment_status", {payment_status: "SUCCESSFUL"})}
+    } catch(err: any) {
+      throw new BadRequestException({message: "Invoice not found Error"})
+    }
+    
   }
   
   async delete_quote(invoice_id: string) {

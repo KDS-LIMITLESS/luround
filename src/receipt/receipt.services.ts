@@ -52,11 +52,11 @@ export class ReceiptService {
 
   async get_receipts(userId: string) {
     console.log(userId)
-    return await this._rpdb.find({"service_provider_userId": new ObjectId(userId), "payment_status": "SENT"}).toArray()
+    return (await this._rpdb.find({"service_provider_userId": new ObjectId(userId), "payment_status": "SENT"}).toArray()).reverse()
   }
 
   async get_saved_receipts(userId: string) {
-    return await this._rpdb.find({"service_provider_userId": new ObjectId(userId), "payment_status": "DRAFT"}).toArray()
+    return (await this._rpdb.find({"service_provider_userId": new ObjectId(userId), "payment_status": "DRAFT"}).toArray()).reverse()
   }
 
   async delete_receipt(receipt_id: string) {
