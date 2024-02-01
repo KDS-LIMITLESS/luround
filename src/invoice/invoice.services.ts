@@ -119,7 +119,7 @@ export class InvoiceService {
           email: invoice.service_provider.email, 
           displayName: invoice.service_provider.displayName
         }, 
-        invoice.invoice_id, invoice.amount_paid,
+        invoice.invoice_id, payment_details.amount_paid,
         payment_details.tx_ref
       )
 
