@@ -1,4 +1,4 @@
-import { Body, Controller, Get, HttpStatus, Post, Put, Query, Req, Res } from "@nestjs/common";
+import { Body, Controller, Delete, Get, HttpStatus, Post, Put, Query, Req, Res } from "@nestjs/common";
 import { WalletService } from "./wallet.services.js";
 import { UserWalletDto, WithdrawDTO } from "./wallet.dto.js";
 import got from "got";
@@ -18,6 +18,11 @@ export class WalletController {
   @Get('get-saved-banks')
   async getSavedBanks(@Req() req, @Res() res, @Query() query) {
     return res.status(HttpStatus.OK).json(await this.walletManager.get_user_saved_banks(query.userId))
+  }
+
+  @Delete('delete-bank-detail')
+  async deleteBankDetail(@Req() req, @Res() res, @Body() payload: UserWalletDto ) {
+    return res.status(HttpStatus.OK).json(await this.walletManager.delete_bank_detail(req.user.userId, payload))
   }
 
   @Post('create-wallet-pin')

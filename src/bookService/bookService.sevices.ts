@@ -6,6 +6,7 @@ import { BookServiceDto } from "./bookServiceDto.js";
 import { TransactionsManger } from "../transaction/tansactions.service.js";
 import { PaymentsAPI } from "../payments/paystack.sevices.js";
 import { UserService } from "../user/user.service.js";
+import { bookingConfirmed_account_viewer, bookingConfirmed_service_provider, bookingRescheduled } from "../utils/mail.services.js";
 
 @Injectable()
 export class BookingsManager {
@@ -26,20 +27,22 @@ export class BookingsManager {
 
   // Increase price based on the service duration
   async book_service(bookingDetail: BookServiceDto, serviceID: string, user: any, invoice_id?:string, amount_paid?: string, transaction_ref?: string, due_date?: string, note?: string) {
-    // GET UNIQUE TRANSACTION REFERENCE CODE
-    let tx_ref = await this.paymentsManager.generateUniqueTransactionCode("BOOKING")
+    try {
+      // GET UNIQUE TRANSACTION REFERENCE CODE
+      let tx_ref = await this.paymentsManager.generateUniqueTransactionCode("BOOKING")
 
-    // const { userId, email, displayName } = user
-    // CHECK IF SERVICE IS VALID AND EXISTS 
-    let serviceDetails:any = await this.serviceManager.get_service_by_id(serviceID)
-    // CHECK IF USER IS TRYING TO BOOK THEMSELVES
-    // if (serviceDetails && serviceDetails.service_provider_details.userId !== userId) {
+      // const { userId, email, displayName } = user
+      // CHECK IF SERVICE IS VALID AND EXISTS 
+      let serviceDetails:any = await this.serviceManager.get_service_by_id(serviceID)
+      // CHECK IF USER IS TRYING TO BOOK THEMSELVES
+      // if (serviceDetails && serviceDetails.service_provider_details.userId !== userId) {
       let amount: string;
       if (bookingDetail.appointment_type === 'In-Person' ) {
         amount = serviceDetails.service_charge_in_person
       } else if (bookingDetail.appointment_type === 'Virtual') {
         amount = serviceDetails.service_charge_virtual
       }
+
       let booking_Detail = {
         service_provider_info: serviceDetails.service_provider_details,
         // booking_user_info: {userId, email, displayName, phone_number: bookingDetail.phone_number },
@@ -68,9 +71,11 @@ export class BookingsManager {
         }
       }
       let service_booked = await this.bookingsManager.create(this._bKM, booking_Detail)
-      
       // CHECK FOR PAYMENT CONFIRMED AND SEND NOTIFICATION
       if (service_booked.acknowledged) {
+        // SEND EMAILS
+        await bookingConfirmed_account_viewer(booking_Detail.booking_user_info.email, booking_Detail)
+        await bookingConfirmed_service_provider(booking_Detail.service_provider_info.email, booking_Detail)
         // *********INITIATE AND RECORD PAYMENT *************
         // let response: any = await PaymentsAPI.initiate_flw_payment(amount, user, bookingDetail.phone_number, tx_ref, 
         //   {
@@ -80,16 +85,13 @@ export class BookingsManager {
         //   }
         // )
         // ******** RECORD TRANSACTION *********
-
         // CURRENT LOGGED IN USER TRANSACTION DETAIL
         // this.transactionsManger.record_transaction(userId, {
         //   service_id: serviceDetails._id, service_name: serviceDetails.service_name, 
         //   service_fee: amount, transaction_ref: tx_ref, transaction_status: "SENT", 
         //   affliate_user: serviceDetails.service_provider_details.displayName
         // })
-
         // SERVICE PROVIDER TRANSACTION DETAIL
-        
         // GET SERVICE PROVIDER DEVICE NOTIFICATION TOKEN 
         let user_nToken = await this.userService.get_user_notification_token(serviceDetails.service_provider_details.userId)
         return {
@@ -98,12 +100,16 @@ export class BookingsManager {
           BookingId: service_booked.insertedId, 
           // booking_payment_link: response.data.link
         }
-      } 
-      throw new InternalServerErrorException({message: "An error occured. Service not booked"})
-    // }
-    // throw new BadRequestException({
-    //   message: "An error occurred. Are you booking Yourself?"
-    // })
+      }
+      throw new BadRequestException({message: "An error occured. Service not booked"})
+      // }
+      // throw new BadRequestException({
+      //   message: "An error occurred. Are you booking Yourself?"
+      // })
+    } catch (err: any) {
+      throw new BadRequestException({message: "An error occured while booking"})
+    }
+   
   }
 
   async confirm_booking(booking_id: string) {
@@ -167,12 +173,14 @@ export class BookingsManager {
   // how do we diffarentiate a booking that has been carried out and one that hasnt
   async cancel_booking(booking_id: string) {}
 
-  async reschedule_booking(booking_id: string, new_date: string, new_time: string) {
-    let schedule_details = {"service_details.date": new_date, "service_details.time": new_time}
+  async reschedule_booking(booking_id: string, new_date: string, new_time: string, duration: string) {
+    let schedule_details = {"service_details.date": new_date, "service_details.time": new_time, "service_details.duration": duration}
     let update;
     Object.keys(schedule_details).forEach(async (key) => {
       update = await this.bookingsManager.updateProperty(this._bKM, booking_id, key, schedule_details)
     })
+    let get_booking = await this.bookingsManager.findOneDocument(this._bKM, "_id", booking_id )
+    await bookingRescheduled(get_booking.booking_user_info.email, get_booking )
     return 'Booking schedule updated'
   }
 

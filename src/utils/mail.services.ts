@@ -106,6 +106,62 @@ export async function paymentFailed(to:string, name: string, service_provider: s
   });
 }
 
+export async function bookingRescheduled(to:string, booking_detail: any) {
+  return mail.sendEmail({
+    From: 'cc@uppist.com',
+    To: to,
+    Subject: 'Booking Reschedule',
+    HtmlBody: `<p>Hi <b>${booking_detail.booking_user_info.displayName.split(' ')[0]}</b>, </p>
+      <p>Your booking with ${booking_detail.service_provider_info.displayName} has been rescheduled to ${booking_detail.service_details.date}.</P>
+      <p> Here’s the breakdown - </p>
+      <p> Service booked: <b>${booking_detail.service_details.service_name}</b> <br>
+      New Date: <b>${booking_detail.service_details.date}</b>  <br>
+      Time: <b>${booking_detail.service_details.time} </b> <br>
+      Amount Paid: <b>${booking_detail.service_details.service_fee}</b> <br>
+      Delivery: <b>${booking_detail.service_details.appointment_type} </b></p>
+      <p>For 24/7 Support: support@luround.com | 0913xxxxxx3</p>`,
+    MessageStream: 'outbound'
+  });
+}
+
+export async function bookingConfirmed_account_viewer(to:string, booking_detail: any) {
+  return mail.sendEmail({
+    From: 'cc@uppist.com',
+    To: to,
+    Subject: 'Booking Confirmed',
+    HtmlBody: `<p>Hi <b>${booking_detail.booking_user_info.displayName.split(' ')[0]}</b>, </p>
+      <p>Your booking with ${booking_detail.service_provider_info.displayName} has been confirmed!</P>
+      <p> Here’s the breakdown - </p>
+      <p> Service booked: <b>${booking_detail.service_details.service_name}</b> <br>
+      Date: <b>${booking_detail.service_details.date}</b>  <br>
+      Time: <b>${booking_detail.service_details.time} </b> <br>
+      Amount Paid: <b>${booking_detail.service_details.service_fee}</b> <br>
+      Delivery: <b>${booking_detail.service_details.appointment_type} </b></p>
+      <p>For 24/7 Support: support@luround.com | 0913xxxxxx3</p>`,
+    MessageStream: 'outbound'
+  });
+}
+
+
+export async function bookingConfirmed_service_provider(to:string, booking_detail: any) {
+  return mail.sendEmail({
+    From: 'cc@uppist.com',
+    To: to,
+    Subject: `New Booking From ${booking_detail.booking_user_info.displayName.split(' ')[0]}`,
+    HtmlBody: `<p>Hi <b>${booking_detail.service_provider_info.displayName.split(' ')[0]}</b>, </p>
+      <p> ${booking_detail.booking_user_info.displayName.split(' ')[0]} booked your service ${booking_detail.service_details.service_name}</P>
+      <p> Here’s the breakdown - </p>
+      <p> Name of Client: <b>${booking_detail.booking_user_info.displayName}</b> <br>
+      <p> Service booked: <b>${booking_detail.service_details.service_name}</b> <br>
+      Date: <b>${booking_detail.service_details.date}</b>  <br>
+      Time: <b>${booking_detail.service_details.time} </b> <br>
+      Amount Paid: <b>${booking_detail.service_details.service_fee}</b> <br>
+      Delivery: <b>${booking_detail.service_details.appointment_type} </b></p>
+      <p>For 24/7 Support: support@luround.com | 0913xxxxxx3</p>`,
+    MessageStream: 'outbound'
+  });
+}
+
 export async function generateRandomSixDigitNumber(): Promise<number> {
   const min = 100000; 
   const max = 999999;

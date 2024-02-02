@@ -6,7 +6,7 @@ import { ObjectId } from "mongodb";
 import Flutterwave from 'flutterwave-node-v3';
 import { got } from "got";
 import { WithdrawalFailed, WithdrawalSuccess, generateRandomSixDigitNumber, sendWalletPinResetOTP } from "../utils/mail.services.js";
-import { WithdrawDTO } from "./wallet.dto.js";
+import { UserWalletDto, WithdrawDTO } from "./wallet.dto.js";
 
 const flw = new Flutterwave(process.env.FLW_PUBLIC_KEY, process.env.FLW_SECRET_KEY)
 
@@ -36,6 +36,12 @@ export class WalletService {
     } catch (err: any) {
       throw new BadRequestException({message: err.message})
     }
+  }
+
+  async delete_bank_detail(userId: string, obj: UserWalletDto) {
+    let delElem = await this.databaseManger.deletefromArray(this._uWDB, userId, "bank_details", obj ) 
+    if (delElem.modifiedCount === 1) return "Item Deleted"
+    throw new BadRequestException({message: "Item not found in array."})
   }
 
   async create_wallet(userId: string, pin: string) {
