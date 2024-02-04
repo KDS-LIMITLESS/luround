@@ -142,6 +142,24 @@ export async function bookingConfirmed_account_viewer(to:string, booking_detail:
   });
 }
 
+export async function booking_account_viewer(to:string, booking_detail: any) {
+  return mail.sendEmail({
+    From: 'cc@uppist.com',
+    To: to,
+    Subject: 'Service Booking',
+    HtmlBody: `<p>Hi <b>${booking_detail.booking_user_info.displayName.split(' ')[0]}</b>, </p>
+      <p>You have booked a service with ${booking_detail.service_provider_info.displayName}, and you will receive a confirmation email once ${booking_detail.service_provider_info.displayName} has confirmed your booking</P>
+      <p> Here’s the breakdown - </p>
+      <p> Service booked: <b>${booking_detail.service_details.service_name}</b> <br>
+      Date: <b>${booking_detail.service_details.date}</b>  <br>
+      Time: <b>${booking_detail.service_details.time} </b> <br>
+      Amount Paid: <b>${booking_detail.service_details.service_fee}</b> <br>
+      Delivery: <b>${booking_detail.service_details.appointment_type} </b></p>
+      <p>For 24/7 Support: support@luround.com | 0913xxxxxx3</p>`,
+    MessageStream: 'outbound'
+  });
+}
+
 
 export async function bookingConfirmed_service_provider(to:string, booking_detail: any) {
   return mail.sendEmail({

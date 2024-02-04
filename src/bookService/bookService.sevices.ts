@@ -6,7 +6,7 @@ import { BookServiceDto } from "./bookServiceDto.js";
 import { TransactionsManger } from "../transaction/tansactions.service.js";
 import { PaymentsAPI } from "../payments/paystack.sevices.js";
 import { UserService } from "../user/user.service.js";
-import { bookingConfirmed_account_viewer, bookingConfirmed_service_provider, bookingRescheduled } from "../utils/mail.services.js";
+import { bookingConfirmed_account_viewer, bookingConfirmed_service_provider, bookingRescheduled, booking_account_viewer } from "../utils/mail.services.js";
 
 @Injectable()
 export class BookingsManager {
@@ -74,7 +74,7 @@ export class BookingsManager {
       // CHECK FOR PAYMENT CONFIRMED AND SEND NOTIFICATION
       if (service_booked.acknowledged) {
         // SEND EMAILS
-        await bookingConfirmed_account_viewer(booking_Detail.booking_user_info.email, booking_Detail)
+        await booking_account_viewer(booking_Detail.booking_user_info.email, booking_Detail)
         await bookingConfirmed_service_provider(booking_Detail.service_provider_info.email, booking_Detail)
         // *********INITIATE AND RECORD PAYMENT *************
         // let response: any = await PaymentsAPI.initiate_flw_payment(amount, user, bookingDetail.phone_number, tx_ref, 
@@ -123,6 +123,7 @@ export class BookingsManager {
           service_fee: get_booking.service_details.service_fee, transaction_ref: get_booking.payment_reference_id, transaction_status: "RECEIVED", 
           affliate_user: get_booking.booking_user_info.displayName
         })
+        await bookingConfirmed_account_viewer(get_booking.booking_user_info.email, get_booking)
         return await this.bookingsManager.updateProperty(this._bKM, booking_id, "booked_status", {booked_status: "CONFIRMED"})
       } 
     } catch(err: any){
@@ -134,6 +135,7 @@ export class BookingsManager {
     try {
       let get_booking = await this.bookingsManager.findOneDocument(this._bKM, "invoice_id", invoice_id)
       if (get_booking !== null ) {
+        await bookingConfirmed_account_viewer(get_booking.booking_user_info.email, get_booking)
         return await this.bookingsManager.updateProperty(this._bKM, get_booking._id, "booked_status", {booked_status: "CONFIRMED"})
       }
     } catch(err: any){
