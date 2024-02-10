@@ -1,7 +1,7 @@
 import { Body, Controller, HttpStatus, Query, Req, Res, Post, Get } from "@nestjs/common";
 import { ReviewService } from "./review.services.js";
 import { ReviewDTO, ReviewPickDTO, ReviewPickServiceIdDTO } from "./review.dto.js";
-import { SkipAuth } from "src/auth/jwt.strategy.js";
+import { SkipAuth } from "../auth/jwt.strategy.js";
 
 @Controller('api/v1/reviews')
 export class ReviewsController {
