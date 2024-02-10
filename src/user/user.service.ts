@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { DatabaseService } from '../store/db.service.js';
 import { AuthService } from '../auth/auth.service.js';
@@ -24,11 +24,12 @@ export class UserService {
     if (userExists) {
       return this.authService.login(userExists)
     }
-    console.log("signing up user....")
-    if (user.email === null && user.displayName === null) {
-      throw new BadRequestException({message: "User data cannot be null"})
-    }
-    return this.googleSignUp(user)
+    throw new NotFoundException({message: "User not found. Please sign p to continue"})
+    // console.log("signing up user....")
+    // if (user.email === null && user.displayName === null) {
+    //   throw new BadRequestException({message: "User data cannot be null"})
+    // }
+    // return this.googleSignUp(user)
   }
 
   async googleSignUp(user: any): Promise<Object> {

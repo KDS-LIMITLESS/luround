@@ -8,15 +8,15 @@ export class ReviewService {
   _rDB = this.dbManager.reviewsDB
   constructor(private dbManager: DatabaseService) {}
 
-  async review(user: any, user_to_review_userId: string, reviewData: any) {
-    const { displayName, photoUrl, userId} = user
+  async review(user_to_review_userId: string, reviewData: any) {
+    // const { displayName, photoUrl, userId} = user
     // get service to write review for. 
     let get_user:any = await this.dbManager.findOneDocument(this._rDB, "_id", user_to_review_userId)
-    if (userId == user_to_review_userId) throw new BadRequestException({message: "Are you revewing yourself?"})
+    // if (userId == user_to_review_userId) throw new BadRequestException({message: "Are you revewing yourself?"})
     
     let reviews = [{
-      userName: displayName,
-      userPhoto: photoUrl,
+      userName: reviewData.displayName,
+      userPhoto: reviewData.photoUrl,
       reviewText: reviewData.comment,
       rating: reviewData.rating,
       created_at: Date.now()
