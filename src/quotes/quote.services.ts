@@ -41,13 +41,15 @@ export class QuotesService {
       status: data.status,
       note: data.note || '',
       created_at: Date.now(),
+
       service_provider: {
         name: user.displayName,
         email: user.email,
         userId: user.userId,
         phone_number: phone_number['link'] || "",
         address: address['link'] || "",
-        logo_url: user_profile.logo_url
+        logo_url: user_profile.logo_url,
+        bank_details: {bank: data.bank, account_name: data.account_name, account_number: data.account_number} || ""
       } 
     }
     let quote = await this.databaseManager.create(this._qdb, quote_details)
@@ -95,7 +97,8 @@ export class QuotesService {
           displayName: service.service_provider_details.displayName,
           phone_number: phone_number['link'] || "",
           address: address['link'] || "",
-          logo_url: user_profile.logo_url
+          logo_url: user_profile.logo_url,
+          bank_details: {bank: data.bank, account_name: data.account_name, account_number: data.account_number} || "",
         },
         phone_number: data.phone_number,
         service_name: service.service_name,

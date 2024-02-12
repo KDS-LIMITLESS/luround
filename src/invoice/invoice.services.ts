@@ -51,7 +51,7 @@ export class InvoiceService {
         phone_number: phone_number['link'] || "",
         address: address['link'] || "",
         logo_url: user_profile.logo_url,
-        bank_details: user_profile.bank_details[0]
+        bank_details: {bank: invoice_data.bank, account_name: invoice_data.account_name, account_number: invoice_data.account_number} || ""
       },
       phone_number: invoice_data.phone_number,
       // payment_reference_id: tx_ref,
