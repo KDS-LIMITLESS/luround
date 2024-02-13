@@ -173,7 +173,13 @@ export class BookingsManager {
   // refund decorator 
   
   // how do we diffarentiate a booking that has been carried out and one that hasnt
-  async cancel_booking(booking_id: string) {}
+  async cancel_booking(booking_id: string) {
+    let booking = await this.bookingsManager.findOneDocument(this._bKM, "_id", booking_id)
+    if (booking) {
+      return await this.bookingsManager.updateProperty(this._bKM, booking_id, "booked_status", {booked_status: "CANCELLED"})
+    }
+    throw new NotFoundException({message: "Booking Not Found"})
+  }
 
   async reschedule_booking(booking_id: string, new_date: string, new_time: string, duration: string) {
     let schedule_details = {"service_details.date": new_date, "service_details.time": new_time, "service_details.duration": duration}
