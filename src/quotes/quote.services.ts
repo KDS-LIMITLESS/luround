@@ -54,7 +54,9 @@ export class QuotesService {
     }
     let quote = await this.databaseManager.create(this._qdb, quote_details)
     await this.databaseManager.updateArr(this._qdb, "_id", new ObjectId(quote.insertedId), "product_details", data.product_detail)
-    return {quote_id, service_provider_address: address['link'] || '', service_provider_phone_number: phone_number['link'] || ''}
+    return {
+        quote_id, service_provider_userId: quote_details.service_provider.userId, user_nToken: user_profile.user_nToken,
+        service_provider_address: address['link'] || '', service_provider_phone_number: phone_number['link'] || ''}
   }
 
   async get_saved_quotes(userId: string) {
@@ -109,7 +111,8 @@ export class QuotesService {
         status: "REQUEST",
         created_at: Date.now()
       }
-      return await this.databaseManager.create(this._qdb, quote_details)
+      await this.databaseManager.create(this._qdb, quote_details)
+      return {service_provider_userId: quote_details.quote_to.userId, user_nToken: user_profile.user_nToken}
     }
     throw new BadRequestException({message: ResponseMessages.ServiceNotFound})
   }
