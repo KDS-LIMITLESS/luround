@@ -116,7 +116,6 @@ export class BookingsManager {
     try {
 
       let get_booking = await this.bookingsManager.findOneDocument(this._bKM, "_id", booking_id)
-      console.log(get_booking !== null)
       if (get_booking !== null) {
         await this.transactionsManger.record_transaction(get_booking.service_provider_info.userId, {
           service_id: get_booking.service_details.service_id, service_name: get_booking.service_details.service_name, 
@@ -124,10 +123,16 @@ export class BookingsManager {
           affliate_user: get_booking.booking_user_info.displayName
         })
         await bookingConfirmed_account_viewer(get_booking.booking_user_info.email, get_booking)
-        return await this.bookingsManager.updateProperty(this._bKM, booking_id, "booked_status", {booked_status: "CONFIRMED"})
+        // supress bounced emails
+        .then(async () => {
+          return await this.bookingsManager.updateProperty(this._bKM, booking_id, "booked_status", {booked_status: "CONFIRMED"})
+        })
+        .catch(async () => {
+          return await this.bookingsManager.updateProperty(this._bKM, booking_id, "booked_status", {booked_status: "CONFIRMED"})
+        })
       } 
     } catch(err: any){
-      throw new BadRequestException({message: "Booking not updated"})
+      throw new BadRequestException({message: err.message})
     }
   }
 
@@ -136,7 +141,13 @@ export class BookingsManager {
       let get_booking = await this.bookingsManager.findOneDocument(this._bKM, "invoice_id", invoice_id)
       if (get_booking !== null ) {
         await bookingConfirmed_account_viewer(get_booking.booking_user_info.email, get_booking)
-        return await this.bookingsManager.updateProperty(this._bKM, get_booking._id, "booked_status", {booked_status: "CONFIRMED"})
+        // supress bounced emails
+        .then(async () => {
+          return await this.bookingsManager.updateProperty(this._bKM, get_booking._id, "booked_status", {booked_status: "CONFIRMED"})
+        })
+        .catch(async () => {
+          return await this.bookingsManager.updateProperty(this._bKM, get_booking._id, "booked_status", {booked_status: "CONFIRMED"})
+        })
       }
     } catch(err: any){
       throw new BadRequestException({message: "Booking not updated"})
