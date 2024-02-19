@@ -114,7 +114,7 @@ export class BookingsManager {
 
   async confirm_booking(booking_id: string) {
     try {
-
+      
       let get_booking = await this.bookingsManager.findOneDocument(this._bKM, "_id", booking_id)
       if (get_booking !== null) {
         await this.transactionsManger.record_transaction(get_booking.service_provider_info.userId, {

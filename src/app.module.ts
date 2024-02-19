@@ -22,6 +22,7 @@ import { QuoteModule } from './quotes/quote.module.js';
 import { InvoiceModule } from './invoice/invoice.moodule.js';
 import { ReceiptModule } from './receipt/receipt.moodule.js';
 import { CRMModule } from './crm/crm.module.js';
+import { SocketsConn } from './sockets.gateway.js';
 
 @Module({
   imports: [
@@ -42,7 +43,8 @@ import { CRMModule } from './crm/crm.module.js';
     QuoteModule,
     InvoiceModule,
     ReceiptModule,
-    CRMModule
+    CRMModule,
+    SocketsConn
   ],
   controllers: [AppController],
   providers: [

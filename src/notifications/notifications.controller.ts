@@ -1,5 +1,6 @@
 import { Body, Controller, Get, HttpStatus, Post, Req, Res } from "@nestjs/common";
 import { NotificationService } from "./notification.services.js";
+import { SkipAuth } from "../auth/jwt.strategy.js";
 
 
 @Controller('api/v1/notifications')
@@ -7,11 +8,13 @@ export class NotificationController {
   
   constructor(private notificationService: NotificationService) {}
 
+  @SkipAuth()
   @Post('send-test-notification')
   async sendTestNotification(@Req() req, @Res() res, @Body() body ) {
     return res.status(HttpStatus.OK).json(await this.notificationService.send_notification(body.user_nToken))
   }
 
+  @SkipAuth()
   @Post('send-notification')
   async sendNotification(@Req() req, @Res() res, @Body() payload ) {
     return res.status(HttpStatus.OK).json(await this.notificationService.construct_notification_detail(payload.notification_userId, payload.user_nToken, payload.title, payload.body, payload.service_name))
