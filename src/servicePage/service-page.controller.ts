@@ -44,3 +44,37 @@ export class ServiceController {
     .json(await this.services.getService(query.url)) 
   }
 }
+
+
+// SOCKET //
+import { WebSocketGateway, WebSocketServer, SubscribeMessage, MessageBody, ConnectedSocket, OnGatewayInit } from '@nestjs/websockets';
+import { Server, Socket } from 'socket.io';
+import { interval } from "rxjs";
+
+@WebSocketGateway()
+export class ServiceSocketsConn {
+  constructor(private services: ServicePageManager) {}
+  @WebSocketServer() server: Server;
+
+
+  @SubscribeMessage('message')
+  handleMessage(@MessageBody() data: string, @ConnectedSocket() client: Socket): void {
+    console.log(client.connected)
+    this.server.emit('message', data);
+  }
+
+  @SubscribeMessage('user-services')
+  async get_user_services(@ConnectedSocket() client: Socket): Promise<any> {
+    try {
+      interval(30000).subscribe(async() => {
+        let url: any = client.handshake.query.url
+        let service = await this.services.getService(url)
+        this.server.emit('user-services', service)
+      })
+    } catch(err) {
+      return err.message
+    }
+    
+    // this.server.emit('user-services', service); // Broadcast message to all connected clients
+  }
+}

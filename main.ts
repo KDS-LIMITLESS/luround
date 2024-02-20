@@ -1,6 +1,6 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './src/app.module.js';
-import { ValidationPipe } from '@nestjs/common';
+import { InternalServerErrorException, ValidationPipe } from '@nestjs/common';
 
 
 async function bootstrap() {
@@ -9,4 +9,6 @@ async function bootstrap() {
   app.useGlobalPipes(new ValidationPipe())
   await app.listen(process.env.PORT);
 }
-bootstrap();
+bootstrap().catch((err: any) => {
+  throw new InternalServerErrorException({message: {err}})
+});
