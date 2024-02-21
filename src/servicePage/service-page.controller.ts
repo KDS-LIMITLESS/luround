@@ -74,7 +74,5 @@ export class ServiceSocketsConn {
     } catch(err) {
       return err.message
     }
-    
-    // this.server.emit('user-services', service); // Broadcast message to all connected clients
   }
 }

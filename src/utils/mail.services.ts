@@ -119,7 +119,7 @@ export async function bookingRescheduled(to:string, booking_detail: any) {
       Time: <b>${booking_detail.service_details.time} </b> <br>
       Amount Paid: <b>${booking_detail.service_details.service_fee}</b> <br>
       Delivery: <b>${booking_detail.service_details.appointment_type} </b></p>
-      <p>For 24/7 Support: support@luround.com | 0913xxxxxx3</p>`,
+      <p>For 24/7 Support: tech@luround.com | 0913xxxxxx3</p>`,
     MessageStream: 'outbound'
   });
 }
@@ -136,8 +136,7 @@ export async function bookingConfirmed_account_viewer(to:string, booking_detail:
       Date: <b>${booking_detail.service_details.date}</b>  <br>
       Time: <b>${booking_detail.service_details.time} </b> <br>
       Amount Paid: <b>${booking_detail.service_details.service_fee}</b> <br>
-      Delivery: <b>${booking_detail.service_details.appointment_type} </b></p>
-      <p>For 24/7 Support: support@luround.com | 0913xxxxxx3</p>`,
+      Delivery: <b>${booking_detail.service_details.appointment_type} </b></p>`,
     MessageStream: 'outbound'
   });
 }
@@ -154,8 +153,7 @@ export async function booking_account_viewer(to:string, booking_detail: any) {
       Date: <b>${booking_detail.service_details.date}</b>  <br>
       Time: <b>${booking_detail.service_details.time} </b> <br>
       Amount Paid: <b>${booking_detail.service_details.service_fee}</b> <br>
-      Delivery: <b>${booking_detail.service_details.appointment_type} </b></p>
-      <p>For 24/7 Support: support@luround.com | 0913xxxxxx3</p>`,
+      Delivery: <b>${booking_detail.service_details.appointment_type} </b></p>`,
     MessageStream: 'outbound'
   });
 }
@@ -175,7 +173,7 @@ export async function bookingConfirmed_service_provider(to:string, booking_detai
       Time: <b>${booking_detail.service_details.time} </b> <br>
       Amount Paid: <b>${booking_detail.service_details.service_fee}</b> <br>
       Delivery: <b>${booking_detail.service_details.appointment_type} </b></p>
-      <p>For 24/7 Support: support@luround.com | 0913xxxxxx3</p>`,
+      <p>For 24/7 Support: tech@luround.com | 0913xxxxxx3</p>`,
     MessageStream: 'outbound'
   });
 }

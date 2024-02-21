@@ -1,5 +1,5 @@
 import { Module } from "@nestjs/common";
-import { BookingsController } from "./bookService.controller.js";
+import { BookingSocketsConn, BookingsController } from "./bookService.controller.js";
 import { BookingsManager } from "./bookService.sevices.js";
 import { DatabaseService } from "../store/db.service.js";
 import { ServicePageManager } from "../servicePage/services-page.service.js";
@@ -22,7 +22,8 @@ import { ProfileService } from "../profileManager/profile.service.js";
     WalletService,
     UserService,
     AuthService,
-    ProfileService
+    ProfileService,
+    BookingSocketsConn
   ]
 })
 
