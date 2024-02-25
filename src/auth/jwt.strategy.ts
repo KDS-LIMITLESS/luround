@@ -17,7 +17,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
   async validate(payload: any) {
     // lookup user in db and cache user details
     return { 
-      userId: payload.sub, 
+      userId: payload.userId, 
       email: payload.email, 
       displayName: payload.displayName,
       photoUrl: payload.photoUrl,
