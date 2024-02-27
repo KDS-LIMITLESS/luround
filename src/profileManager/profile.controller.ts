@@ -113,5 +113,4 @@ export class ProfileController {
   async deleteUserCertificate(@Req() req, @Res() res: Response, @Body() payload: userProfileDto ) {
     return res.status(HttpStatus.OK).json(await this.profileSevice.deleteElementFromArray(req.user, "certificates", payload))
   }
-
 }

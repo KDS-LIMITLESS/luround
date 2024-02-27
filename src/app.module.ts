@@ -22,7 +22,7 @@ import { QuoteModule } from './quotes/quote.module.js';
 import { InvoiceModule } from './invoice/invoice.moodule.js';
 import { ReceiptModule } from './receipt/receipt.moodule.js';
 import { CRMModule } from './crm/crm.module.js';
-import { SocketsConn } from './socketsConn.js';
+import { SocketsModule } from './sockets/socket.module.js';
 
 @Module({
   imports: [
@@ -43,13 +43,13 @@ import { SocketsConn } from './socketsConn.js';
     QuoteModule,
     InvoiceModule,
     ReceiptModule,
-    CRMModule
+    CRMModule,
+    SocketsModule
   ],
   controllers: [AppController],
   providers: [
     AppService, 
-    DatabaseService,
-    SocketsConn
+    DatabaseService
     // CustomNotificationService
     // {
       // provide: APP_FILTER,

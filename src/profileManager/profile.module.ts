@@ -6,7 +6,7 @@ import { DatabaseService } from "../store/db.service.js";
 @Module({
   imports: [],
   controllers: [ProfileController],
-  providers: [ProfileService, DatabaseService]
+  providers: [ProfileService, DatabaseService ]
 })
 
 export class ProfileModule {}

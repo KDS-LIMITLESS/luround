@@ -44,36 +44,3 @@ export class BookingsController {
     return res.status(200).json(await this.bookingsManager.confirm_booking(query.bookingId))
   }
 }
-
-import { WebSocketGateway, WebSocketServer, SubscribeMessage, MessageBody, ConnectedSocket, OnGatewayInit, OnGatewayDisconnect } from '@nestjs/websockets';
-import { Server, Socket } from 'socket.io';
-import { interval } from "rxjs";
-import { JwtService } from "@nestjs/jwt";
-import { SocketsConn } from "../socketsConn.js";
-
-@WebSocketGateway()
-export class BookingSocketsConn  {
-  constructor(private bookingsManager: BookingsManager, private readonly socketConn: SocketsConn) {}
-
-  @SubscribeMessage('message')
-  handleMessage(@MessageBody() data: string, @ConnectedSocket() client: Socket): void {
-    console.log(client.connected)
-    client.emit('message', data);
-  }
-
-  @SubscribeMessage('user-bookings')
-  async get_user_services(@Res() res, @ConnectedSocket() client: Socket): Promise<any> {
-    try {
-      if (Object.keys(this.socketConn.connectedClients).includes(client.id)) {
-        interval(3000).subscribe(async() => {
-          let bookings = await this.bookingsManager.get_user_service_bookings(this.socketConn.connectedClients[client.id])
-          client.emit("user-bookings", bookings)
-        })
-      } else {
-        client.emit("user-bookings", {status: 401, message: "Unauthorized"} )
-      }
-    } catch(err) {
-      client.emit('user-bookings', err.message)
-    }
-  }
-}
