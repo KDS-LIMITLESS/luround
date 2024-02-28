@@ -32,6 +32,7 @@ export class SocketsConn implements OnGatewayInit, OnGatewayDisconnect {
         })
         .catch( () => {
           client.emit("connection", {status: 401, message: "Unauthorized"})
+          client.disconnect()
         })
       } else {
         delete this.connectedClients[client.id]
@@ -52,9 +53,9 @@ export class SocketsConn implements OnGatewayInit, OnGatewayDisconnect {
   async socket_user_profile(@ConnectedSocket() client: Socket): Promise<any> {
     try {
       if (Object.keys(this.connectedClients).includes(client.id)) {
-        interval(3000).subscribe(async() => {
-          let profileQUery = client.handshake.query
-          this.profileManager.get_user_profile(profileQUery)
+        interval(30000).subscribe(async() => {
+          // let profileQUery = client.handshake.query
+          this.profileManager.get_user_profile_by_id(this.connectedClients[client.id])
           .then( async (userProfile) => {
             client.emit("user-profile", userProfile)
           })
@@ -76,7 +77,7 @@ export class SocketsConn implements OnGatewayInit, OnGatewayDisconnect {
   async socket_user_bookings(@ConnectedSocket() client: Socket): Promise<any> {
     try {
       if (Object.keys(this.connectedClients).includes(client.id)) {
-        interval(3000).subscribe(async() => {
+        interval(30000).subscribe(async() => {
           let bookings = await this.bookingsManager.get_user_service_bookings(this.connectedClients[client.id])
           client.emit("user-bookings", bookings)
         })
@@ -97,9 +98,9 @@ export class SocketsConn implements OnGatewayInit, OnGatewayDisconnect {
   async socket_user_services(@ConnectedSocket() client: Socket): Promise<any> {
     try {
       if (Object.keys(this.connectedClients).includes(client.id)) {
-        interval(3000).subscribe(async() => {
-          let url: any = client.handshake.query.url
-          this.serviceManager.getService(url)
+        interval(30000).subscribe(async() => {
+          // let url: any = client.handshake.query.url
+          this.serviceManager.get_user_services(this.connectedClients[client.id])
           .then( async (service) => {
             client.emit("user-services", service)
           })
@@ -123,7 +124,7 @@ export class SocketsConn implements OnGatewayInit, OnGatewayDisconnect {
   async sockets_paid_invoices(@ConnectedSocket() client: Socket): Promise<any> {
     try {
       if (Object.keys(this.connectedClients).includes(client.id)) {
-        interval(3000).subscribe(async() => {
+        interval(30000).subscribe(async() => {
           let invoices = await this.invoiceService.get_paid_invoices(this.connectedClients[client.id])
           client.emit("user-paid-invoices", invoices)
         })
@@ -141,7 +142,7 @@ export class SocketsConn implements OnGatewayInit, OnGatewayDisconnect {
   async sockets_unpaid_invoices(@ConnectedSocket() client: Socket): Promise<any> {
     try {
       if (Object.keys(this.connectedClients).includes(client.id)) {
-        interval(3000).subscribe(async() => {
+        interval(30000).subscribe(async() => {
           let invoices = await this.invoiceService.get_unpaid_invoices(this.connectedClients[client.id])
           client.emit("user-unpaid-invoices", invoices)
         })
@@ -161,7 +162,7 @@ export class SocketsConn implements OnGatewayInit, OnGatewayDisconnect {
   async sockets_sent_quotes(@ConnectedSocket() client: Socket): Promise<any> {
     try {
       if (Object.keys(this.connectedClients).includes(client.id)) {
-        interval(3000).subscribe(async() => {
+        interval(30000).subscribe(async() => {
           let invoices = await this.quoteService.get_sent_quotes(this.connectedClients[client.id])
           client.emit("user-sent-quotes", invoices)
         })
@@ -180,7 +181,7 @@ export class SocketsConn implements OnGatewayInit, OnGatewayDisconnect {
   async sockets_received_quotes(@ConnectedSocket() client: Socket): Promise<any> {
     try {
       if (Object.keys(this.connectedClients).includes(client.id)) {
-        interval(3000).subscribe(async() => {
+        interval(30000).subscribe(async() => {
           let invoices = await this.quoteService.get_received_quotes(this.connectedClients[client.id])
           client.emit("user-received-quotes", invoices)
         })
@@ -199,7 +200,7 @@ export class SocketsConn implements OnGatewayInit, OnGatewayDisconnect {
   async sockets_saved_quotes(@ConnectedSocket() client: Socket): Promise<any> {
     try {
       if (Object.keys(this.connectedClients).includes(client.id)) {
-        interval(3000).subscribe(async() => {
+        interval(30000).subscribe(async() => {
           let invoices = await this.quoteService.get_saved_quotes(this.connectedClients[client.id])
           client.emit("user-saved-quotes", invoices)
         })
@@ -219,7 +220,7 @@ export class SocketsConn implements OnGatewayInit, OnGatewayDisconnect {
   async sockets_saved_receipts(@ConnectedSocket() client: Socket): Promise<any> {
     try {
       if (Object.keys(this.connectedClients).includes(client.id)) {
-        interval(3000).subscribe(async() => {
+        interval(30000).subscribe(async() => {
           let invoices = await this.receiptService.get_saved_receipts(this.connectedClients[client.id])
           client.emit("user-saved-receipts", invoices)
         })
@@ -237,7 +238,7 @@ export class SocketsConn implements OnGatewayInit, OnGatewayDisconnect {
   async receiptsreceipts(@ConnectedSocket() client: Socket): Promise<any> {
     try {
       if (Object.keys(this.connectedClients).includes(client.id)) {
-        interval(3000).subscribe(async() => {
+        interval(30000).subscribe(async() => {
           let invoices = await this.receiptService.get_saved_receipts(this.connectedClients[client.id])
           client.emit("userreceipts", invoices)
         })

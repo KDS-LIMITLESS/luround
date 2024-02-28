@@ -95,6 +95,18 @@ export class ProfileService {
     return profile
   }
 
+  async get_user_profile_by_id(userId: any) {
+    let userProfile:any = await this.profileManager.findOneDocument(this._udb, "_id", userId)
+    if (userProfile === null) {
+      throw new BadRequestException({
+        status: 400,
+        message: ResponseMessages.EmailDoesNotExist
+      })
+    }
+    const {otp, ...profile} = userProfile
+    return profile
+  }
+
   async get_user_certs(userId: string) {
     let userProfile: any = await this.profileManager.findOneDocument(this._udb, "_id", userId)
     if (userProfile === null) {
