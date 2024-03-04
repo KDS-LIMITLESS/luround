@@ -34,6 +34,7 @@ export class UserService {
 
   async googleSignUp(user: any): Promise<Object> {
     // Trnsform user details
+    const date = new Date()
     let new_user = {
       email: user.email, 
       displayName: user.firstName + " " + user.lastName, 
@@ -43,7 +44,10 @@ export class UserService {
       about: '',
       certificates: [],
       media_links: [],
-      user_nToken: user.user_nToken
+      user_nToken: user.user_nToken,
+      created_at: date.toISOString(),
+      account_status: "TRIAL",
+      trial_expiry: new Date(date.getTime() + 30 * 24 * 60 * 60 * 1000)
     }
     await sendOnboardingMail(user.email, user.firstName).catch(() => {
       throw new BadRequestException({message: "Invalid Email Address"})
@@ -61,6 +65,7 @@ export class UserService {
 
       
       // HASH USERS PASSWORD
+      const date = new Date()
       const PSW_HASH = await this.authService.hashPassword(user.password)
       
       let new_user = {
@@ -73,7 +78,10 @@ export class UserService {
         about: '',
         certificates: [],
         media_links: [],
-        user_nToken: user.user_nToken
+        user_nToken: user.user_nToken,
+        created_at: date.toISOString(),
+        account_status: "TRIAL",
+        trial_expiry: new Date(date.getTime() + 30 * 24 * 60 * 60 * 1000)
       }
       await sendOnboardingMail(user.email, user.firstName).catch(() => {
         throw Error("Invalid Email Address")

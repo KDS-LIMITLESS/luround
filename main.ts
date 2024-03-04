@@ -10,5 +10,6 @@ async function bootstrap() {
   await app.listen(process.env.PORT);
 }
 bootstrap().catch((err: any) => {
-  throw new InternalServerErrorException({message: {err}})
+  console.log(err.message)
+  // bootstrap()
 });

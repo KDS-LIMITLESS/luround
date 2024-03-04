@@ -15,8 +15,8 @@ export class Payments {
   }
 
   @Get('verify-payment')
-  async verifyPayments(@Query() query: any, @Res() res: Response) {
-    return res.status(200).json(await PaymentsAPI.verifyPayment(query.ref_id))
+  async verifyPayments(@Req() req, @Query() query: any, @Res() res: Response) {
+    return res.status(200).json(await this.paymentManager.verifyPayment(query.ref_id, req.user.userId))
   }
 
   // @Get('initialize-flw-payment')
@@ -26,9 +26,21 @@ export class Payments {
   //   return res.status(HttpStatus.OK).json({payment_link: response.data.link})
   // }
 
+  // @SkipAuth()
+  // @Get('verify-flw-payment')
+  // async verifyFlutterwavepayments(@Req() req, @Res() res: Response, @Query() query) {
+  //   return res.status(200).json(await this.paymentManager.verify_flw_payment(query))
+  // }
+
   @SkipAuth()
-  @Get('verify-flw-payment')
-  async verifyFlutterwavepayments(@Req() req, @Res() res: Response, @Query() query) {
-    return res.status(200).json(await this.paymentManager.verify_flw_payment(query))
+  @Get('create-monthly-plan')
+  async create_monthly_plan(@Req() req, @Res() res,) {
+    return res.status(HttpStatus.OK).json(await PaymentsAPI.create_monthly_payment_plan())
+  }
+
+  @SkipAuth()
+  @Get('create-yearly-plan')
+  async create_yearly_plan(@Req() req, @Res() res,) {
+    return res.status(HttpStatus.OK).json(await PaymentsAPI.create_yearly_payment_plan())
   }
 }
