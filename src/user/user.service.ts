@@ -24,7 +24,7 @@ export class UserService {
     if (userExists) {
       return this.authService.login(userExists)
     }
-    throw new NotFoundException({message: "User not found. Please sign p to continue"})
+    throw new NotFoundException({message: "User not found. Please sign up to continue"})
     // console.log("signing up user....")
     // if (user.email === null && user.displayName === null) {
     //   throw new BadRequestException({message: "User data cannot be null"})
