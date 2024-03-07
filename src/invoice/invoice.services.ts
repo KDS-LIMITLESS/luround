@@ -7,6 +7,7 @@ import { BookingsManager } from "../bookService/bookService.sevices.js";
 import { ProfileService } from "../profileManager/profile.service.js";
 import { generateRandomSixDigitNumber } from "../utils/mail.services.js";
 import { TransactionsManger } from "../transaction/tansactions.service.js";
+import { InvoiceDto } from "./invooiceDto.js";
 
 
 @Injectable()
@@ -63,7 +64,8 @@ export class InvoiceService {
       // invoice_link: `https://luround.com/invoice/${encryption.encrypt(user.userId)}`,
       note: invoice_data.note,
       due_date: invoice_data.due_date,
-      created_at: Date.now()
+      created_at: Date.now(),
+      invoice_generated_from_quote: invoice_data.invoice_genereated_from_quotes || "FALSE"
       // time: `${time.getHours()}:${time.getMinutes()}:${time.getSeconds()}`
     }
 

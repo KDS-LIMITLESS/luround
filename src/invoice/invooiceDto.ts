@@ -1,5 +1,5 @@
 import { BadRequestException } from "@nestjs/common";
-import { IsArray, IsDate, IsEmail, IsNotEmpty, ValidationArguments, ValidationOptions, ValidatorConstraint, ValidatorConstraintInterface, isNotEmpty, registerDecorator } from "class-validator";
+import { IsArray, IsDate, IsEmail, IsEnum, IsNotEmpty, ValidationArguments, ValidationOptions, ValidatorConstraint, ValidatorConstraintInterface, isNotEmpty, registerDecorator } from "class-validator";
 
 @ValidatorConstraint({async: true})
 class InvoiceDetailConstraint implements ValidatorConstraintInterface {
@@ -58,6 +58,10 @@ function IsValidBookingData(validationOptions?: ValidationOptions) {
   }
 }
 
+export enum InvoiceGeneratedFromQuotes {
+  true = 'TRUE',
+  false = 'FALSE'
+}
 
 export class InvoiceDto {
 
@@ -87,6 +91,9 @@ export class InvoiceDto {
 
   @IsNotEmpty()
   total: string
+
+  @IsNotEmpty() @IsEnum(InvoiceGeneratedFromQuotes)
+  invoice_genereated_from_quotes: string
 }
 
 export class InvoicePaymentDto {
