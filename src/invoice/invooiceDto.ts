@@ -93,7 +93,7 @@ export class InvoiceDto {
   total: string
 
   @IsNotEmpty() @IsEnum(InvoiceGeneratedFromQuotes)
-  invoice_genereated_from_quote: string
+  invoice_generated_from_quote: string
 }
 
 export class InvoicePaymentDto {

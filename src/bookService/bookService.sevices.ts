@@ -56,7 +56,7 @@ export class BookingsManager {
         payment_reference_id: transaction_ref || tx_ref,
         payment_proof: bookingDetail.payment_proof,
         invoice_id: invoice_id || "",
-        booking_generated_from_invoice: bookingDetail.booking_genereated_from_invoice || "False",
+        booking_generated_from_invoice: bookingDetail.booking_generated_from_invoice || "False",
         service_details: {
           service_id: serviceDetails._id,
           service_name: serviceDetails.service_name,
@@ -108,7 +108,7 @@ export class BookingsManager {
       //   message: "An error occurred. Are you booking Yourself?"
       // })
     } catch (err: any) {
-      throw new BadRequestException({message: "An error occured while booking"})
+      throw new BadRequestException({message: "An error occured while booking", err})
     }
    
   }
