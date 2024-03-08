@@ -7,6 +7,10 @@ enum AppointmentTypes {
   virtual = 'Virtual',
   in_person = 'In-Person'
 }
+export enum BookingGeneratedFromInvoice {
+  true = "True",
+  false = "False"
+}
 
 export class BookServiceDto {
 
@@ -50,6 +54,9 @@ export class BookServiceDto {
 
   @IsOptional()
   total: string
+
+  @IsNotEmpty() @IsEnum(BookingGeneratedFromInvoice)
+  booking_genereated_from_invoice: string
 } 
 
 export class BookingId extends PickType(BookServiceDto, ['bookingId'] as const) {}

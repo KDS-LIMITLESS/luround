@@ -59,8 +59,8 @@ function IsValidBookingData(validationOptions?: ValidationOptions) {
 }
 
 export enum InvoiceGeneratedFromQuotes {
-  true = 'TRUE',
-  false = 'FALSE'
+  true = "True",
+  false = "False"
 }
 
 export class InvoiceDto {
