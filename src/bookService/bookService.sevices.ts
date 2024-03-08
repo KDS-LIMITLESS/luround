@@ -26,7 +26,7 @@ export class BookingsManager {
   // If payment valid update booked status
 
   // Increase price based on the service duration
-  async book_service(bookingDetail: BookServiceDto, serviceID: string, user: any, invoice_id?:string, amount_paid?: string, transaction_ref?: string, due_date?: string, note?: string) {
+  async book_service(bookingDetail: BookServiceDto, serviceID: string, user: any, invoice_id?:string, amount_paid?: string, transaction_ref?: string, due_date?: string, note?: string, booking_generated_from_invoice?: string) {
     try {
       // GET UNIQUE TRANSACTION REFERENCE CODE
       let tx_ref = await this.paymentsManager.generateUniqueTransactionCode("BOOKING")
@@ -56,7 +56,7 @@ export class BookingsManager {
         payment_reference_id: transaction_ref || tx_ref,
         payment_proof: bookingDetail.payment_proof,
         invoice_id: invoice_id || "",
-        booking_generated_from_invoice: bookingDetail.booking_generated_from_invoice || "False",
+        booking_generated_from_invoice: booking_generated_from_invoice || "False",
         service_details: {
           service_id: serviceDetails._id,
           service_name: serviceDetails.service_name,

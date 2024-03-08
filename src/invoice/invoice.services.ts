@@ -123,7 +123,7 @@ export class InvoiceService {
           displayName: invoice.service_provider.displayName
         }, 
         invoice.invoice_id, payment_details.amount_paid,
-        payment_details.tx_ref, invoice.due_date, invoice.note
+        payment_details.tx_ref, invoice.due_date, invoice.note, "True"
       )
 
       await this.bookingService.confirm_booking_with_invoice_id(invoice.invoice_id)

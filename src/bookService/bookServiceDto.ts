@@ -55,8 +55,6 @@ export class BookServiceDto {
   @IsOptional()
   total: string
 
-  @IsNotEmpty() @IsEnum(BookingGeneratedFromInvoice)
-  booking_generated_from_invoice: string
 } 
 
 export class BookingId extends PickType(BookServiceDto, ['bookingId'] as const) {}
