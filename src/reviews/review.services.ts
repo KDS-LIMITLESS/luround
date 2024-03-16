@@ -15,7 +15,7 @@ export class ReviewService {
     // if (userId == user_to_review_userId) throw new BadRequestException({message: "Are you revewing yourself?"})
     
     let reviews = [{
-      userName: reviewData.displayName,
+      user_name: reviewData.user_name,
       userPhoto: reviewData.photoUrl,
       reviewText: reviewData.comment,
       rating: reviewData.rating,
