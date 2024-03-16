@@ -22,7 +22,7 @@ export class UserService {
   async googleSignIn(user: any): Promise<Object> {
     let userExists = await this.databaseManager.read(this._udb, user.email)
     if (userExists) {
-      return this.authService.login(userExists)
+      return this.authService.login(userExists, user.user_nToken || "no token passed")
     }
     throw new NotFoundException({message: "User not found. Please sign up to continue"})
     // console.log("signing up user....")
@@ -54,7 +54,7 @@ export class UserService {
     })
     let userId = (await this.databaseManager.create(this._udb, new_user)).insertedId
     await this.profileService.generate_user_url(user)
-    return this.authService.login({ email: user.email, displayName: user.displayName, _id: userId, photoUrl: user.photoUrl, user_nToken: new_user.user_nToken })
+    return this.authService.login({ email: user.email, displayName: user.displayName, _id: userId, photoUrl: user.photoUrl }, user.user_nToken || "no token passed")
   }
 
   async localSignUp(user: UserDto): Promise<object | string>{
@@ -88,7 +88,7 @@ export class UserService {
       })
       const userId = (await this.databaseManager.create(this._udb, new_user)).insertedId
       await this.profileService.generate_user_url(user)
-      return this.authService.login({email: user.email, displayName: new_user.displayName, _id: userId, photoUrl: user.photoUrl, user_nToken: new_user.user_nToken})
+      return this.authService.login({email: user.email, displayName: new_user.displayName, _id: userId, photoUrl: user.photoUrl},  user.user_nToken || "no token passed")
 
     } catch(err: any) {
       throw new BadRequestException({
