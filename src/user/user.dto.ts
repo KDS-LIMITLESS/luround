@@ -1,5 +1,5 @@
 import { PickType } from "@nestjs/mapped-types";
-import { IsEmail, IsEmpty, IsEnum, IsNotEmpty, IsString, IsOptional } from "class-validator";
+import { IsEmail, IsEmpty, IsNotEmpty, IsOptional } from "class-validator";
 
 
 

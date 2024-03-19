@@ -57,7 +57,7 @@ export class UserService {
     })
     let userId = (await this.databaseManager.create(this._udb, new_user)).insertedId
     await this.profileService.generate_user_url(user)
-    return this.authService.login({ email: user.email, displayName: user.displayName, _id: userId, photoUrl: user.photoUrl, account_status: new_user.account_status }, user.user_nToken || "no token passed")
+    return this.authService.login({ email: user.email, displayName: new_user.displayName, _id: userId, photoUrl: user.photoUrl, account_status: new_user.account_status }, user.user_nToken || "no token passed")
   }
 
   @SkipAuth()
