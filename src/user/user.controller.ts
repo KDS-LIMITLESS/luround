@@ -34,6 +34,13 @@ export class UserController {
   }
 
   @SkipAuth()
+  @Post('/api/v1/google/sign-up')
+  async googleSignUp(@Res() res: Response, @Body() body: UserDto) {
+    let createUser = await this.userService.googleSignUp(body)
+    return res.status(HttpStatus.CREATED).json(createUser)
+  }
+
+  @SkipAuth()
   @Put('/api/v1/send-reset-password-otp')
   async sendResetPasswordOtp(@Res() res: Response, @Body() body) {
     return res.status(HttpStatus.OK).json(await this.userService.send_reset_password_otp(body.email))
