@@ -5,7 +5,7 @@ import { UserService } from './user.service.js';
 import { Response } from 'express';
 // import { FileInterceptor } from '@nestjs/platform-express';
 // import { uploadImage } from '../utils/cloudinary-upload.services.js';
-import { UserDto } from './user.dto.js';
+import { GoogleUserDTO, UserDto } from './user.dto.js';
 import { SkipAuth } from '../auth/jwt.strategy.js';
 import { AuthGuard } from '@nestjs/passport';
 
@@ -35,7 +35,7 @@ export class UserController {
 
   @SkipAuth()
   @Post('/api/v1/google/sign-up')
-  async googleSignUp(@Res() res: Response, @Body() body: UserDto) {
+  async googleSignUp(@Res() res: Response, @Body() body: GoogleUserDTO) {
     let createUser = await this.userService.googleSignUp(body)
     return res.status(HttpStatus.CREATED).json(createUser)
   }

@@ -1,10 +1,7 @@
+import { PickType } from "@nestjs/mapped-types";
 import { IsEmail, IsEmpty, IsEnum, IsNotEmpty, IsString, IsOptional } from "class-validator";
 
 
-export enum AccountCreatedFrom {
-  Google = 'GOOGLE',
-  Local = 'LOCAL'
-}
 
 export class UserDto{
   @IsNotEmpty()
@@ -23,10 +20,6 @@ export class UserDto{
   @IsOptional()
   photoUrl: string
 
-  @IsNotEmpty() @IsString()
-  @IsEnum(AccountCreatedFrom)
-  readonly accountCreatedFrom: string
-
   @IsEmpty()
   occupation: null
   
@@ -39,6 +32,9 @@ export class UserDto{
   @IsEmpty()
   media_links: null
 
+  @IsNotEmpty()
   user_nToken: string
 
 }
+
+export class GoogleUserDTO extends PickType(UserDto, ['email', 'firstName', 'lastName', 'photoUrl', 'user_nToken'] as const) {}
