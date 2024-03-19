@@ -7,6 +7,7 @@ import ResponseMessages from '../messageConstants.js';
 import { UserDto } from './user.dto.js';
 import * as bcrypt from 'bcrypt'
 import { ProfileService } from '../profileManager/profile.service.js';
+import { SkipAuth } from '../auth/jwt.strategy.js';
 
 
 @Injectable()
@@ -18,7 +19,8 @@ export class UserService {
     private profileService: ProfileService,
     private jwt: JwtService
   ) {}
-
+  
+  @SkipAuth()
   async googleSignIn(user: any): Promise<Object> {
     let userExists = await this.databaseManager.read(this._udb, user.email)
     if (userExists) {
@@ -32,6 +34,7 @@ export class UserService {
     // return this.googleSignUp(user)
   }
 
+  @SkipAuth()
   async googleSignUp(user: any): Promise<Object> {
     // Trnsform user details
     const date = new Date()
@@ -54,9 +57,10 @@ export class UserService {
     })
     let userId = (await this.databaseManager.create(this._udb, new_user)).insertedId
     await this.profileService.generate_user_url(user)
-    return this.authService.login({ email: user.email, displayName: user.displayName, _id: userId, photoUrl: user.photoUrl }, user.user_nToken || "no token passed")
+    return this.authService.login({ email: user.email, displayName: user.displayName, _id: userId, photoUrl: user.photoUrl, account_status: new_user.account_status }, user.user_nToken || "no token passed")
   }
 
+  @SkipAuth()
   async localSignUp(user: UserDto): Promise<object | string>{
     try {
       // CHECK IF EMAIL ALREADY EXISTS
@@ -88,7 +92,7 @@ export class UserService {
       })
       const userId = (await this.databaseManager.create(this._udb, new_user)).insertedId
       await this.profileService.generate_user_url(user)
-      return this.authService.login({email: user.email, displayName: new_user.displayName, _id: userId, photoUrl: user.photoUrl},  user.user_nToken || "no token passed")
+      return this.authService.login({email: user.email, displayName: new_user.displayName, _id: userId, photoUrl: user.photoUrl, account_status: new_user.account_status},  user.user_nToken || "no token passed")
 
     } catch(err: any) {
       throw new BadRequestException({
