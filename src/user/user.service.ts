@@ -39,8 +39,8 @@ export class UserService {
 
      // CHECK IF EMAIL ALREADY EXISTS
      const isUser = await this.databaseManager.read(this._udb, user.email)
-     if (isUser) throw Error(ResponseMessages.EmailExists)
-     
+     if (isUser) throw new BadRequestException({message: ResponseMessages.EmailExists})
+
     // Trnsform user details
     const date = new Date()
     let new_user = {
