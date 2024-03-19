@@ -36,6 +36,11 @@ export class UserService {
 
   @SkipAuth()
   async googleSignUp(user: any): Promise<Object> {
+
+     // CHECK IF EMAIL ALREADY EXISTS
+     const isUser = await this.databaseManager.read(this._udb, user.email)
+     if (isUser) throw Error(ResponseMessages.EmailExists)
+     
     // Trnsform user details
     const date = new Date()
     let new_user = {
