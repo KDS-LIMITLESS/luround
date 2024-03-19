@@ -1,4 +1,4 @@
-import { Contains, IsArray, IsDate, IsEmail, IsNotEmpty, IsNumber, ValidationArguments, 
+import { Contains, IsArray, IsDate, IsEmail, IsNotEmpty, IsNumber, IsOptional, ValidationArguments, 
   ValidationOptions, 
   ValidatorConstraint, ValidatorConstraintInterface, registerDecorator 
 } from "class-validator";
@@ -106,37 +106,37 @@ export class userProfileMainDto{
   @IsNotEmpty()
   password: string
 
-  @IsNotEmpty()
+  @IsOptional()
   firstName: string
 
-  @IsNotEmpty()
+  @IsOptional()
   lastName: string
 
-  @IsNotEmpty()
+  @IsOptional()
   photoUrl: string
 
-  @IsNotEmpty()
+  @IsOptional()
   occupation: string
 
-  @IsNotEmpty()
+  @IsOptional()
   company: string
   
-  @IsNotEmpty()
+  @IsOptional()
   about: string
   
-  @IsCertificate()
+  @IsOptional()
   certificates: Array<{[key: string]: any}>
 
   @IsValidLinKPayload()
   media_links: Array<{[key: string]: any}>
 
-  @IsNotEmpty()
+  @IsOptional()
   slug: string
 
-  @IsNotEmpty()
+  @IsOptional()
   url: string
 
-  @IsNotEmpty()
+  @IsOptional()
   logo_url: string
 }
 
