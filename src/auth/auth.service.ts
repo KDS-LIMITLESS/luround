@@ -3,6 +3,7 @@ import { JwtService } from "@nestjs/jwt";
 import * as bcrypt from 'bcrypt'
 import ResponseMessages from "../messageConstants.js";
 import { DatabaseService } from "../store/db.service.js";
+import { sendPlanExpiringMail } from "../utils/mail.services.js";
 
 
 @Injectable()
@@ -24,7 +25,7 @@ export class AuthService {
   // validate user details before logging in
    async validateUser(email: string, psw: string) {
     const isUser = await this.databaseManager.read(this._udb, email)  
-    if ( isUser === null || !await this.comparePasswords(psw, isUser.password) ){
+    if ( isUser === null || !await this.comparePasswords(psw, isUser.password)){
       throw new UnauthorizedException({
         statusCode: 401,
         message: ResponseMessages.BadLoginDetails
@@ -35,26 +36,44 @@ export class AuthService {
   }
 
   async calculate_user_payment_end_date(userId: any) {
-    const current_date = new Date()
     let user = await this.databaseManager.findOneDocument(this._udb, "_id", userId)
+    const current_date = new Date()
+    const trial_expiry_date = new Date(`${user.trial_expiry}`)
     
     if (user !== null && user.account_status === "TRIAL") {
-      const expiry_date = new Date(`${user.trial_expiry}`)
-      if (current_date.getTime() >= expiry_date.getTime()) {
+      // USER ACCOUNT IS SET TO TRIAL. CHECK IF TRIAL PERIOD HAS EXPIRED.
+      
+
+      if (current_date.getTime() >= trial_expiry_date.getTime()) {
         await this.databaseManager.updateDocument(this._udb, userId, {account_status: "INACTIVE"})
         delete user.trial_expiry
-        console.log(user.account_status)
+        delete user.sent_expiry_email
         return user.account_status;
       }
       // TRIAL NOT EXPIRED YET
+      // CHECK IF TRIAL CLOSE TO EXPIRY DATE
+      let send_expiry_mail_date = new Date(trial_expiry_date.getTime() - 15 * 60000)
+
+      if (current_date.getTime() >= send_expiry_mail_date.getTime() && user.sent_expiry_email === false){
+        await sendPlanExpiringMail(user.email, user.displayName)
+        await this.databaseManager.updateDocument(this._udb, userId, {sent_expiry_email: true})
+      }
       return user.account_status
+      // USER MUST HAVE MADE PAYMENT ONCE BEFORE THIS CHECK RESOLVES TO TRUE
     } else if (user !== null && user.payment_details !== undefined) {
-      const expiry_date = new Date(`${user.payment_details.expiry_date}`)
-      if (current_date.getTime() >= expiry_date.getTime()) {
+      const payment_expiry_date = new Date(`${user.payment_details.expiry_date}`)
+      if (current_date.getTime() >= payment_expiry_date.getTime()) {
         await this.databaseManager.updateDocument(this._udb, userId, {account_status: "INACTIVE"})
         return user.payment_details;
       }
       // PAYMENT NOT EXPIRED YET
+      // CHECK IF PAYMENT CLOSE TO EXPIRY DATE
+      let send_payment_expiry_mail_date = new Date(user.payment_details.expiry_date.getTime() - 15 * 60000)
+      console.log(send_payment_expiry_mail_date)
+      if (current_date.getTime() >= send_payment_expiry_mail_date.getTime() && user.payment_details.sent_expiry_email === false){
+        await sendPlanExpiringMail(user.email, user.displayName)
+        await this.databaseManager.updateDocument(this._udb, userId, {[user.payment_details.sent_expiry_email]: true})
+      }
       return user.account_status
     } else {
       return "You are an old user"

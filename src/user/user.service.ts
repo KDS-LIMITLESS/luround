@@ -57,7 +57,8 @@ export class UserService {
       user_nToken: user.user_nToken,
       created_at: date.toISOString(),
       account_status: "TRIAL",
-      trial_expiry: new Date(date.getTime() + 30 * 24 * 60 * 60 * 1000)
+      sent_expiry_email: false,
+      trial_expiry:  new Date(date.getTime() + 30 * 60000) // new Date(date.getTime() + 30 * 24 * 60 * 60 * 1000)
     }
     await sendOnboardingMail(user.email, user.firstName).catch(() => {
       throw new BadRequestException({message: "Invalid Email Address"})
@@ -94,7 +95,8 @@ export class UserService {
         user_nToken: user.user_nToken,
         created_at: date.toISOString(),
         account_status: "TRIAL",
-        trial_expiry: new Date(date.getTime() + 30 * 24 * 60 * 60 * 1000)
+        sent_expiry_email: false,
+        trial_expiry: new Date(date.getTime() + 30 * 60000) // new Date(date.getTime() + 30 * 24 * 60 * 60 * 1000)
       }
       await sendOnboardingMail(user.email, user.firstName).catch(() => {
         throw Error("Invalid Email Address")

@@ -56,8 +56,9 @@ export class PaymentsAPI {
         let date = new Date(`${request.data.paid_at}`)
         await this.databaseManager.updateDocument(this._udb, userId, {account_status: "ACTIVE", payment_details: {
           start_date: request.data.paid_at,
-          expiry_date: new Date(date.getTime() + 30 * 24 * 60 * 60 * 1000),
+          expiry_date: new Date(date.getTime() + 30 * 60000), // new Date(date.getTime() + 30 * 24 * 60 * 60 * 1000),
           authourization: request.data.authorization,
+          sent_expiry_email: false
         }})
         return request.data.status
       } 

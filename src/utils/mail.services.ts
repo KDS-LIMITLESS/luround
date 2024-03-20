@@ -36,7 +36,21 @@ export async function sendOTP(to:string, OTP: number, name: string) {
       <p>There was a request to change your password!</P>
       <p>Please enter this otp to change your password: <b>${OTP}</b></p>
       <p>If you did not make this request, please ignore this email.</p>
-      <p>For 24/7 Support: support@luround.com | 0913xxxxxx3</p>`,
+      <p>For 24/7 Support: support@luround.com</p>`,
+    MessageStream: 'outbound'
+  });
+}
+
+export async function sendPlanExpiringMail(to:string, name: string) {
+  return mail.sendEmail({
+    From: 'tech@luround.com',
+    To: to,
+    Subject: 'Plan Expiring',
+    HtmlBody: `<p>Hi <b>${name.split(' ')[0]}</b>, </p>
+      <p>Your plan on Luround is about to expire.</P>
+      <p>Please purchase a new plan to continue to enjoy Luround.</p>
+      <p>You can renew your plan when you click on --More--Settings--Pricing..</p>
+      <p>For 24/7 Support: support@luround.com</p>`,
     MessageStream: 'outbound'
   });
 }
@@ -50,7 +64,7 @@ export async function sendWalletPinResetOTP(to:string, OTP: number, name: string
       <p>There was a request to change your wallet withdrawal pin!</P>
       <p>Please enter this otp to change your withdrawal pin: <b>${OTP}</b></p>
       <p>If you did not make this request, please ignore this email.</p>
-      <p>For 24/7 Support: support@luround.com | 0913xxxxxx3</p>`,
+      <p>For 24/7 Support: support@luround.com</p>`,
     MessageStream: 'outbound'
   });
 }
@@ -63,7 +77,7 @@ export async function WithdrawalSuccess(to:string, name: string, wallet_balance:
     HtmlBody: `<p>Hi <b>${name}</b>, </p>
       <p>Your withdrawal of ${amount} from your wallet was successful.</P>
       <p>Your Wallet balance is ${wallet_balance}.</b></p>
-      <p>For 24/7 Support: support@luround.com | 0913xxxxxx3</p>`,
+      <p>For 24/7 Support: support@luround.com</p>`,
     MessageStream: 'outbound'
   });
 }
@@ -76,7 +90,7 @@ export async function WithdrawalFailed(to:string, name: string, wallet_balance: 
     HtmlBody: `<p>Hi <b>${name}</b>, </p>
       <p>Your withdrawal of ${amount} from your wallet failed.</P>
       <p>Your Wallet balance is <b>${wallet_balance}.</b></p>
-      <p>For 24/7 Support: support@luround.com | 0913xxxxxx3</p>`,
+      <p>For 24/7 Support: support@luround.com</p>`,
     MessageStream: 'outbound'
   });
 }
@@ -88,7 +102,7 @@ export async function paymentSuccess(to:string, name: string, service_provider: 
     Subject: 'Payment Successful',
     HtmlBody: `<p>Hi <b>${name}</b>, </p>
       <p>Your payment of <b>${amount}</b> to ${service_provider} for <b>${service_booked}</b> was successful.</P>
-      <p>For 24/7 Support: support@luround.com | 0913xxxxxx3</p>`,
+      <p>For 24/7 Support: support@luround.com</p>`,
     MessageStream: 'outbound'
   });
 }
@@ -101,7 +115,7 @@ export async function paymentFailed(to:string, name: string, service_provider: s
     HtmlBody: `<p>Hi <b>${name}</b>, </p>
       <p>Your payment of <b> ${amount} </b> to ${service_provider} for <b>${service_booked}</b> failed.
       Please try again at a later time.</P>
-      <p>For 24/7 Support: support@luround.com | 0913xxxxxx3</p>`,
+      <p>For 24/7 Support: support@luround.com</p>`,
     MessageStream: 'outbound'
   });
 }
@@ -119,7 +133,7 @@ export async function bookingRescheduled(to:string, booking_detail: any) {
       Time: <b>${booking_detail.service_details.time} </b> <br>
       Amount Paid: <b>${booking_detail.service_details.service_fee}</b> <br>
       Delivery: <b>${booking_detail.service_details.appointment_type} </b></p>
-      <p>For 24/7 Support: tech@luround.com | 0913xxxxxx3</p>`,
+      <p>For 24/7 Support: tech@luround.com</p>`,
     MessageStream: 'outbound'
   });
 }
@@ -173,10 +187,12 @@ export async function bookingConfirmed_service_provider(to:string, booking_detai
       Time: <b>${booking_detail.service_details.time} </b> <br>
       Amount Paid: <b>${booking_detail.service_details.service_fee}</b> <br>
       Delivery: <b>${booking_detail.service_details.appointment_type} </b></p>
-      <p>For 24/7 Support: tech@luround.com | 0913xxxxxx3</p>`,
+      <p>For 24/7 Support: tech@luround.com</p>`,
     MessageStream: 'outbound'
   });
 }
+
+
 
 export async function generateRandomSixDigitNumber(): Promise<number> {
   const min = 100000; 
