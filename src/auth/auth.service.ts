@@ -76,7 +76,7 @@ export class AuthService {
       }
       return user.account_status
     } else {
-      return "You are an old user"
+      return "INACTIVE"
     }
   }
 
