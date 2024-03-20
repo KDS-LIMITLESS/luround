@@ -16,9 +16,9 @@ export class AuthService {
   ) {}
 
   async login(user: any, user_nToken?: string): Promise<object> {    
-    let payload = { email: user.email, userId: user._id, displayName: user.displayName, photoUrl: user.photoUrl, account_status: user.account_status }
-    await this.databaseManager.updateDocument(this._udb, user._id, {user_nToken: user_nToken})
     let check_user_account_payment_satus = await this.calculate_user_payment_end_date(user._id)
+    let payload = { email: user.email, userId: user._id, displayName: user.displayName, photoUrl: user.photoUrl, account_status: check_user_account_payment_satus }
+    await this.databaseManager.updateDocument(this._udb, user._id, {user_nToken: user_nToken})
     return { "accessToken": await this.jwt.signAsync(payload), account_status: check_user_account_payment_satus }
   }
 
