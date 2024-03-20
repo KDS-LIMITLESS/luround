@@ -19,6 +19,9 @@ export async function sendOnboardingMail(to:string, name: string) {
         materials that will help you get started with those new features to ensure you get the most out of
         it.
       </p>
+      <p> Since you’ve recently downloaded the Luround app, you automatically have 30 days of free trial. 
+        We hope that this window of time gives you new opportunities to further grow your business.
+      </p>
       <p> Please don't hesitate to reach out for 24/7 support at support@luround.com if you need assistance! </p>
       <p> We're so happy you're part of this community! </p> 
       <p> Thanks, </p>
