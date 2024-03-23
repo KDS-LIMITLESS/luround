@@ -44,6 +44,7 @@ export async function sendOTP(to:string, OTP: number, name: string) {
   });
 }
 
+
 export async function sendPlanExpiringMail(to:string, name: string) {
   return mail.sendEmail({
     From: 'tech@luround.com',
@@ -98,13 +99,14 @@ export async function WithdrawalFailed(to:string, name: string, wallet_balance: 
   });
 }
 
-export async function paymentSuccess(to:string, name: string, service_provider: string, amount: number, service_booked: string) {
+export async function sendPaymentSuccessMail(to:string, name: string, plan: string) {
   return mail.sendEmail({
     From: 'tech@luround.com',
     To: to,
-    Subject: 'Payment Successful',
+    Subject: 'Luround Payment Confirmation',
     HtmlBody: `<p>Hi <b>${name}</b>, </p>
-      <p>Your payment of <b>${amount}</b> to ${service_provider} for <b>${service_booked}</b> was successful.</P>
+      <p>You have successfully renewed your ${plan} plan.</P>
+      <p> Thanks for your patronage.</p>
       <p>For 24/7 Support: support@luround.com</p>`,
     MessageStream: 'outbound'
   });

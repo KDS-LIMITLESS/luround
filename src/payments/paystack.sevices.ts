@@ -1,11 +1,8 @@
 import { BadRequestException, Injectable } from "@nestjs/common";
 import { request } from "https";
-import got from "got";
 import Flutterwave from 'flutterwave-node-v3';
 import { DatabaseService } from "../store/db.service.js";
-import ResponseMessages from "../messageConstants.js";
-import { paymentFailed, paymentSuccess } from "../utils/mail.services.js";
-import { WalletService } from "../wallet/wallet.services.js";
+import { sendPaymentSuccessMail } from "../utils/mail.services.js";
 
 const flw = new Flutterwave(process.env.FLW_PUBLIC_KEY, process.env.FLW_SECRET_KEY)
 
@@ -53,13 +50,17 @@ export class PaymentsAPI {
     let request: any = await PaymentsAPI.makeRequest(transaction_ref, options)
     try {
       if (request.data.status === 'success') {
+        console.log(request)
+        let user = await this.databaseManager.findOneDocument(this._udb, "_id", userId)
         let date = new Date(`${request.data.paid_at}`)
         await this.databaseManager.updateDocument(this._udb, userId, {account_status: "ACTIVE", payment_details: {
           start_date: request.data.paid_at,
           expiry_date: new Date(date.getTime() + 30 * 60000), // new Date(date.getTime() + 30 * 24 * 60 * 60 * 1000),
           authourization: request.data.authorization,
-          sent_expiry_email: false
+          sent_expiry_email: false,
+          current_plan: request.data.amount === "4200" ? "Monthly": "Yearly"
         }})
+        await sendPaymentSuccessMail(user.email, user.displayName, request.data.amount === "4200" ? "Monthly": "Yearly" )
         return request.data.status
       } 
       throw new BadRequestException({message: request.data.status})
@@ -191,7 +192,7 @@ export class PaymentsAPI {
 //         if (get_invoice !== null) {
 //           await this.databaseManager.updateProperty(this._idb, get_invoice._id, "payment_status", {payment_status: "SUCCESSFUL"})
 //           let payment_ref_id = (await this.databaseManager.create(this._pdb, transaction_details)).insertedId
-//           await paymentSuccess(response.data.customer.email, response.data.meta.consumer_name, response.data.meta.payment_receiver_name, response.data.charged_amount, response.data.meta.service_name )
+//           await sendPaymentSuccessMail(response.data.customer.email, response.data.meta.consumer_name, response.data.meta.payment_receiver_name, response.data.charged_amount, response.data.meta.service_name )
 //           return {booking_status: "Success", payment_ref_id, transaction_ref: response.data.tx_ref }
 //         }
 //       }
@@ -205,7 +206,7 @@ export class PaymentsAPI {
 //         await this.walletService.increase_wallet_balance(response.data.meta.payment_receiver_id, response.data.charged_amount)
 //         // SAVE PAYMENT DETAILS TO DATABASE
 //         let payment_ref_id = (await this.databaseManager.create(this._pdb, transaction_details)).insertedId
-//         await paymentSuccess(response.data.customer.email, response.data.meta.consumer_name, response.data.meta.payment_receiver_name, response.data.charged_amount, response.data.meta.service_name )
+//         await sendPaymentSuccessMail(response.data.customer.email, response.data.meta.consumer_name, response.data.meta.payment_receiver_name, response.data.charged_amount, response.data.meta.service_name )
 //         return {booking_status: "Success", payment_ref_id, transaction_ref: response.data.tx_ref }
 //       }
 //       throw new BadRequestException({message: ResponseMessages.PaymentNotResolved})
