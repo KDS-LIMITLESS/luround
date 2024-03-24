@@ -47,6 +47,7 @@ export class PaymentsAPI {
         'Content-Type': 'application/json'
       }
     }
+    console.log(transaction_ref, userId)
     let request: any = await PaymentsAPI.makeRequest(transaction_ref, options)
     try {
       if (request.data.status === 'success') {
@@ -55,7 +56,7 @@ export class PaymentsAPI {
         let date = new Date(`${request.data.paid_at}`)
         await this.databaseManager.updateDocument(this._udb, userId, {account_status: "ACTIVE", payment_details: {
           start_date: request.data.paid_at,
-          expiry_date: new Date(date.getTime() + 30 * 60000), // new Date(date.getTime() + 30 * 24 * 60 * 60 * 1000),
+          expiry_date: new Date(date.getTime() + 30 * 24 * 60 * 60 * 1000),
           authourization: request.data.authorization,
           sent_expiry_email: false,
           current_plan: request.data.amount === "4200" ? "Monthly": "Yearly"
