@@ -46,10 +46,9 @@ export class PaymentsAPI {
         Authorization: `Bearer ${process.env.PAYSTACK_SECRET}`,
         'Content-Type': 'application/json'
       }
-    }
-    console.log(transaction_ref, userId)
-    let request: any = await PaymentsAPI.makeRequest(transaction_ref, options)
+    }    
     try {
+      let request: any = await PaymentsAPI.makeRequest(transaction_ref, options)
       if (request.data.status === 'success') {
         console.log(request)
         let user = await this.databaseManager.findOneDocument(this._udb, "_id", userId)
@@ -59,14 +58,15 @@ export class PaymentsAPI {
           expiry_date: new Date(date.getTime() + 30 * 24 * 60 * 60 * 1000),
           authourization: request.data.authorization,
           sent_expiry_email: false,
-          current_plan: request.data.amount === "4200" ? "Monthly": "Yearly"
+          current_plan: request.data.amount === "4200" ? "Monthly": "Yearly",
+          transaction_ref
         }})
         await sendPaymentSuccessMail(user.email, user.displayName, request.data.amount === "4200" ? "Monthly": "Yearly" )
-        return request.data.status
+        return {status: request.data.status, plan: request.data.amount === "4200" ? "Monthly": "Yearly"}
       } 
-      throw new BadRequestException({message: request.data.status})
+      throw new BadRequestException({message: request.data.status, transaction_ref})
     } catch (err: any) {
-      throw new BadRequestException({message: request.message || err.message })
+      throw new BadRequestException({message: err.message })
     }
     
   }
