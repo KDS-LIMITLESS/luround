@@ -38,7 +38,7 @@ export class AuthService {
   async calculate_user_payment_end_date(userId: any) {
     let user = await this.databaseManager.findOneDocument(this._udb, "_id", userId)
     const current_date = new Date()
-    const trial_expiry_date = new Date(`${user.trial_expires_at}`)
+    const trial_expiry_date = new Date(`${user.trial_expiry}`)
     
     if (user !== null && user.account_status === "TRIAL") {
       // USER ACCOUNT IS SET TO TRIAL. CHECK IF TRIAL PERIOD HAS EXPIRED.
@@ -46,7 +46,7 @@ export class AuthService {
 
       if (current_date.getTime() >= trial_expiry_date.getTime()) {
         await this.databaseManager.updateDocument(this._udb, userId, {account_status: "INACTIVE"})
-        delete user.trial_expires_at
+        delete user.trial_expiry
         delete user.sent_expiry_email
         return user.account_status;
       }
