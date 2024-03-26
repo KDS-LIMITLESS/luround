@@ -48,11 +48,11 @@ export class AuthService {
         await this.databaseManager.updateDocument(this._udb, userId, {account_status: "INACTIVE"})
         delete user.trial_expiry
         delete user.sent_expiry_email
-        return user.account_status;
+        return "INACTIVE";
       }
       // TRIAL NOT EXPIRED YET
       // CHECK IF TRIAL CLOSE TO EXPIRY DATE
-      let send_expiry_mail_date = new Date(trial_expiry_date.getTime() - 15 * 60000)
+      let send_expiry_mail_date = new Date(trial_expiry_date.getTime() - 25 * 24 * 60 * 60 * 1000)
 
       if (current_date.getTime() >= send_expiry_mail_date.getTime() && user.sent_expiry_email === false){
         await sendPlanExpiringMail(user.email, user.displayName)
@@ -64,11 +64,11 @@ export class AuthService {
       const payment_expiry_date = new Date(`${user.payment_details.expiry_date}`)
       if (current_date.getTime() >= payment_expiry_date.getTime()) {
         await this.databaseManager.updateDocument(this._udb, userId, {account_status: "INACTIVE"})
-        return user.payment_details;
+        return  "INACTIVE"// user.payment_details;
       }
       // PAYMENT NOT EXPIRED YET
       // CHECK IF PAYMENT CLOSE TO EXPIRY DATE
-      let send_payment_expiry_mail_date = new Date(user.payment_details.expiry_date.getTime() - 15 * 60000)
+      let send_payment_expiry_mail_date = new Date(user.payment_details.expiry_date.getTime() - 25 * 24 * 60 * 60 * 1000)
       if (current_date.getTime() >= send_payment_expiry_mail_date.getTime() && user.payment_details.sent_expiry_email === false){
         await sendPlanExpiringMail(user.email, user.displayName)
         await this.databaseManager.updateDocument(this._udb, userId, {[user.payment_details.sent_expiry_email]: true})
