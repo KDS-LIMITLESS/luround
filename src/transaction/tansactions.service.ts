@@ -17,6 +17,7 @@ export class TransactionsManger {
       service_name: payload.service_name,
       amount: payload.service_fee,
       affliate_user: payload.affliate_user,
+      customer_email: payload.customer_email,
       transaction_status: payload.transaction_status,
       transaction_ref: payload.transaction_ref,
       transaction_date: Date.now(),

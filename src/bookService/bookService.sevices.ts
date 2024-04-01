@@ -121,7 +121,7 @@ export class BookingsManager {
         await this.transactionsManger.record_transaction(get_booking.service_provider_info.userId, {
           service_id: get_booking.service_details.service_id, service_name: get_booking.service_details.service_name, 
           service_fee: get_booking.service_details.service_fee, transaction_ref: get_booking.payment_reference_id, transaction_status: "RECEIVED", 
-          affliate_user: get_booking.booking_user_info.displayName
+          affliate_user: get_booking.booking_user_info.displayName, customer_email: get_booking.booking_user_info.email
         })
         await bookingConfirmed_account_viewer(get_booking.booking_user_info.email, get_booking)
         // supress bounced emails

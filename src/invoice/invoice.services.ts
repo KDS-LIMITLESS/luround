@@ -112,7 +112,7 @@ export class InvoiceService {
       await this.transactionsManger.record_transaction(invoice.service_provider.userId, {
         service_id: invoice.product_detail[0].service_id, service_name: invoice.product_detail[0].service_name, 
         service_fee: data.amount_paid, transaction_ref: payment_details.tx_ref, transaction_status: "RECEIVED", 
-        affliate_user: invoice.send_to_name
+        affliate_user: invoice.send_to_name, customer_email: invoice.send_to_email
       })
       let book_service = await this.bookingService.book_service(
         invoice.product_detail[0], 
