@@ -1,5 +1,5 @@
 import { Body, Controller,  Get, HttpStatus, UseGuards,
-  Post, Put, Req, Res, Delete, // UploadedFile,ParseFilePipe , UseInterceptors, FileTypeValidator,
+  Post, Put, Req, Res, Delete, Query, // UploadedFile,ParseFilePipe , UseInterceptors, FileTypeValidator,
 } from '@nestjs/common';
 import { UserService } from './user.service.js';
 import { Response } from 'express';
@@ -57,9 +57,10 @@ export class UserController {
     return res.status(HttpStatus.OK).json(await this.userService.change_password(req.user.userId, body.old_password, body.new_password))
   }
 
+  @SkipAuth()
   @Delete('api/v1/user/account/delete')
-  async deleteUserAccount(@Req() req, @Res() res) {
-    return res.status(HttpStatus.OK).json(await this.userService.deleteUserAccount(req.user.userId))
+  async deleteUserAccount(@Req() req, @Res() res, @Query() query) {
+    return res.status(HttpStatus.OK).json(await this.userService.deleteUserAccount(query.userId))
   }
   
   // @Post('/api/v1/upload-image')

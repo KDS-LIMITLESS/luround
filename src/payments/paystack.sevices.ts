@@ -4,7 +4,7 @@ import Flutterwave from 'flutterwave-node-v3';
 import { DatabaseService } from "../store/db.service.js";
 import { sendPaymentSuccessMail } from "../utils/mail.services.js";
 import { ObjectId } from "mongodb";
-import ResponseMessages from "src/messageConstants.js";
+import ResponseMessages from "../messageConstants.js";
 
 const flw = new Flutterwave(process.env.FLW_PUBLIC_KEY, process.env.FLW_SECRET_KEY)
 
