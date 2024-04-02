@@ -3,6 +3,8 @@ import { request } from "https";
 import Flutterwave from 'flutterwave-node-v3';
 import { DatabaseService } from "../store/db.service.js";
 import { sendPaymentSuccessMail } from "../utils/mail.services.js";
+import { ObjectId } from "mongodb";
+import ResponseMessages from "src/messageConstants.js";
 
 const flw = new Flutterwave(process.env.FLW_PUBLIC_KEY, process.env.FLW_SECRET_KEY)
 
@@ -61,6 +63,7 @@ export class PaymentsAPI {
           current_plan: request.data.amount === "4200" ? "Monthly": "Yearly",
           transaction_ref
         }})
+        await this.create_user_payment_details(userId, {payment_date: request.data.paid_at, plan: request.data.amount, amount: request.data.amount})
         await sendPaymentSuccessMail(user.email, user.displayName, request.data.amount === "4200" ? "Monthly": "Yearly" )
         return {status: request.data.status, plan: request.data.amount === "4200" ? "Monthly": "Yearly"}
       } 
@@ -91,6 +94,26 @@ export class PaymentsAPI {
     return await this.makeRequest(data, options)
   }
   
+  async create_user_payment_details(userId: string, payment_data: any) {
+    let payment_info = {
+      payment_date: payment_data.payment_date,
+      plan: payment_data.amount === '4200' ? "Monthly" : "Yearly",
+      amount: payment_data.amount
+    }
+    let find_user_billing_history = await this.databaseManager.findOneDocument(this._pdb, "_id", userId)
+    if (find_user_billing_history !== null) {
+      await this.databaseManager.updateArr(this._pdb, "_id", new ObjectId(userId), "payment_info", [payment_info])
+      return ResponseMessages.TransactionRecorded
+    }
+    await this.databaseManager.create(this._pdb, {"_id": new ObjectId(userId), payment_info: [payment_info]})
+    return ResponseMessages.TransactionRecorded
+  }
+
+
+  async get_user_payment_history(userId: any) {
+    let user_payments = await this.databaseManager.findOneDocument(this._pdb, "_id", userId)
+    return user_payments ? user_payments.payment_info : []
+  }
   static async makeRequest(data: any, options: {}) {
     return new Promise(function(resolve, reject) {
       const req = request(options, function (res) {

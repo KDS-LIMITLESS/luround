@@ -32,6 +32,11 @@ export class Payments {
   //   return res.status(200).json(await this.paymentManager.verify_flw_payment(query))
   // }
 
+  @Get('payment-history')
+  async userPaymentHistory(@Req() req, @Res() res: Response) {
+    return res.status(200).json(await this.paymentManager.get_user_payment_history(req.user.userId))
+  }
+
   @SkipAuth()
   @Get('create-monthly-plan')
   async create_monthly_plan(@Req() req, @Res() res,) {
