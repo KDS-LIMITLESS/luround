@@ -114,6 +114,7 @@ export class PaymentsAPI {
     let user_payments = await this.databaseManager.findOneDocument(this._pdb, "_id", userId)
     return user_payments ? user_payments.payment_info : []
   }
+  
   static async makeRequest(data: any, options: {}) {
     return new Promise(function(resolve, reject) {
       const req = request(options, function (res) {

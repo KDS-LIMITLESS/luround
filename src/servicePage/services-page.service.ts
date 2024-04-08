@@ -26,11 +26,15 @@ export class ServicePageManager {
       duration: serviceData.duration,
       service_charge_virtual: serviceData.service_charge_virtual || null,
       service_charge_in_person: serviceData.service_charge_in_person || null,
-      service_link: link,
+      service_link: [link],
       time: serviceData.time,
       date: serviceData.date,
       available_days: serviceData.available_days,
-      available_time: serviceData.available_time
+      available_time: serviceData.available_time,
+      service_type: serviceData.service_type,
+      service_model: serviceData.service_model || '',
+      service_recurrence: serviceData.service_recurrence,
+      max_number_of_participants: serviceData.max_number_of_participants || 0
     }
     try {
       const new_service = await this.servicePageManager.create(this._spm_db, service)

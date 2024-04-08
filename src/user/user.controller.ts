@@ -57,10 +57,9 @@ export class UserController {
     return res.status(HttpStatus.OK).json(await this.userService.change_password(req.user.userId, body.old_password, body.new_password))
   }
 
-  @SkipAuth()
   @Delete('api/v1/user/account/delete')
-  async deleteUserAccount(@Req() req, @Res() res, @Query() query) {
-    return res.status(HttpStatus.OK).json(await this.userService.deleteUserAccount(query.userId))
+  async deleteUserAccount(@Req() req, @Res() res) {
+    return res.status(HttpStatus.OK).json(await this.userService.deleteUserAccount(req.userId))
   }
   
   // @Post('/api/v1/upload-image')

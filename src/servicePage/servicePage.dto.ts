@@ -1,6 +1,17 @@
 import { PartialType } from "@nestjs/mapped-types";
 import { IsArray, IsEnum, IsMongoId, IsNotEmpty, IsNumber, IsOptional } from "class-validator";
 
+enum ServiceType {
+  program = 'PROGRAM SERVICE',
+  regular = 'REGULAR SERVICE',
+  package = 'PACKAGE SERVICE'
+}
+
+enum ServiceModels {
+  one_off = 'ONE-OFF',
+  retainer = 'RETAINER'
+}
+
 
 export class ServicePageDto{
 
@@ -11,7 +22,7 @@ export class ServicePageDto{
   description: string
 
   @IsOptional()
-  links: string
+  links: [string]
 
   @IsNotEmpty()
   duration: string
@@ -38,6 +49,20 @@ export class ServicePageDto{
   @IsNotEmpty()
   @IsArray()
   available_time: []
+
+  @IsNotEmpty()
+  @IsEnum(ServiceType)
+  service_type: string
+
+  @IsOptional() 
+  @IsEnum(ServiceModels)
+  service_model: string
+
+  @IsOptional()
+  service_recurrence: string
+
+  @IsOptional()
+  max_number_of_participants: number
 }
 
 export class ServiceDto extends PartialType(ServicePageDto) {}

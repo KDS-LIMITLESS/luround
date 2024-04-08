@@ -1,6 +1,7 @@
-import { Injectable } from "@nestjs/common";
+import { BadRequestException, Injectable } from "@nestjs/common";
 import { ObjectId } from "mongodb";
 import { DatabaseService } from "../store/db.service.js";
+import { ContactDTO } from "./crmDto.js";
 
 
 @Injectable()
@@ -35,10 +36,16 @@ export class CRMService {
       customer.customer_email === customer_email ? txns_history.push({
         service_name: customer.service_name, 
         amount: customer.amount,
-        email: customer.customer_email, 
+        email: customer.customer_email,
         date: customer.transaction_date
       }): []
     })
     return txns_history
+  }
+
+  async delete_customer_contact(userId: string, obj: ContactDTO) {
+    let delElem = await this.databaseService.deletefromArray(this._crmdb, userId, "contacts", obj ) 
+    if (delElem.modifiedCount === 1) return "Contact Deleted"
+    throw new BadRequestException({message: "Item not found in array."})
   }
 }
