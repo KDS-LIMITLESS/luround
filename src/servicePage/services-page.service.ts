@@ -60,7 +60,10 @@ export class ServicePageManager {
       time: serviceData.time,
       date: serviceData.date,
       available_days: serviceData.available_days,
-      available_time: serviceData.available_time
+      available_time: serviceData.available_time,
+      service_recurrence: serviceData.service_recurrence,
+      service_model: serviceData.service_model,
+      max_number_of_participants: serviceData.max_number_of_participants || 0
     }
     try {
       // UPDATE DOCUMENT IN DATABASE IF FOUND.
@@ -97,7 +100,7 @@ export class ServicePageManager {
   }
 
   // This function queries and returns all user services where user equals userId
-  async get_user_services(userId: string) {
+  async get_user_services(userId: string, service_type?: string) {
     let filter_key = 'service_provider_details.userId'
     let user_services = await this.servicePageManager.readAndWriteToArray(this._spm_db, filter_key, userId)
     if (user_services.length === 0) {
@@ -106,7 +109,11 @@ export class ServicePageManager {
         message: ResponseMessages.EmailDoesNotExist
       })
     }
-    return user_services
+    let services = []
+    user_services.map((user_service) => {
+      user_service.service_type === service_type ? services.push(user_service) : ""
+    })
+    return services
   }
 
   async get_service_by_id(id: string) {

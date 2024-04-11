@@ -1,7 +1,7 @@
 import { Body, Controller, Delete, Get, HttpStatus, Post, Put, Query, Req, Res } from "@nestjs/common";
 import { Request, Response, query } from "express";
 import { ServicePageManager } from "./services-page.service.js";
-import {  ServiceDto, ServicePageDto } from "./servicePage.dto.js";
+import {  ServiceDto, ServicePageDto, ServiceTypeDTO } from "./servicePage.dto.js";
 import { SkipAuth } from "../auth/jwt.strategy.js";
 
 @Controller('api/v1/services')
@@ -30,10 +30,10 @@ export class ServiceController {
   }
 
   @Get('/get-services')
-  async get_user_service(@Req() req, @Res() res: Response) {
+  async get_user_service(@Req() req, @Res() res: Response, @Query() query: ServiceTypeDTO) {
     return res
     .status(HttpStatus.OK)
-    .json(await this.services.get_user_services(req.user.userId)) 
+    .json(await this.services.get_user_services(req.user.userId, query.service_type)) 
   }
 
   @SkipAuth()

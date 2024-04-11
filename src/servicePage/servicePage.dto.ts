@@ -1,10 +1,10 @@
-import { PartialType } from "@nestjs/mapped-types";
+import { PartialType, PickType } from "@nestjs/mapped-types";
 import { IsArray, IsEnum, IsMongoId, IsNotEmpty, IsNumber, IsOptional } from "class-validator";
 
 enum ServiceType {
-  program = 'PROGRAM SERVICE',
-  regular = 'REGULAR SERVICE',
-  package = 'PACKAGE SERVICE'
+  program = 'PROGRAM',
+  regular = 'REGULAR',
+  package = 'PACKAGE'
 }
 
 enum ServiceModels {
@@ -66,3 +66,4 @@ export class ServicePageDto{
 }
 
 export class ServiceDto extends PartialType(ServicePageDto) {}
+export class ServiceTypeDTO extends PickType(ServicePageDto, ['service_type'] as const) {}
