@@ -162,4 +162,9 @@ export class UserService {
     await this.databaseManager.delete(this._udb, userId)
     return "User account deleted"
   }
+
+  async deleteUserAccountTest(user_email: string) {
+    await this._udb.findOneAndDelete({'email': user_email})
+    return "User account deleted"
+  }
 }

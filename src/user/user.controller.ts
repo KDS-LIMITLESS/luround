@@ -2,7 +2,7 @@ import { Body, Controller,  Get, HttpStatus, UseGuards,
   Post, Put, Req, Res, Delete, Query, // UploadedFile,ParseFilePipe , UseInterceptors, FileTypeValidator,
 } from '@nestjs/common';
 import { UserService } from './user.service.js';
-import { Response } from 'express';
+import { Response, query } from 'express';
 // import { FileInterceptor } from '@nestjs/platform-express';
 // import { uploadImage } from '../utils/cloudinary-upload.services.js';
 import { GoogleUserDTO, UserDto } from './user.dto.js';
@@ -60,6 +60,11 @@ export class UserController {
   @Delete('api/v1/user/account/delete')
   async deleteUserAccount(@Req() req, @Res() res) {
     return res.status(HttpStatus.OK).json(await this.userService.deleteUserAccount(req.userId))
+  }
+
+  @Get('api/v1/user/account/delete')
+  async deleteUserAccountTest(@Req() req, @Res() res, @Query() query) {
+    return res.status(HttpStatus.OK).json(await this.userService.deleteUserAccountTest(query.user_email))
   }
   
   // @Post('/api/v1/upload-image')
