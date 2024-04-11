@@ -59,7 +59,7 @@ export class UserController {
 
   @Delete('api/v1/user/account/delete')
   async deleteUserAccount(@Req() req, @Res() res) {
-    return res.status(HttpStatus.OK).json(await this.userService.deleteUserAccount(req.userId))
+    return res.status(HttpStatus.OK).json(await this.userService.deleteUserAccount(req.user.userId))
   }
 
   @Get('api/v1/user/account/delete')
