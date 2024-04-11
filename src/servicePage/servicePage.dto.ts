@@ -2,9 +2,9 @@ import { PartialType, PickType } from "@nestjs/mapped-types";
 import { IsArray, IsEnum, IsMongoId, IsNotEmpty, IsNumber, IsOptional } from "class-validator";
 
 enum ServiceType {
-  program = 'PROGRAM',
-  regular = 'REGULAR',
-  package = 'PACKAGE'
+  program = 'Program',
+  regular = 'Regular',
+  package = 'Package'
 }
 
 enum ServiceModels {
@@ -24,7 +24,7 @@ export class ServicePageDto{
   @IsOptional()
   links: [string]
 
-  @IsNotEmpty()
+  @IsOptional()
   duration: string
 
   @IsOptional()
