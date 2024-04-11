@@ -37,16 +37,16 @@ export class ServicePageDto{
   @IsOptional()
   serviceId: string
 
-  @IsNotEmpty()
+  @IsOptional()
   time: string
 
-  @IsNotEmpty()
+  @IsOptional()
   date: string
 
-  @IsNotEmpty()
+  @IsOptional()
   available_days: string
 
-  @IsNotEmpty()
+  @IsOptional()
   @IsArray()
   available_time: []
 
