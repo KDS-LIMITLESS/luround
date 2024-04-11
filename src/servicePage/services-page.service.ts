@@ -34,7 +34,13 @@ export class ServicePageManager {
       service_type: serviceData.service_type,
       service_model: serviceData.service_model || '',
       service_recurrence: serviceData.service_recurrence,
-      max_number_of_participants: serviceData.max_number_of_participants || 0
+      max_number_of_participants: serviceData.max_number_of_participants || 0,
+      timeline_days: [],
+      service_timeline: serviceData.service_timeline,
+      start_date: serviceData.start_date || "",
+      end_date: serviceData.end_date || "",
+      start_time: serviceData.start_time || "",
+      end_time: serviceData.end_time || ""
     }
     try {
       const new_service = await this.servicePageManager.create(this._spm_db, service)
@@ -63,7 +69,13 @@ export class ServicePageManager {
       available_time: serviceData.available_time,
       service_recurrence: serviceData.service_recurrence,
       service_model: serviceData.service_model,
-      max_number_of_participants: serviceData.max_number_of_participants || 0
+      max_number_of_participants: serviceData.max_number_of_participants || 0,
+      timeline_days: [],
+      service_timeline: serviceData.service_timeline,
+      start_date: serviceData.start_date || "",
+      end_date: serviceData.end_date || "",
+      start_time: serviceData.start_time || "",
+      end_time: serviceData.end_time || ""
     }
     try {
       // UPDATE DOCUMENT IN DATABASE IF FOUND.

@@ -63,6 +63,21 @@ export class ServicePageDto{
 
   @IsOptional()
   max_number_of_participants: number
+
+  @IsOptional()
+  service_timeline: string
+
+  @IsOptional()
+  start_date: string
+
+  @IsOptional()
+  end_date: string
+
+  @IsOptional()
+  start_time: string
+
+  @IsOptional()
+  end_time: string
 }
 
 export class ServiceDto extends PartialType(ServicePageDto) {}
