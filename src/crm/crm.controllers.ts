@@ -21,7 +21,7 @@ export class CRMController {
     return res.status(HttpStatus.OK).json(await this.crmService.get_customer_transaction_history( req.user.userId, query.customer_email ))
   }
 
-  @Delete('delete-customer_contact')
+  @Delete('delete-customer-contact')
   async deleteCustomerContact(@Req() req, @Res() res, @Body() payload: ContactDTO ) {
     return res.status(HttpStatus.OK).json(await this.crmService.delete_customer_contact(req.user.userId, payload))
   }
