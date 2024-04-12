@@ -62,6 +62,9 @@ export class ServicePageDto{
   service_recurrence: string
 
   @IsOptional()
+  timeline_days: []
+
+  @IsOptional()
   max_number_of_participants: number
 
   @IsOptional()
