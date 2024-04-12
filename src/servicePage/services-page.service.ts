@@ -136,7 +136,7 @@ export class ServicePageManager {
     }
     let services = []
     user_services.map((user_service) => {
-      user_service.service_type === service_type ? services.push(user_service) : ""
+      user_service.service_type === service_type ? services.push(user_service) : []
     })
     return services
   }
@@ -157,15 +157,20 @@ export class ServicePageManager {
     }
   }
 
-  async getService(url: string) {
+  async getService(url: string, service_type: string) {
     try {
       //FIND AND RETURN SERVICE
       let user_url = await this.servicePageManager.findOneDocument(this._udb, "luround_url", url)
       if(user_url !== null) {
-        return await this._spm_db.find({"service_provider_details.email": user_url.email}).toArray()
+        let user_services = await this._spm_db.find({"service_provider_details.email": user_url.email}).toArray()
+        let services = []
+
+        user_services.map((user_service) => {
+          user_service.service_type === service_type ? services.push(user_service) : []
+        })
+        return services
       }
       throw new BadRequestException({message: "Invalid user Url"})
-     
     } catch (err: any) {
       throw new BadRequestException({
         status: 400,

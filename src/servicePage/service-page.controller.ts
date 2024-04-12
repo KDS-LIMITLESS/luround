@@ -41,6 +41,6 @@ export class ServiceController {
   async get_service(@Query() query, @Res() res: Response) {
     return res
     .status(HttpStatus.OK)
-    .json(await this.services.getService(query.url)) 
+    .json(await this.services.getService(query.url, query.service_type)) 
   }
 }
