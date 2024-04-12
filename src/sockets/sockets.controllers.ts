@@ -100,7 +100,7 @@ export class SocketsConn implements OnGatewayInit, OnGatewayDisconnect {
       if (Object.keys(this.connectedClients).includes(client.id)) {
         interval(30000).subscribe(async() => {
           // let url: any = client.handshake.query.url
-          this.serviceManager.get_user_services(this.connectedClients[client.id])
+          this.serviceManager.get_user_services_(this.connectedClients[client.id])
           .then( async (service) => {
             client.emit("user-services", service)
           })

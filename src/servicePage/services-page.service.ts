@@ -68,6 +68,7 @@ export class ServicePageManager {
       available_days: serviceData.available_days,
       available_time: serviceData.available_time,
       service_recurrence: serviceData.service_recurrence,
+      service_type: serviceData.service_type,
       service_model: serviceData.service_model,
       max_number_of_participants: serviceData.max_number_of_participants || 0,
       timeline_days: [],
@@ -79,7 +80,7 @@ export class ServicePageManager {
     }
     try {
       // UPDATE DOCUMENT IN DATABASE IF FOUND.
-      let user_services = await this.get_user_services(userId)
+      let user_services = await this.get_user_services_(userId)
     // FIND FOR A MATCH IN CURRENT USER'S SERVICES
     for (_us of user_services) {
       if (_us._id.toString() === serviceId) {
@@ -101,7 +102,7 @@ export class ServicePageManager {
   async delete_service(userId: string,  serviceId: string) {
     let service;
     //GET CURRENT LOGGED IN USER'S SERVICES
-    let user_services = await this.get_user_services(userId)
+    let user_services = await this.get_user_services_(userId)
     // FIND FOR A MATCH IN CURRENT USER'S SERVICES
     for (service of user_services) {
       if (service._id.toString() === serviceId) {
@@ -109,6 +110,18 @@ export class ServicePageManager {
       }
     }
     throw new NotFoundException({message: ResponseMessages.ServiceNotFound})
+  }
+  
+  async get_user_services_(userId: string) {
+    let filter_key = 'service_provider_details.userId'
+    let user_services = await this.servicePageManager.readAndWriteToArray(this._spm_db, filter_key, userId)
+    if (user_services.length === 0) {
+      throw new BadRequestException({
+        status: 400,
+        message: ResponseMessages.EmailDoesNotExist
+      })
+    }
+    return user_services
   }
 
   // This function queries and returns all user services where user equals userId
