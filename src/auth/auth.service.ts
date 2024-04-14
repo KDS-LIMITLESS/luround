@@ -52,7 +52,7 @@ export class AuthService {
       }
       // TRIAL NOT EXPIRED YET
       // CHECK IF TRIAL CLOSE TO EXPIRY DATE
-      let send_expiry_mail_date = new Date(trial_expiry_date.getTime() - 5 * 24 * 60 * 60 * 1000)
+      let send_expiry_mail_date = new Date(trial_expiry_date.getTime() - 3 * 24 * 60 * 60 * 1000)
 
       if (current_date.getTime() >= send_expiry_mail_date.getTime() && user.sent_expiry_email === false){
         await sendPlanExpiringMail(user.email, user.displayName)
@@ -68,7 +68,7 @@ export class AuthService {
       }
       // PAYMENT NOT EXPIRED YET
       // CHECK IF PAYMENT CLOSE TO EXPIRY DATE
-      let send_payment_expiry_mail_date = new Date(user.payment_details.expiry_date.getTime() - 5 * 24 * 60 * 60 * 1000)
+      let send_payment_expiry_mail_date = new Date(user.payment_details.expiry_date.getTime() - 3 * 24 * 60 * 60 * 1000)
       if (current_date.getTime() >= send_payment_expiry_mail_date.getTime() && user.payment_details.sent_expiry_email === false){
         
         await this.databaseManager.updateProperty(this._udb, userId, '', {[`payment_details.sent_expiry_email`]: true})

@@ -51,7 +51,7 @@ export async function sendPlanExpiringMail(to:string, name: string) {
     To: to,
     Subject: 'Plan Expiring',
     HtmlBody: `<p>Hi <b>${name.split(' ')[0]}</b>, </p>
-      <p>Your plan on Luround is about to expire.</P>
+      <p>Your plan on Luround is about to expire in 3 days.</P>
       <p>Please purchase a new plan to continue to enjoy Luround.</p>
       <p>You can renew your plan when you click on --More--Settings--Pricing..</p>
       <p>For 24/7 Support: support@luround.com</p>`,
