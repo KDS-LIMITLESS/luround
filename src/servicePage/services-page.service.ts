@@ -30,7 +30,7 @@ export class ServicePageManager {
       time: serviceData.time,
       date: serviceData.date,
       available_days: serviceData.available_days,
-      available_time: serviceData.available_time,
+      available_time: serviceData.available_time || [],
       service_type: serviceData.service_type,
       service_model: serviceData.service_model || '',
       service_recurrence: serviceData.service_recurrence,

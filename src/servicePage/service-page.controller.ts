@@ -36,6 +36,12 @@ export class ServiceController {
     .json(await this.services.get_user_services(req.user.userId, query.service_type)) 
   }
 
+  @Get('/get-services-by-id')
+  async get_user_service_by_id(@Req() req, @Res() res: Response, @Query() query: ServiceTypeDTO) {
+    return res
+    .status(HttpStatus.OK)
+    .json(await this.services.get_user_services_(req.user.userId)) 
+  }
   @SkipAuth()
   @Get('/get-user-services')
   async get_service(@Query() query, @Res() res: Response) {
