@@ -42,6 +42,7 @@ export class ServiceController {
     .status(HttpStatus.OK)
     .json(await this.services.get_user_services_(req.user.userId)) 
   }
+  
   @SkipAuth()
   @Get('/get-user-services')
   async get_service(@Query() query, @Res() res: Response) {

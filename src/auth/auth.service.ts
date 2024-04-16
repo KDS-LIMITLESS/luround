@@ -25,7 +25,8 @@ export class AuthService {
   // validate user details before logging in
    async validateUser(email: string, psw: string) {
     const isUser = await this.databaseManager.read(this._udb, email)  
-    if ( isUser === null || !await this.comparePasswords(psw, isUser.password)){
+    console.log(isUser.password)
+    if ( isUser === null || !await this.comparePasswords(psw, isUser.password || "")){
       throw new UnauthorizedException({
         statusCode: 401,
         message: ResponseMessages.BadLoginDetails

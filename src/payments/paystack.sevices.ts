@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable } from "@nestjs/common";
+import { BadRequestException, Injectable, NotFoundException } from "@nestjs/common";
 import { request } from "https";
 import Flutterwave from 'flutterwave-node-v3';
 import { DatabaseService } from "../store/db.service.js";
@@ -74,6 +74,11 @@ export class PaymentsAPI {
     
   }
 
+  async get_user_subscription_plan(userId: string) {
+    let get_user = await this.databaseManager.findOneDocument(this._udb, "_id", userId)
+    if (get_user !== null) return get_user.payment_details.current_plan
+    throw new NotFoundException({message: "User Not Found"})
+  }
   static async create_yearly_payment_plan() {
     const options = {
       hostname: 'api.paystack.co',

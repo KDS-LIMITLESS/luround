@@ -48,4 +48,9 @@ export class Payments {
   async create_yearly_plan(@Req() req, @Res() res,) {
     return res.status(HttpStatus.OK).json(await PaymentsAPI.create_yearly_payment_plan())
   }
+
+  @Get('user-subscription')
+  async get_user_subscription_plan(@Req() req, @Res() res) {
+    return res.status(HttpStatus.OK).json(await this.paymentManager.get_user_subscription_plan(req.user.userId))
+  }
 }
