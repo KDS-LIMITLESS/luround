@@ -37,7 +37,7 @@ export class ServiceController {
   }
 
   @Get('/get-services-by-id')
-  async get_user_service_by_id(@Req() req, @Res() res: Response, @Query() query: ServiceTypeDTO) {
+  async get_user_service_by_id(@Req() req, @Res() res: Response) {
     return res
     .status(HttpStatus.OK)
     .json(await this.services.get_user_services_(req.user.userId)) 
