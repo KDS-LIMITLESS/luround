@@ -92,8 +92,8 @@ export class InvoiceDto {
   @IsNotEmpty()
   total: string
 
-  @IsNotEmpty() @IsEnum(InvoiceGeneratedFromQuotes)
-  invoice_generated_from_quote: boolean
+  // @IsNotEmpty() @IsEnum(InvoiceGeneratedFromQuotes)
+  // invoice_generated_from_quote: boolean
 }
 
 export class InvoicePaymentDto {

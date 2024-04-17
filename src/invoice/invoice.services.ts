@@ -65,7 +65,7 @@ export class InvoiceService {
       note: invoice_data.note,
       due_date: invoice_data.due_date,
       created_at: Date.now(),
-      invoice_generated_from_quote: invoice_data.invoice_generated_from_quote
+      //invoice_generated_from_quote: invoice_data.invoice_generated_from_quote
       // time: `${time.getHours()}:${time.getMinutes()}:${time.getSeconds()}`
     }
 
