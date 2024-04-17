@@ -59,8 +59,8 @@ function IsValidBookingData(validationOptions?: ValidationOptions) {
 }
 
 export enum InvoiceGeneratedFromQuotes {
-  true = "True",
-  false = "False"
+  true = 'true',
+  false = "false"
 }
 
 export class InvoiceDto {
@@ -93,7 +93,7 @@ export class InvoiceDto {
   total: string
 
   @IsNotEmpty() @IsEnum(InvoiceGeneratedFromQuotes)
-  invoice_generated_from_quote: string
+  invoice_generated_from_quote: boolean
 }
 
 export class InvoicePaymentDto {
