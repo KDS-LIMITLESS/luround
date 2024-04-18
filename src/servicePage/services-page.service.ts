@@ -163,7 +163,6 @@ export class ServicePageManager {
       let user_url = await this.servicePageManager.findOneDocument(this._udb, "luround_url", url)
       if(user_url !== null) {
         let user_services = await this._spm_db.find({"service_provider_details.userId": user_url._id.toString()}).toArray()
-        console.log(user_services)
         let services = []
 
         user_services.map((user_service) => {
