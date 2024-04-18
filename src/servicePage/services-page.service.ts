@@ -162,7 +162,10 @@ export class ServicePageManager {
       //FIND AND RETURN SERVICE
       let user_url = await this.servicePageManager.findOneDocument(this._udb, "luround_url", url)
       if(user_url !== null) {
-        let user_services = await this._spm_db.find({"service_provider_details.email": user_url.email}).toArray()
+        console.log(user_url._id)
+        let userId = user_url._id.toString()
+        console.log(userId)
+        let user_services = await this._spm_db.find({"service_provider_details.userId": new ObjectId(userId)}).toArray()
         let services = []
 
         user_services.map((user_service) => {
