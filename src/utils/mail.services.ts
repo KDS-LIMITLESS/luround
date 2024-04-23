@@ -138,7 +138,7 @@ export async function bookingRescheduled(to:string, booking_detail: any) {
       Time: <b>${booking_detail.service_details.time} </b> <br>
       Amount Paid: <b>${booking_detail.service_details.service_fee}</b> <br>
       Delivery: <b>${booking_detail.service_details.appointment_type} </b></p>
-      <p>For 24/7 Support: tech@luround.com</p>`,
+      <p>For 24/7 Support: support@luround.com</p>`,
     MessageStream: 'outbound'
   });
 }
@@ -192,7 +192,7 @@ export async function bookingConfirmed_service_provider(to:string, booking_detai
       Time: <b>${booking_detail.service_details.time} </b> <br>
       Amount Paid: <b>${booking_detail.service_details.service_fee}</b> <br>
       Delivery: <b>${booking_detail.service_details.appointment_type} </b></p>
-      <p>For 24/7 Support: tech@luround.com</p>`,
+      <p>For 24/7 Support: support@luround.com</p>`,
     MessageStream: 'outbound'
   });
 }
