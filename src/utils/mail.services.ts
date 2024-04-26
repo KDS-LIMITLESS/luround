@@ -5,7 +5,7 @@ const mail = new postmark.ServerClient('9f332d3f-5c4d-42d5-b4c4-0959b0dd648a');
 
 export async function sendOnboardingMail(to:string, name: string) {
   return mail.sendEmail({
-    From: 'tech@luround.com',
+    From: 'support@luround.com',
     To: to,
     Subject: `Welcome, ${name}`,
     HtmlBody: `<p> Hi <b>${name}</b>, </p> 
@@ -32,7 +32,7 @@ export async function sendOnboardingMail(to:string, name: string) {
 
 export async function sendOTP(to:string, OTP: number, name: string) {
   return mail.sendEmail({
-    From: 'tech@luround.com',
+    From: 'support@luround.com',
     To: to,
     Subject: 'Change Password Luround',
     HtmlBody: `<p>Hi <b>${name}</b>, </p>
@@ -47,7 +47,7 @@ export async function sendOTP(to:string, OTP: number, name: string) {
 
 export async function sendPlanExpiringMail(to:string, name: string) {
   return mail.sendEmail({
-    From: 'tech@luround.com',
+    From: 'support@luround.com',
     To: to,
     Subject: 'Plan Expiring',
     HtmlBody: `<p>Hi <b>${name.split(' ')[0]}</b>, </p>
@@ -61,7 +61,7 @@ export async function sendPlanExpiringMail(to:string, name: string) {
 
 export async function sendWalletPinResetOTP(to:string, OTP: number, name: string) {
   return mail.sendEmail({
-    From: 'tech@luround.com',
+    From: 'support@luround.com',
     To: to,
     Subject: 'Change Password Luround',
     HtmlBody: `<p>Hi <b>${name}</b>, </p>
@@ -75,7 +75,7 @@ export async function sendWalletPinResetOTP(to:string, OTP: number, name: string
 
 export async function WithdrawalSuccess(to:string, name: string, wallet_balance: number, amount:number) {
   return mail.sendEmail({
-    From: 'tech@luround.com',
+    From: 'support@luround.com',
     To: to,
     Subject: 'Withdrawal Success From Luround Wallet',
     HtmlBody: `<p>Hi <b>${name}</b>, </p>
@@ -88,7 +88,7 @@ export async function WithdrawalSuccess(to:string, name: string, wallet_balance:
 
 export async function WithdrawalFailed(to:string, name: string, wallet_balance: number, amount: number) {
   return mail.sendEmail({
-    From: 'tech@luround.com',
+    From: 'support@luround.com',
     To: to,
     Subject: 'Withdrawal Failure From Luround Wallet',
     HtmlBody: `<p>Hi <b>${name}</b>, </p>
@@ -101,7 +101,7 @@ export async function WithdrawalFailed(to:string, name: string, wallet_balance: 
 
 export async function sendPaymentSuccessMail(to:string, name: string, plan: string) {
   return mail.sendEmail({
-    From: 'tech@luround.com',
+    From: 'support@luround.com',
     To: to,
     Subject: 'Luround Payment Confirmation',
     HtmlBody: `<p>Hi <b>${name}</b>, </p>
@@ -114,7 +114,7 @@ export async function sendPaymentSuccessMail(to:string, name: string, plan: stri
 
 export async function paymentFailed(to:string, name: string, service_provider: string, amount: number, service_booked: string) {
   return mail.sendEmail({
-    From: 'tech@luround.com',
+    From: 'support@luround.com',
     To: to,
     Subject: 'Payment Failed',
     HtmlBody: `<p>Hi <b>${name}</b>, </p>
@@ -127,7 +127,7 @@ export async function paymentFailed(to:string, name: string, service_provider: s
 
 export async function bookingRescheduled(to:string, booking_detail: any) {
   return mail.sendEmail({
-    From: 'tech@luround.com',
+    From: 'support@luround.com',
     To: to,
     Subject: 'Booking Reschedule',
     HtmlBody: `<p>Hi <b>${booking_detail.booking_user_info.displayName.split(' ')[0]}</b>, </p>
@@ -145,7 +145,7 @@ export async function bookingRescheduled(to:string, booking_detail: any) {
 
 export async function bookingConfirmed_account_viewer(to:string, booking_detail: any) {
   return mail.sendEmail({
-    From: 'tech@luround.com',
+    From: 'support@luround.com',
     To: to,
     Subject: 'Booking Confirmed',
     HtmlBody: `<p>Hi <b>${booking_detail.booking_user_info.displayName.split(' ')[0]}</b>, </p>
@@ -162,7 +162,7 @@ export async function bookingConfirmed_account_viewer(to:string, booking_detail:
 
 export async function booking_account_viewer(to:string, booking_detail: any) {
   return mail.sendEmail({
-    From: 'tech@luround.com',
+    From: 'support@luround.com',
     To: to,
     Subject: 'Service Booking',
     HtmlBody: `<p>Hi <b>${booking_detail.booking_user_info.displayName.split(' ')[0]}</b>, </p>
@@ -180,7 +180,7 @@ export async function booking_account_viewer(to:string, booking_detail: any) {
 
 export async function bookingConfirmed_service_provider(to:string, booking_detail: any) {
   return mail.sendEmail({
-    From: 'tech@luround.com',
+    From: 'support@luround.com',
     To: to,
     Subject: `New Booking From ${booking_detail.booking_user_info.displayName.split(' ')[0]}`,
     HtmlBody: `<p>Hi <b>${booking_detail.service_provider_info.displayName.split(' ')[0]}</b>, </p>
