@@ -57,6 +57,8 @@ export class BookingsManager {
         payment_proof: bookingDetail.payment_proof,
         invoice_id: invoice_id || "",
         booking_generated_from_invoice: booking_generated_from_invoice || "False",
+        start_time: "",
+        end_time: "",
         service_details: {
           service_id: serviceDetails._id,
           service_name: serviceDetails.service_name,
@@ -193,8 +195,8 @@ export class BookingsManager {
     throw new NotFoundException({message: "Booking Not Found"})
   }
 
-  async reschedule_booking(booking_id: string, new_date: string, new_time: string, duration: string) {
-    let schedule_details = {"service_details.date": new_date, "service_details.time": new_time, "service_details.duration": duration}
+  async reschedule_booking(booking_id: string, new_date: string, new_time: string, duration: string, start_time: string, end_time: string) {
+    let schedule_details = {"service_details.date": new_date, "service_details.time": new_time, "service_details.duration": duration, "end_time": end_time, "start_time": start_time}
     let update;
     Object.keys(schedule_details).forEach(async (key) => {
       update = await this.bookingsManager.updateProperty(this._bKM, booking_id, key, schedule_details)
