@@ -12,9 +12,14 @@ export class CRMService {
   constructor(private databaseService: DatabaseService) {}
 
   async add_new_contact(userId: any, contact: any) {
-    if (await this.databaseService.findOneDocument(this._crmdb, "_id", userId)) {
-      await this.databaseService.updateArr(this._crmdb, "_id", new ObjectId(userId), "contacts", [contact])
-      return "New Contact Added"
+    let user_contacts = await this.databaseService.findOneDocument(this._crmdb, "_id", userId)
+    if (user_contacts) {
+      let find_existing_contact = user_contacts.contacts.find((obj) => obj.email === contact.email)
+      if (find_existing_contact === undefined) {
+        await this.databaseService.updateArr(this._crmdb, "_id", new ObjectId(userId), "contacts", [contact])
+        return "New Contact Added"
+      }
+      return "Contact already Exists"
     }
     await this.databaseService.create(this._crmdb, {"_id": new ObjectId(userId), "contacts": [contact]})
     return "New Contact Added"

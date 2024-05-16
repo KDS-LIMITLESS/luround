@@ -9,6 +9,7 @@ import { WalletService } from "../wallet/wallet.services.js";
 import { UserService } from "../user/user.service.js";
 import { AuthService } from "../auth/auth.service.js";
 import { ProfileService } from "../profileManager/profile.service.js";
+import { CRMService } from "../crm/crm.service.js";
 
 
 @Module({
@@ -23,7 +24,8 @@ import { ProfileService } from "../profileManager/profile.service.js";
     WalletService,
     UserService,
     AuthService,
-    ProfileService
+    ProfileService,
+    CRMService,
   ]
 })
 

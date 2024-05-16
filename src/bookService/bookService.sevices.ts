@@ -7,6 +7,8 @@ import { TransactionsManger } from "../transaction/tansactions.service.js";
 import { PaymentsAPI } from "../payments/paystack.sevices.js";
 import { UserService } from "../user/user.service.js";
 import { bookingConfirmed_account_viewer, bookingConfirmed_service_provider, bookingRescheduled, booking_account_viewer } from "../utils/mail.services.js";
+import { CRMService } from "../crm/crm.service.js";
+import { ObjectId } from "mongodb";
 
 @Injectable()
 export class BookingsManager {
@@ -17,7 +19,8 @@ export class BookingsManager {
     private serviceManager: ServicePageManager,
     private transactionsManger: TransactionsManger,
     private paymentsManager: PaymentsAPI,
-    private userService: UserService
+    private userService: UserService,
+    private crmService: CRMService
   ) {}
   
   // Decorate service with initialize payment 
@@ -74,6 +77,16 @@ export class BookingsManager {
         }
       }
       let service_booked = await this.bookingsManager.create(this._bKM, booking_Detail)
+
+      // ADD USER TO SERVICE PROVIDER CONTACTS
+      let service_provider_id = new ObjectId(serviceDetails.service_provider_details.userId)
+      await this.crmService.add_new_contact(service_provider_id, 
+        {
+          name: booking_Detail.booking_user_info.displayName,
+          email: booking_Detail.booking_user_info.email,
+          phone_number: booking_Detail.booking_user_info.phone_number
+        })
+        
       // CHECK FOR PAYMENT CONFIRMED AND SEND NOTIFICATION
       if (service_booked.acknowledged) {
         // SEND EMAILS

@@ -31,7 +31,7 @@ export class BookingsController {
 
   @Put('/reschedule')
   async rescheduleBooking(@Query() query: BookingId, @Res() res: Response, @Body() body) {
-    return res.status(200).json(await this.bookingsManager.reschedule_booking(query.bookingId, body.date, body.time, body.duration))
+    return res.status(200).json(await this.bookingsManager.reschedule_booking(query.bookingId, body.date, body.time, body.duration, body.start_time, body.end_time))
   }
 
   @Get('/cancel')
