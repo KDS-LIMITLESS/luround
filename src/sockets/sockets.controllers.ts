@@ -28,7 +28,6 @@ export class SocketsConn implements OnGatewayInit, OnGatewayDisconnect {
         this.jwt.verifyAsync(header.split(' ')[1], {secret: process.env.JWT_SECRET_KEY})
         .then( (decodedToken) => {
           this.connectedClients[client.id] = decodedToken.userId
-          console.log(this.connectedClients)
         })
         .catch( () => {
           client.emit("connection", {status: 401, message: "Unauthorized"})
@@ -42,7 +41,6 @@ export class SocketsConn implements OnGatewayInit, OnGatewayDisconnect {
   }
 
   public async handleDisconnect(client: any) {
-    console.log(client.id)
     delete this.connectedClients[client.id]
     console.log(this.connectedClients)
   }

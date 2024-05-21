@@ -123,6 +123,7 @@ export class BookingsManager {
       //   message: "An error occurred. Are you booking Yourself?"
       // })
     } catch (err: any) {
+      console.log(err)
       throw new BadRequestException({message: "An error occured while booking", err})
     }
    

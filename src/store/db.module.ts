@@ -22,7 +22,6 @@ export class MongoModule {
         })
 
         client.on('connectionPoolCleared', function(pool) {
-          console.log("Connection closed", pool.interruptInUseConnections)
         })
         
         await client.connect();

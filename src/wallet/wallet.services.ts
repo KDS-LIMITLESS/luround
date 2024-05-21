@@ -79,7 +79,6 @@ export class WalletService {
 
   async forgot_wallet_pin(userId: string,  new_pin: string, otp: number) {
     let document = await this.databaseManger.findOneDocument(this._wDB, "_id", userId)
-    console.log(document.pin_reset_otp ,  otp)
     if (document.pin_reset_otp === otp && new_pin.length === 4) {
       const new_pin_hash = await bcrypt.hash(new_pin, 12)
       await this.databaseManger.updateProperty(this._wDB, userId, "wallet_pin", {"wallet_pin": new_pin_hash})
@@ -159,7 +158,6 @@ export class WalletService {
       } 
       return new BadRequestException({message: 'Your wallet balance is low'})
     } catch(err: any) {
-      console.log(err)
       await WithdrawalFailed(email, displayName, wallet_balance, payload.amount)
       throw new BadRequestException({message: err.message})
     }
@@ -178,7 +176,6 @@ export class WalletService {
         //reference: generateTransactionReference(),
       };
       let transfer = await flw.Transfer.initiate(details)
-      console.log(transfer)
       if(transfer.status === "success") {
         await this.deduct_wallet_balance(userId, payload.amount)
         await WithdrawalSuccess(email, displayName, wallet_balance, payload.amount)

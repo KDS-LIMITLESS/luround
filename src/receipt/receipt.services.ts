@@ -51,7 +51,6 @@ export class ReceiptService {
   }
 
   async get_receipts(userId: string) {
-    console.log(userId)
     return (await this._rpdb.find({"service_provider_userId": new ObjectId(userId), "payment_status": "SENT"}).toArray()).reverse()
   }
 

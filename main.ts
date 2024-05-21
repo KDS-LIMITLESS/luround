@@ -10,6 +10,6 @@ async function bootstrap() {
   await app.listen(process.env.PORT);
 }
 bootstrap().catch((err: any) => {
-  console.log(err.message)
+  //console.log(err.message)
   // bootstrap()
 });

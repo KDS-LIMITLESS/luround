@@ -98,7 +98,8 @@ export class UserService {
         sent_expiry_email: false,
         trial_expiry: new Date(date.getTime() + 30 * 24 * 60 * 60 * 1000)
       }
-      await sendOnboardingMail(user.email, user.firstName).catch(() => {
+      await sendOnboardingMail(user.email, user.firstName).catch((err) => {
+        console.log(err)
         throw Error("Invalid Email Address")
       })
       const userId = (await this.databaseManager.create(this._udb, new_user)).insertedId
