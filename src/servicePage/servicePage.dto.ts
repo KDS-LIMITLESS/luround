@@ -3,8 +3,9 @@ import { IsArray, IsEnum, IsMongoId, IsNotEmpty, IsNumber, IsOptional } from "cl
 
 enum ServiceType {
   program = 'Program',
-  regular = 'Regular',
-  package = 'Package'
+  one_off = 'One-Off',
+  retainer = 'Retainer',
+  event = 'Event'
 }
 
 enum ServiceModels {
@@ -22,65 +23,77 @@ export class ServicePageDto{
   description: string
 
   @IsOptional()
-  links: [string]
-
-  @IsOptional()
   duration: string
 
-  @IsOptional()
-  service_charge_virtual: string
+  // @IsOptional()
+  // service_charge_virtual: string
 
-  @IsOptional()
-  service_charge_in_person: string
+  // @IsOptional()
+  // service_charge_in_person: string
 
   @IsMongoId()
   @IsOptional()
   serviceId: string
 
-  @IsOptional()
-  time: string
+  // @IsOptional()
+  // time: string
 
-  @IsOptional()
-  date: string
+  // @IsOptional()
+  // date: string
 
-  @IsOptional()
-  available_days: string
+  // @IsOptional()
+  // available_days: string
 
-  @IsOptional()
-  @IsArray()
-  available_time: []
+  // @IsOptional()
+  // @IsArray()
+  // available_time: []
 
   @IsNotEmpty()
   @IsEnum(ServiceType)
   service_type: string
 
-  @IsOptional() 
-  @IsEnum(ServiceModels)
-  service_model: string
+  // @IsOptional() 
+  // @IsEnum(ServiceModels)
+  // service_model: string
 
   @IsOptional()
   service_recurrence: string
 
   @IsOptional()
-  timeline_days: []
+  pricing: [{[key: string]: string}]
+
+  // @IsOptional()
+  // timeline_days: []
 
   @IsOptional()
   max_number_of_participants: number
 
-  @IsOptional()
-  service_timeline: string
+  // @IsOptional()
+  // service_timeline: string
 
   @IsOptional()services
   start_date: string
 
   @IsOptional()
+  virtual_meeting_link: string
+  
+  @IsOptional()
+  availability_schedule: [{[key:string]: string}]
+
+  @IsOptional()
+  program_fee: [{[key:string]: string}]
+
+  @IsOptional()
+  event_schedule: [{[key:string]: string}]
+
+  @IsOptional()
   end_date: string
 
-  @IsOptional()
-  start_time: string
+  // @IsOptional()
+  // start_time: string
 
-  @IsOptional()
-  end_time: string
+  // @IsOptional()
+  // end_time: string
 }
 
 export class ServiceDto extends PartialType(ServicePageDto) {}

@@ -17,30 +17,55 @@ export class ServicePageManager {
   async add_new_service(user: any, serviceData: ServicePageDto){
     const { userId, email, displayName } = user
     let encryption = new Encrypter(process.env.ENCRYPTION_KEY as string)
-    let link = `https://luround.com/${encryption.encrypt(userId)}/${serviceData.service_name.replace(/\s/g, "_")}`     
+    let link = `https://luround.com/${encryption.encrypt(userId)}/${serviceData.service_name.replace(/\s/g, "_")}`  
+
     let service = {
       service_provider_details: { userId, email, displayName },
+      service_type: serviceData.service_type,
       service_name: serviceData.service_name,
       description: serviceData.description,
-      links: serviceData.links,
       duration: serviceData.duration,
-      service_charge_virtual: serviceData.service_charge_virtual || "",
-      service_charge_in_person: serviceData.service_charge_in_person || "",
-      service_link: [link],
-      time: serviceData.time,
-      date: serviceData.date,
-      available_days: serviceData.available_days,
-      available_time: serviceData.available_time || [],
-      service_type: serviceData.service_type,
-      service_model: serviceData.service_model || '',
+      pricing: [{
+        time_allocation: "",
+        virtual: "",
+        in_person: ""
+      }],
+      virtual_meeting_link: "",
+      availability_schedule: [{
+        day: "",
+        from_time: "",
+        to_time: ""
+      }],
+      program_fee: {
+        virtual: "",
+        in_person: ""
+      },
+      event_schedule: [{
+        date: "",
+        start_time: "",
+        end_time: ""
+      }],
+      start_date: serviceData.start_date || "not-allocated",
+      end_date: serviceData.end_date || "not-allocated",
       service_recurrence: serviceData.service_recurrence,
-      max_number_of_participants: serviceData.max_number_of_participants || 0,
-      timeline_days: serviceData.timeline_days,
-      service_timeline: serviceData.service_timeline,
-      start_date: serviceData.start_date || "",
-      end_date: serviceData.end_date || "",
-      start_time: serviceData.start_time || "",
-      end_time: serviceData.end_time || ""
+      max_number_of_participants: serviceData.max_number_of_participants,
+      
+
+
+      // service_charge_virtual: serviceData.service_charge_virtual || "",
+      // service_charge_in_person: serviceData.service_charge_in_person || "",
+      // service_link: [link],
+      // time: serviceData.time,
+      // date: serviceData.date,
+      // available_days: serviceData.available_days,
+      // available_time: serviceData.available_time || [],
+      // service_model: serviceData.service_model || '',
+      // 
+      // timeline_days: serviceData.timeline_days,
+      // service_timeline: serviceData.service_timeline,
+      // 
+      // start_time: serviceData.start_time || "",
+      // end_time: serviceData.end_time || ""
     }
     try {
       const new_service = await this.servicePageManager.create(this._spm_db, service)
@@ -57,26 +82,51 @@ export class ServicePageManager {
     let _us
     let service = {
       service_provider_details: { userId, email, displayName },
+      service_type: serviceData.service_type,
       service_name: serviceData.service_name,
       description: serviceData.description,
-      links: serviceData.links,
       duration: serviceData.duration,
-      service_charge_virtual: serviceData.service_charge_virtual || null,
-      service_charge_in_person: serviceData.service_charge_in_person || null,
-      time: serviceData.time,
-      date: serviceData.date,
-      available_days: serviceData.available_days,
-      available_time: serviceData.available_time,
+      pricing: [{
+        time_allocation: "",
+        virtual: "",
+        in_person: ""
+      }],
+      virtual_meeting_link: "",
+      availability_schedule: [{
+        day: "",
+        from_time: "",
+        to_time: ""
+      }],
+      program_fee: {
+        virtual: "",
+        in_person: ""
+      },
+      event_schedule: [{
+        date: "",
+        start_time: "",
+        end_time: ""
+      }],
+      start_date: serviceData.start_date || "not-allocated",
+      end_date: serviceData.end_date || "not-allocated",
       service_recurrence: serviceData.service_recurrence,
-      service_type: serviceData.service_type,
-      service_model: serviceData.service_model,
-      max_number_of_participants: serviceData.max_number_of_participants || 0,
-      timeline_days: serviceData.timeline_days,
-      service_timeline: serviceData.service_timeline,
-      start_date: serviceData.start_date || "",
-      end_date: serviceData.end_date || "",
-      start_time: serviceData.start_time || "",
-      end_time: serviceData.end_time || ""
+      max_number_of_participants: serviceData.max_number_of_participants,
+      
+
+
+      // service_charge_virtual: serviceData.service_charge_virtual || "",
+      // service_charge_in_person: serviceData.service_charge_in_person || "",
+      // service_link: [link],
+      // time: serviceData.time,
+      // date: serviceData.date,
+      // available_days: serviceData.available_days,
+      // available_time: serviceData.available_time || [],
+      // service_model: serviceData.service_model || '',
+      // 
+      // timeline_days: serviceData.timeline_days,
+      // service_timeline: serviceData.service_timeline,
+      // 
+      // start_time: serviceData.start_time || "",
+      // end_time: serviceData.end_time || ""
     }
     try {
       // UPDATE DOCUMENT IN DATABASE IF FOUND.
