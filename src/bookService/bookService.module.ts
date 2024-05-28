@@ -10,6 +10,7 @@ import { UserService } from "../user/user.service.js";
 import { AuthService } from "../auth/auth.service.js";
 import { ProfileService } from "../profileManager/profile.service.js";
 import { CRMService } from "../crm/crm.service.js";
+import { InsightService } from "../insights/insights.service.js";
 
 
 @Module({
@@ -26,6 +27,7 @@ import { CRMService } from "../crm/crm.service.js";
     AuthService,
     ProfileService,
     CRMService,
+    InsightService
   ]
 })
 

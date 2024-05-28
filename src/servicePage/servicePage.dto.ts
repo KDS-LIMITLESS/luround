@@ -1,11 +1,16 @@
 import { PartialType, PickType } from "@nestjs/mapped-types";
 import { IsArray, IsEnum, IsMongoId, IsNotEmpty, IsNumber, IsOptional } from "class-validator";
 
-enum ServiceType {
+enum SERVICE_TYPE {
   program = 'Program',
   one_off = 'One-Off',
   retainer = 'Retainer',
   event = 'Event'
+}
+
+enum SERVICE_STATUS{
+  active = "ACTIVE",
+  suspended = "SUSPENDED"
 }
 
 enum ServiceModels {
@@ -22,8 +27,18 @@ export class ServicePageDto{
   @IsNotEmpty()
   description: string
 
+
+  @IsOptional()
+  appointment_buffer: string
+
   @IsOptional()
   duration: string
+
+  @IsOptional()
+  booking_period: string
+
+  @IsOptional()
+  notice_period: string
 
   // @IsOptional()
   // service_charge_virtual: string
@@ -49,7 +64,7 @@ export class ServicePageDto{
   // available_time: []
 
   @IsNotEmpty()
-  @IsEnum(ServiceType)
+  @IsEnum(SERVICE_TYPE)
   service_type: string
 
   // @IsOptional() 

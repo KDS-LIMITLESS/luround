@@ -22,6 +22,13 @@ export class ServiceController {
     .json(await this.services.edit_service(req.user, serviceData, query.serviceId)) 
   }
 
+  @Put('/suspend-user-service')
+  async suspend_user_service(@Req() req, @Query() query, @Res() res: Response) {
+    return res
+    .status(HttpStatus.OK)
+    .json(await this.services.suspend_service(req.user.userId, query.service_id)) 
+  }
+
   @Delete('/delete')
   async delete_service(@Req() req, @Query() query: ServiceDto, @Res() res: Response) {
     return res

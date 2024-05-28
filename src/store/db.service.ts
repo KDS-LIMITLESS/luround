@@ -17,6 +17,7 @@ export class DatabaseService {
   notificationsDB = this._db.collection("notifications")
   receiptsDB = this._db.collection("receipts")
   crmDB = this._db.collection("crm")
+  insightDB = this._db.collection("insight")
   
   constructor(@Inject('MONGO_CONNECTION') private _db:Db) {}
   
@@ -148,7 +149,7 @@ export class DatabaseService {
     return profile ? profile : null
   }
 
-  async readAndWriteToArray(db: Collection<Document | any>, filterParam: string, value: string) {
+  async readAndWriteToArray(db: Collection<Document | any>, filterParam: string, value: any) {
    const profile = await db.find({ [filterParam]: value }).toArray()
     return profile ? profile : null
   }

@@ -9,6 +9,7 @@ import { UserService } from "../user/user.service.js";
 import { bookingConfirmed_account_viewer, bookingConfirmed_service_provider, bookingRescheduled, booking_account_viewer } from "../utils/mail.services.js";
 import { CRMService } from "../crm/crm.service.js";
 import { ObjectId } from "mongodb";
+import { InsightService } from "../insights/insights.service.js";
 
 @Injectable()
 export class BookingsManager {
@@ -20,7 +21,8 @@ export class BookingsManager {
     private transactionsManger: TransactionsManger,
     private paymentsManager: PaymentsAPI,
     private userService: UserService,
-    private crmService: CRMService
+    private crmService: CRMService,
+    private serviceInsights: InsightService
   ) {}
   
   // Decorate service with initialize payment 
@@ -129,21 +131,35 @@ export class BookingsManager {
    
   }
 
+  /**
+   * Booking confirmation for an account owner
+   * @param booking_id - Id of the booking to be confirmed
+   */
   async confirm_booking(booking_id: string) {
     try {
       
       let get_booking = await this.bookingsManager.findOneDocument(this._bKM, "_id", booking_id)
       if (get_booking !== null) {
+        // THE BOOKING ALREADY EXISTS. SO CONFIRM THE BOOKING BEFORE PROCEDDING WITH SENDING EMAILS.
         await this.transactionsManger.record_transaction(get_booking.service_provider_info.userId, {
           service_id: get_booking.service_details.service_id, service_name: get_booking.service_details.service_name, 
           service_fee: get_booking.service_details.service_fee, transaction_ref: get_booking.payment_reference_id, transaction_status: "RECEIVED", 
           affliate_user: get_booking.booking_user_info.displayName, customer_email: get_booking.booking_user_info.email
         })
+        // rEGISTER SERVICE INSIGHTS.
+        await this.serviceInsights.store_service_booking_history(
+          get_booking.service_details.service_id,
+          get_booking.service_details.service_name, 
+          get_booking.service_details.service_fee, 
+          get_booking.service_details.created_at, 
+          get_booking.booking_user_info.displayName 
+        )
         await bookingConfirmed_account_viewer(get_booking.booking_user_info.email, get_booking)
         // supress bounced emails
         .then(async () => {
           return await this.bookingsManager.updateProperty(this._bKM, booking_id, "booked_status", {booked_status: "CONFIRMED"})
         })
+        // EVEN IF EMAIL IS NOT VALID, PROCEED WITH UPDATING THE BOOKING STATUS IN DB
         .catch(async () => {
           return await this.bookingsManager.updateProperty(this._bKM, booking_id, "booked_status", {booked_status: "CONFIRMED"})
         })
@@ -157,6 +173,13 @@ export class BookingsManager {
     try {
       let get_booking = await this.bookingsManager.findOneDocument(this._bKM, "invoice_id", invoice_id)
       if (get_booking !== null ) {
+        await this.serviceInsights.store_service_booking_history(
+          get_booking.service_details.service_id,
+          get_booking.service_details.service_name, 
+          get_booking.service_details.service_fee, 
+          get_booking.service_details.created_at, 
+          get_booking.booking_user_info.displayName 
+        )
         await bookingConfirmed_account_viewer(get_booking.booking_user_info.email, get_booking)
         // supress bounced emails
         .then(async () => {
@@ -185,14 +208,17 @@ export class BookingsManager {
 
   // RUN THIS FUNCTION IN THE WORKER THREAD AND CACHE THE RESPONSE
   async get_user_service_bookings(userId: string) {
-    // The booked_me variable contains only services with bookigs status set to successful.
     try {
       let filter1 = 'service_provider_info.userId' // The service provider being booked
       let filter2 = 'booking_user_info.userId' // The user booking the service
+      // BOOKED ME = MY SERVICES THAT CUSTOMERS BOOKED
+      // i BOOKED = SERVICES THAT I BOOKED FROM OTHER USERS
       let [booked_me, i_booked] = await Promise.all([
         await this.bookingsManager.readAndWriteToArray(this._bKM, filter1, userId), 
         await this.bookingsManager.readAndWriteToArray(this._bKM, filter2, userId)
       ])
+      //  1st OBJECT --> BOOKINGS I MADE TO OTHER USERS
+      //  2nd OBJECT -->  BOOKINGS I MADE TO OTHER USERS 
         return [{userBooked: false, details: booked_me}, {userBooked: true, details: i_booked}]
     } catch (err: any){
       throw new NotFoundException({message: "Bookings not found"})

@@ -11,11 +11,12 @@ import { UserService } from "../user/user.service.js";
 import { AuthService } from "../auth/auth.service.js";
 import { ProfileService } from "../profileManager/profile.service.js";
 import { CRMService } from "../crm/crm.service.js";
+import { InsightService } from "../insights/insights.service.js";
 
 @Module({
   controllers: [InvoiceControllers],
   providers: [InvoiceService, DatabaseService, PaymentsAPI, WalletService, BookingsManager, ServicePageManager, 
-    TransactionsManger, UserService, AuthService, ProfileService, CRMService]
+    TransactionsManger, UserService, AuthService, ProfileService, CRMService, InsightService]
 })
 
 export class InvoiceModule {}

@@ -13,13 +13,15 @@ import { AuthService } from "../auth/auth.service.js";
 import { QuotesService } from "../quotes/quote.services.js";
 import { ReceiptService } from "../receipt/receipt.services.js";
 import { CRMService } from "../crm/crm.service.js";
+import { InsightService } from "../insights/insights.service.js";
 
 
 @Module({
   providers: [
     SocketsConn, InvoiceService, DatabaseService, ServicePageManager,
     BookingsManager, ProfileService, PaymentsAPI, TransactionsManger,
-    UserService, WalletService, AuthService, QuotesService, ReceiptService, CRMService
+    UserService, WalletService, AuthService, QuotesService, ReceiptService, CRMService,
+    InsightService
   ]
 })
 
