@@ -47,6 +47,20 @@ export async function sendOnboardingMail(to:string, name: string) {
 
 }
 
+export async function sendServiceUpdateEmail(to:string, name: string) {
+  return await client.sendMail({
+    from: {"address": "support@luround.com", "name": "Luround"},
+    to: [{"email_address": {"address": to,"name": name}}],
+    subject: 'Services Page Update',
+    htmlBody: `<p>Dear <b>${name}</b>, </p>
+      <p>We are currently making some updates on the Services page section of Luround, and I'm sorry about any disruptions that may occur as you use the app.</P>
+      <p>When the updates are finished over the next 7 days, it will be much easier to create your services and share them with your network for bookings.</p>
+      <p>Please be patient with us as we improve our product offering to you.</p>
+      <p>C.C. from Luround</p>
+      <p> Want to chat? Please email us at support@luround.com.</p>`
+  });
+}
+
 export async function sendOTP(to:string, OTP: number, name: string) {
   return await client.sendMail({
     from: {"address": "support@luround.com", "name": "Luround"},

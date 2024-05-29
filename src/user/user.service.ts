@@ -113,6 +113,11 @@ export class UserService {
       })
     }
   }
+
+  async send_update_email() {
+    let users = await this._udb
+  }
+
   async send_reset_password_otp(email: string){
     let isUser = await this.databaseManager.read(this._udb, email)
 

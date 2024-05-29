@@ -51,38 +51,38 @@ export class ServicePageDto{
   @IsOptional()
   service_recurrence: string
 
-  @IsOptional()
-  time_allocation: string
+  // @IsOptional()
+  // time_allocation: string
+
+  // @IsOptional()
+  // virtual_pricing: string
+
+  // @IsOptional()
+  // in_person_pricing: string
+
+  // @IsOptional()
+  // availability_day: string
+
+  // @IsOptional()
+  // from_time: string
+
+  // @IsOptional()
+  // to_time: string
 
   @IsOptional()
-  virtual_pricing: string
+  service_fee_virtual: string
 
   @IsOptional()
-  in_person_pricing: string
+  service_fee_in_person: string
 
-  @IsOptional()
-  availability_day: string
+  // @IsOptional()
+  // event_schedule_date: string
 
-  @IsOptional()
-  from_time: string
+  // @IsOptional()
+  // event_schedule_time: string
 
-  @IsOptional()
-  to_time: string
-
-  @IsOptional()
-  program_fee_virtual: string
-
-  @IsOptional()
-  program_fee_in_person: string
-
-  @IsOptional()
-  event_schedule_date: string
-
-  @IsOptional()
-  event_schedule_time: string
-
-  @IsOptional()
-  event_schedule_end_time: string
+  // @IsOptional()
+  // event_schedule_end_time: string
  
   @IsOptional()
   max_number_of_participants: number
@@ -95,6 +95,17 @@ export class ServicePageDto{
 
   @IsOptional()
   end_date: string
+
+  @IsOptional()
+  pricing: any
+
+  @IsOptional()
+  availability_schedule: any
+
+  @IsOptional()
+  event_schedule: any
+
+
 
 }
 
