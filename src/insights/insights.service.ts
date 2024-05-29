@@ -1,4 +1,4 @@
-import { Injectable } from "@nestjs/common";
+import { BadRequestException, Injectable } from "@nestjs/common";
 import { ObjectId } from "mongodb";
 import { ServicePageManager } from "../servicePage/services-page.service.js";
 import { DatabaseService } from "../store/db.service.js";
@@ -44,6 +44,24 @@ export class InsightService {
        { booking_count: totalBookingCount }, 
        { bookings: serviceBookings }
     ];
-}
+  }
+
+  async record_service_link_clicks(shortURL: string) {
+    // FIND THE SERVICE WITH SPECIFIED SHORTURL
+    let findService = await this.DatabaseService.findOneDocument(this._SPM, "service_link.shortURL", shortURL)
+      
+    if (findService !== null) {
+      // CHECK IF SERVICES HAS AN INSIGHTS DOCUMENT ON DB AND UPDATE
+      let getServiceInsigts = await this.DatabaseService.findOneDocument(this._insightsDB, "_id", findService._id.toString())
+      if (getServiceInsigts !== null) {
+        await this.DatabaseService.updateDocument(this._insightsDB, findService._id, {clicks: getServiceInsigts.clicks += 1})
+        return findService.service_link.longURL
+      }
+      // ELSE CREATE A NEW INSIGHTS DOCUMENT FOR THE SERVICE
+      await this.DatabaseService.create(this._insightsDB, {"_id": new ObjectId(findService._id.toString()), clicks: 1})
+      return findService.service_link.longURL  // RETURN THE LONG URL OF THE SERVICE
+    }
+    throw new BadRequestException({message: "Bad or broken link"})
+  }
 
 }

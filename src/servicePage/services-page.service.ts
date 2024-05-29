@@ -75,7 +75,6 @@ export class ServicePageManager {
       // end_time: serviceData.end_time || ""
     }
     try {
-      console.log(serviceData)
       const new_service = await this.servicePageManager.create(this._spm_db, service)
       return { serviceId: new_service.insertedId }
     } catch(err: any) {
