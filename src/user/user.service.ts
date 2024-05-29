@@ -2,7 +2,7 @@ import { BadRequestException, Injectable, NotFoundException } from '@nestjs/comm
 import { JwtService } from '@nestjs/jwt';
 import { DatabaseService } from '../store/db.service.js';
 import { AuthService } from '../auth/auth.service.js';
-import { generateRandomSixDigitNumber, sendOTP, sendOnboardingMail } from '../utils/mail.services.js';
+import { generateRandomSixDigitNumber, sendOTP, sendOnboardingMail, sendServiceUpdateEmail } from '../utils/mail.services.js';
 import ResponseMessages from '../messageConstants.js';
 import { UserDto } from './user.dto.js';
 import * as bcrypt from 'bcrypt'
@@ -114,9 +114,14 @@ export class UserService {
     }
   }
 
-  async send_update_email() {
-    let users = await this._udb
-  }
+  // async send_update_email() {
+  //   let users = await this._udb.find({}).toArray()
+  //   users.forEach(async (prop) => {
+  //     // console.log(prop.email, prop.displayName.split(' ')[0])
+  //     await sendServiceUpdateEmail(prop.email, prop.displayName.split(' ')[0])
+  //     console.log('Done')
+  //   })
+  // }
 
   async send_reset_password_otp(email: string){
     let isUser = await this.databaseManager.read(this._udb, email)

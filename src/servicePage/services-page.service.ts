@@ -1,9 +1,9 @@
-import { BadRequestException, Inject, Injectable, InternalServerErrorException, NotFoundException } from "@nestjs/common";
+import { BadRequestException, Injectable, InternalServerErrorException, NotFoundException } from "@nestjs/common";
 import ResponseMessages from "../messageConstants.js";
 import { DatabaseService } from "../store/db.service.js";
 import { Encrypter } from "../utils/Encryption.js";
 import { ServiceDto, ServicePageDto } from "./servicePage.dto.js";
-import { ObjectId } from "mongodb";
+import { generateRandomSixDigitNumber } from "../utils/mail.services.js";
 
 
 @Injectable()
@@ -17,10 +17,14 @@ export class ServicePageManager {
   async add_new_service(user: any, serviceData: ServicePageDto){
     const { userId, email, displayName } = user
     let encryption = new Encrypter(process.env.ENCRYPTION_KEY as string)
-    let link = `https://luround.com/${encryption.encrypt(userId)}/${serviceData.service_name.replace(/\s/g, "_")}`  
+    let service_link = {
+      longURL:`https://luround.com/${serviceData.service_name.replace(/\s/g, "-")}/${encryption.encrypt(userId)}`,
+      shortURL: `luround.com/services/${serviceData.service_name.replace(/\s/g, "&")}/${encryption.encrypt(await generateRandomSixDigitNumber())}`
+    }
 
     let service = {
       service_provider_details: { userId, email, displayName },
+      service_link,
       service_type: serviceData.service_type,
       service_name: serviceData.service_name,
       description: serviceData.description,
@@ -217,12 +221,12 @@ export class ServicePageManager {
   async getService(url: string, service_type: string) {
     try {
       //FIND AND RETURN SERVICE
-      let user_url = await this.servicePageManager.findOneDocument(this._udb, "luround_url", url)
+      let user_url = await this.servicePageManager.findOneDocument(this._udb, "luround_url.shortURL",  url)
       if(user_url !== null) {
         let user_services = await this._spm_db.find({"service_provider_details.userId": user_url._id.toString()}).toArray()
         let services = []
 
-        user_services.map((user_service) => {
+        user_services.forEach((user_service) => {
           user_service.service_type === service_type ? services.push(user_service) : []
         })
         return services

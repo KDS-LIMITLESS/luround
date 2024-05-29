@@ -1,6 +1,7 @@
 import { BadRequestException, Injectable } from "@nestjs/common";
 import ResponseMessages from "../messageConstants.js";
 import { DatabaseService } from "../store/db.service.js";
+import { generateRandomAlphabets } from "../utils/mail.services.js";
 
 
 @Injectable()
@@ -161,9 +162,12 @@ export class ProfileService {
       let userCount = await this.profileManager.userDB.estimatedDocumentCount()
       let getUserNames = await this.profileManager.read(this._udb, email)
       // BUILD THE USER URL 
-      let url = `https://www.luround.com/profile/${getUserNames.displayName.replace(/\s/g, '_')}_${userCount}`
+      let url = {
+        longURL: `https://luround.com/profile/${getUserNames.displayName.replace(/\s/g, '_')}`,
+        shortURL:  `https://luround.me/${await generateRandomAlphabets(6)}`
+      }
       await this.profileManager.update(this._udb, email, "luround_url", url)
-      return url
+      return url.shortURL
 
     } catch(err: any) {
       throw new BadRequestException({
@@ -189,7 +193,7 @@ export class ProfileService {
   
   async get_user_profile_by_link(url: string) {
 
-    let user = await this.profileManager.findOneDocument(this._udb ,"luround_url", url)
+    let user = await this.profileManager.findOneDocument(this._udb ,"luround_url.shortURL", url)
 
     if (user === null) {
       throw new BadRequestException({

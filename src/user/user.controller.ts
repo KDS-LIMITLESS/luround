@@ -46,6 +46,12 @@ export class UserController {
     return res.status(HttpStatus.OK).json(await this.userService.send_reset_password_otp(body.email))
   }
 
+  // @SkipAuth()
+  // @Get('updates')
+  // async sendUpdates(@Res() res: Response, @Body() body) {
+  //   return res.status(HttpStatus.OK).json(await this.userService.send_update_email())
+  // }
+
   @SkipAuth()
   @Put('/api/v1/reset-password')
   async ResetPassword(@Res() res: Response, @Body() body) {

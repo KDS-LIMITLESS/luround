@@ -52,7 +52,7 @@ export async function sendServiceUpdateEmail(to:string, name: string) {
     from: {"address": "support@luround.com", "name": "Luround"},
     to: [{"email_address": {"address": to,"name": name}}],
     subject: 'Services Page Update',
-    htmlBody: `<p>Dear <b>${name}</b>, </p>
+    htmlBody: `<p>Hi <b>${name}</b>, </p>
       <p>We are currently making some updates on the Services page section of Luround, and I'm sorry about any disruptions that may occur as you use the app.</P>
       <p>When the updates are finished over the next 7 days, it will be much easier to create your services and share them with your network for bookings.</p>
       <p>Please be patient with us as we improve our product offering to you.</p>
@@ -224,4 +224,10 @@ export async function generateRandomSixDigitNumber(): Promise<number> {
   const max = 999999;
 
   return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+export async function generateRandomAlphabets(length) {
+  const characters = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+  const charactersLength = characters.length;
+  return Array.from({ length }, () => characters.charAt(Math.floor(Math.random() * charactersLength))).join('');
 }
