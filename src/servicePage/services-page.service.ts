@@ -19,7 +19,7 @@ export class ServicePageManager {
     let encryption = new Encrypter(process.env.ENCRYPTION_KEY as string)
     let service_link = {
       longURL:`https://luround.com/${serviceData.service_name.replace(/\s/g, "-")}/${encryption.encrypt(userId)}`,
-      shortURL: `luround.com/services/${serviceData.service_name.replace(/\s/g, "&")}/${encryption.encrypt(await generateRandomSixDigitNumber())}`
+      shortURL: `luround.com/services/${serviceData.service_name.replace(/\s/g, "&")}/${encryption.encrypt((await generateRandomSixDigitNumber()).toString())}`
     }
 
     let service = {
