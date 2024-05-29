@@ -26,24 +26,24 @@ export class ServicePageManager {
       description: serviceData.description,
       duration: serviceData.duration,
       pricing: [{
-        time_allocation: "",
-        virtual: "",
-        in_person: ""
+        time_allocation: serviceData.time_allocation,
+        virtual: serviceData.virtual_pricing,
+        in_person: serviceData.in_person_pricing
       }],
-      virtual_meeting_link: "",
+      virtual_meeting_link: serviceData.virtual_meeting_link,
       availability_schedule: [{
-        day: "",
-        from_time: "",
-        to_time: ""
+        day: serviceData.availability_day,
+        from_time: serviceData.from_time,
+        to_time: serviceData.to_time
       }],
       program_fee: {
-        virtual: "",
-        in_person: ""
+        virtual: serviceData.program_fee_virtual,
+        in_person: serviceData.program_fee_in_person
       },
       event_schedule: [{
-        date: "",
-        start_time: "",
-        end_time: ""
+        date: serviceData.event_schedule_date,
+        start_time: serviceData.event_schedule_time,
+        end_time: serviceData.event_schedule_end_time
       }],
       start_date: serviceData.start_date || "not-allocated",
       end_date: serviceData.end_date || "not-allocated",
@@ -91,24 +91,24 @@ export class ServicePageManager {
       description: serviceData.description,
       duration: serviceData.duration,
       pricing: [{
-        time_allocation: "",
-        virtual: "",
-        in_person: ""
+        time_allocation: serviceData.time_allocation,
+        virtual: serviceData.virtual_pricing,
+        in_person: serviceData.in_person_pricing
       }],
-      virtual_meeting_link: "",
+      virtual_meeting_link: serviceData.virtual_meeting_link,
       availability_schedule: [{
-        day: "",
-        from_time: "",
-        to_time: ""
+        day: serviceData.availability_day,
+        from_time: serviceData.from_time,
+        to_time: serviceData.to_time
       }],
       program_fee: {
-        virtual: "",
-        in_person: ""
+        virtual: serviceData.program_fee_virtual,
+        in_person: serviceData.program_fee_in_person
       },
       event_schedule: [{
-        date: "",
-        start_time: "",
-        end_time: ""
+        date: serviceData.event_schedule_date,
+        start_time: serviceData.event_schedule_time,
+        end_time: serviceData.event_schedule_end_time
       }],
       start_date: serviceData.start_date || "not-allocated",
       end_date: serviceData.end_date || "not-allocated",
