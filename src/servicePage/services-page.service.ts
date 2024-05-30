@@ -29,25 +29,13 @@ export class ServicePageManager {
       service_name: serviceData.service_name,
       description: serviceData.description,
       duration: serviceData.duration,
-      pricing: [{
-        time_allocation: serviceData.pricing.time_allocation,
-        virtual: serviceData.pricing.virtual_pricing,
-        in_person: serviceData.pricing.in_person_pricing
-      }],
+      pricing: [...serviceData.pricing],
       virtual_meeting_link: serviceData.virtual_meeting_link,
-      availability_schedule: [{
-        day: serviceData.availability_schedule.availability_day,
-        from_time: serviceData.availability_schedule.from_time,
-        to_time: serviceData.availability_schedule.to_time
-      }],
+      availability_schedule: [...serviceData.availability_schedule],
       
-      virtual: serviceData.service_fee_virtual,
-      in_person: serviceData.service_fee_in_person,
-      event_schedule: [{
-        date: serviceData.event_schedule.date,
-        start_time: serviceData.event_schedule.time,
-        end_time: serviceData.event_schedule.end_time
-      }],
+      virtual_event_fee: serviceData.event_fee_virtual,
+      in_person_event_fee: serviceData.event_fee_in_person,
+      event_schedule: [...serviceData.event_schedule],
       start_date: serviceData.start_date || "not-allocated",
       end_date: serviceData.end_date || "not-allocated",
       service_recurrence: serviceData.service_recurrence,
@@ -105,8 +93,8 @@ export class ServicePageManager {
         to_time: serviceData.availability_schedule.to_time
       }],
       
-      virtual: serviceData.service_fee_virtual,
-      in_person: serviceData.service_fee_in_person,
+      virtual: serviceData.event_fee_virtual,
+      in_person: serviceData.event_fee_in_person,
       event_schedule: [{
         date: serviceData.event_schedule.date,
         start_time: serviceData.event_schedule.time,

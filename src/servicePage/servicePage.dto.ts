@@ -59,21 +59,11 @@ export class ServicePageDto{
 
   // @IsOptional()
   // in_person_pricing: string
-
-  // @IsOptional()
-  // availability_day: string
-
-  // @IsOptional()
-  // from_time: string
-
-  // @IsOptional()
-  // to_time: string
+  @IsOptional()
+  event_fee_virtual: string
 
   @IsOptional()
-  service_fee_virtual: string
-
-  @IsOptional()
-  service_fee_in_person: string
+  event_fee_in_person: string
 
   // @IsOptional()
   // event_schedule_date: string
