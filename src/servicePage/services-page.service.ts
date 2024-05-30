@@ -30,13 +30,13 @@ export class ServicePageManager {
       service_name: serviceData.service_name,
       description: serviceData.description,
       duration: serviceData.duration,
-      pricing: [...serviceData.pricing],
+      pricing: serviceData.pricing,
       virtual_meeting_link: serviceData.virtual_meeting_link,
-      availability_schedule: [...serviceData.availability_schedule],
+      availability_schedule: serviceData.availability_schedule,
       
       virtual_event_fee: serviceData.event_fee_virtual,
       in_person_event_fee: serviceData.event_fee_in_person,
-      event_schedule: [...serviceData.event_schedule],
+      event_schedule: serviceData.event_schedule,
       start_date: serviceData.start_date || "not-allocated",
       end_date: serviceData.end_date || "not-allocated",
       service_recurrence: serviceData.service_recurrence,
@@ -45,24 +45,8 @@ export class ServicePageManager {
       appointment_buffer: serviceData.appointment_buffer || "",
       booking_period: serviceData.booking_period || "",
       service_status: "ACTIVE"
-      
-
-
-      // service_charge_virtual: serviceData.service_charge_virtual || "",
-      // service_charge_in_person: serviceData.service_charge_in_person || "",
-      // service_link: [link],
-      // time: serviceData.time,
-      // date: serviceData.date,
-      // available_days: serviceData.available_days,
-      // available_time: serviceData.available_time || [],
-      // service_model: serviceData.service_model || '',
-      // 
-      // timeline_days: serviceData.timeline_days,
-      // service_timeline: serviceData.service_timeline,
-      // 
-      // start_time: serviceData.start_time || "",
-      // end_time: serviceData.end_time || ""
     }
+    
     try {
       const new_service = await this.servicePageManager.create(this._spm_db, service)
       return { serviceId: new_service.insertedId }
@@ -82,25 +66,13 @@ export class ServicePageManager {
       service_name: serviceData.service_name,
       description: serviceData.description,
       duration: serviceData.duration,
-      pricing: [{
-        time_allocation: serviceData.pricing.time_allocation,
-        virtual: serviceData.pricing.virtual_pricing,
-        in_person: serviceData.pricing.in_person_pricing
-      }],
+      pricing: serviceData.pricing,
       virtual_meeting_link: serviceData.virtual_meeting_link,
-      availability_schedule: [{
-        day: serviceData.availability_schedule.availability_day,
-        from_time: serviceData.availability_schedule.from_time,
-        to_time: serviceData.availability_schedule.to_time
-      }],
+      availability_schedule: serviceData.availability_schedule,
       
-      virtual: serviceData.event_fee_virtual,
-      in_person: serviceData.event_fee_in_person,
-      event_schedule: [{
-        date: serviceData.event_schedule.date,
-        start_time: serviceData.event_schedule.time,
-        end_time: serviceData.event_schedule.end_time
-      }],
+      virtual_event_fee: serviceData.event_fee_virtual,
+      in_person_event_fee: serviceData.event_fee_in_person,
+      event_schedule: serviceData.event_schedule,
       start_date: serviceData.start_date || "not-allocated",
       end_date: serviceData.end_date || "not-allocated",
       service_recurrence: serviceData.service_recurrence,
@@ -109,24 +81,8 @@ export class ServicePageManager {
       appointment_buffer: serviceData.appointment_buffer || "",
       booking_period: serviceData.booking_period || "",
       service_status: "ACTIVE"
-      
-
-
-      // service_charge_virtual: serviceData.service_charge_virtual || "",
-      // service_charge_in_person: serviceData.service_charge_in_person || "",
-      // service_link: [link],
-      // time: serviceData.time,
-      // date: serviceData.date,
-      // available_days: serviceData.available_days,
-      // available_time: serviceData.available_time || [],
-      // service_model: serviceData.service_model || '',
-      // 
-      // timeline_days: serviceData.timeline_days,
-      // service_timeline: serviceData.service_timeline,
-      // 
-      // start_time: serviceData.start_time || "",
-      // end_time: serviceData.end_time || ""
     }    
+
     try {
       // UPDATE DOCUMENT IN DATABASE IF FOUND.
       let user_services = await this.get_user_services_(userId)

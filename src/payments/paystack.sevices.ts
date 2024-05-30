@@ -166,6 +166,33 @@ export class PaymentsAPI {
     return await this.makeRequest(data, options)
   }
 
+
+
+  // MAKE ENDPOINT FOR VERIFYING PAYMENTS MADE FROM SERVICES
+  // INCREASE USERS WALLET BALANCE
+
+  // REFACTOR FUNCTION FOR WITHDRAWING USERS FUNDS TO USE PAYSTACK APIS
+
+  async generateUniqueTransactionCode(prefix: string): Promise<string> {
+  
+    const timestamp = Date.now().toString(); // Get current timestamp
+    let random_string = await generate_random_string(8)
+    let tx_ref = `${prefix}-${timestamp}-${random_string}`;
+  
+    return tx_ref;
+  }
+
+}
+
+
+
+
+
+
+
+
+
+
 //   static async initiate_flw_payment(amount: string, req: any, phone_number: string, tx_ref: any, booking_detail: any) {
 //     try {
 //       const response = await got.post("https://api.flutterwave.com/v3/payments", {
@@ -247,16 +274,7 @@ export class PaymentsAPI {
 //     }
 //   }
 
-  async generateUniqueTransactionCode(prefix: string): Promise<string> {
-  
-    const timestamp = Date.now().toString(); // Get current timestamp
-    let random_string = await generate_random_string(8)
-    let tx_ref = `${prefix}-${timestamp}-${random_string}`;
-  
-    return tx_ref;
-  }
-
-}
+ 
 
 async function generate_random_string(length: number) {
   const characters = 'abcdefghijklmnopqrstuvwxyz0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
