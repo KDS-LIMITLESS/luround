@@ -51,7 +51,7 @@ export class ProfileController {
     .json(await this.profileSevice.generate_custom_user_url(req.user, body.slug))
   }
   
-  @SkipAuth()
+  // @SkipAuth()
   @Get('/get')
   async getUserProfile(@Query() query: userProfileDto , @Res() res: Response) {
     return res
