@@ -15,8 +15,14 @@ export class Payments {
   }
 
   @Get('verify-payment')
-  async verifyPayments(@Req() req, @Query() query: any, @Res() res: Response) {
+  async verifySubscriptionPayments(@Req() req, @Query() query: any, @Res() res: Response) {
     return res.status(200).json(await this.paymentManager.verifyPayment(query.ref_id, req.user.userId))
+  }
+
+  @SkipAuth()
+  @Get('verify-booking-payment')
+  async verifyBookingPayments(@Req() req, @Query() query: any, @Res() res: Response) {
+    return res.status(200).json(await this.paymentManager.verifyBookingPayment(query.transaction_ref))
   }
 
   // @Get('initialize-flw-payment')

@@ -6,6 +6,7 @@ import { Collection, Db, ObjectId, PushOperator, UpdateFilter } from "mongodb";
 export class DatabaseService { 
   userDB = this._db.collection('user')
   serviceDB = this._db.collection("services")
+  servicePaymentDB = this._db.collection('service-payments')
   bookingsDB = this._db.collection("bookings")
   transactionsDb = this._db.collection("transactions")
   reviewsDB = this._db.collection("reviews")

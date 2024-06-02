@@ -116,6 +116,7 @@ export class BookingsManager {
           userId: serviceDetails.service_provider_details.userId,
           user_nToken, 
           BookingId: service_booked.insertedId, 
+          transaction_ref: booking_Detail.payment_reference_id
           // booking_payment_link: response.data.link
         }
       }

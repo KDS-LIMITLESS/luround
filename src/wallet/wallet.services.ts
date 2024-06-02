@@ -123,7 +123,7 @@ export class WalletService {
         await this.databaseManger.updateProperty(this._wDB, userId, 'wallet_ballance', {wallet_balance})
         return ResponseMessages.TransactionSuccessful
       }
-      return new BadRequestException({message: 'Wallet balance is too low for this transaction'})  
+      await this.create_wallet(userId, '0000')  
     } catch (err: any) {
       throw new BadRequestException({message: err.message})
     }

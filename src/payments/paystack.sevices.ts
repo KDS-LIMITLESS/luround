@@ -5,6 +5,7 @@ import { DatabaseService } from "../store/db.service.js";
 import { sendPaymentSuccessMail } from "../utils/mail.services.js";
 import { ObjectId } from "mongodb";
 import ResponseMessages from "../messageConstants.js";
+import { WalletService } from "../wallet/wallet.services.js";
 
 const flw = new Flutterwave(process.env.FLW_PUBLIC_KEY, process.env.FLW_SECRET_KEY)
 
@@ -15,8 +16,9 @@ export class PaymentsAPI {
   _pdb = this.databaseManager.payment
   _idb = this.databaseManager.invoiceDB
   _udb = this.databaseManager.userDB
+  _spm = this.databaseManager.servicePaymentDB
 
-  constructor(private databaseManager: DatabaseService) {}
+  constructor(private databaseManager: DatabaseService, private walletService: WalletService) {}
 
   static async initializePayment(email: string, amount: string): Promise<any> {
     const data = JSON.stringify({
@@ -72,6 +74,54 @@ export class PaymentsAPI {
       throw new BadRequestException({message: err.message })
     }
     
+  }
+
+
+  // MAKE ENDPOINT FOR VERIFYING PAYMENTS MADE FROM SERVICES
+  // INCREASE USERS WALLET BALANCE
+
+  // REFACTOR FUNCTION FOR WITHDRAWING USERS FUNDS TO USE PAYSTACK APIS
+
+  async verifyBookingPayment(transaction_ref: string) {
+    const options = {
+      hostname: 'api.paystack.co',
+      port: 443,
+      path: `/transaction/verify/${transaction_ref}`,
+      method: 'GET',
+      headers: {
+        Authorization: `Bearer ${process.env.PAYSTACK_SECRET}`,
+        'Content-Type': 'application/json'
+      }
+    }    
+    try {
+      let request: any = await PaymentsAPI.makeRequest(transaction_ref, options)
+      if (request.data.status === 'success') {
+        console.log(request.data)
+        // callbook service api
+        // register service payment with
+        let get_booking_reference = await this.databaseManager.findOneDocument(this._bkDb, "payment_reference_id", transaction_ref)
+        
+        // update the booked_status to successful. 
+        if (get_booking_reference !== null) {
+          let service_providerId = get_booking_reference.service_provider_details.userId
+          // UPDATE MATCHING BOOKING STATUS
+          await this.databaseManager.updateProperty(this._bkDb, get_booking_reference._id, "booked_status", {booked_status: "SUCCESSFUL"})
+          // SET WALLET BALANCE
+          await this.walletService.increase_wallet_balance(service_providerId, request.data.charged_amount)
+          
+          // SAVE PAYMENT DETAILS TO SERVICE PAYMENTS DATABASE
+          // let payment_ref_id = (await this.databaseManager.create(this._pdb, transaction_details)).insertedId
+         // await sendPaymentSuccessMail(request.data.customer.email, request.data.meta.consumer_name, request.data.meta.payment_receiver_name, request.data.charged_amount, request.data.meta.service_name )
+         return {booking_status: "Success", transaction_ref: request.data.tx_ref }
+        }
+        // throw new BadRequestException({message: ResponseMessages.PaymentNotResolved})
+      } else {
+        // await paymentFailed(response.data.customer.email, response.data.meta.consumer_name, response.data.meta.payment_receiver_name, response.data.charged_amount, response.data.meta.service_name )
+        throw new BadRequestException({message: request.data.status, transaction_ref})
+      } 
+    } catch (err: any) {
+      throw new BadRequestException({message: err.message })
+    }
   }
 
   async get_user_subscription_plan(userId: string) {
@@ -167,12 +217,6 @@ export class PaymentsAPI {
   }
 
 
-
-  // MAKE ENDPOINT FOR VERIFYING PAYMENTS MADE FROM SERVICES
-  // INCREASE USERS WALLET BALANCE
-
-  // REFACTOR FUNCTION FOR WITHDRAWING USERS FUNDS TO USE PAYSTACK APIS
-
   async generateUniqueTransactionCode(prefix: string): Promise<string> {
   
     const timestamp = Date.now().toString(); // Get current timestamp
@@ -183,15 +227,6 @@ export class PaymentsAPI {
   }
 
 }
-
-
-
-
-
-
-
-
-
 
 //   static async initiate_flw_payment(amount: string, req: any, phone_number: string, tx_ref: any, booking_detail: any) {
 //     try {
