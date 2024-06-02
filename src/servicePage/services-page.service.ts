@@ -17,7 +17,6 @@ export class ServicePageManager {
   async add_new_service(user: any, serviceData: ServicePageDto){
     const { userId, email, displayName } = user
     let encryption = new Encrypter(process.env.ENCRYPTION_KEY as string)
-    console.log(serviceData)
     let service_link = {
       longURL:`https://luround.com/${serviceData.service_name.replace(/\s/g, "-")}/${encryption.encrypt(userId)}`,
       shortURL: `luround.com/services/${serviceData.service_name.replace(/\s/g, "&")}/${encryption.encrypt((await generateRandomSixDigitNumber()).toString())}`
@@ -134,10 +133,7 @@ export class ServicePageManager {
     let filter_key = 'service_provider_details.userId'
     let user_services = await this.servicePageManager.readAndWriteToArray(this._spm_db, filter_key, userId)
     if (user_services.length === 0) {
-      throw new BadRequestException({
-        status: 400,
-        message: ResponseMessages.EmailDoesNotExist
-      })
+      return []
     }
     let services = []
     user_services.map((user_service) => {
