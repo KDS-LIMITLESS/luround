@@ -86,6 +86,7 @@ export class ProfileService {
   async get_user_profile(user: any) {
     const { email } = user
     let userProfile:any = await this.profileManager.findOneDocument(this._udb, "email", email)
+    console.log(userProfile)
     if (userProfile === null) {
       throw new BadRequestException({
         status: 400,
