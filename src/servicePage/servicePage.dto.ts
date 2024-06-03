@@ -60,10 +60,28 @@ export class ServicePageDto{
   // @IsOptional()
   // in_person_pricing: string
   @IsOptional()
-  event_fee_virtual: string
+  virtual_event_fee: string
 
   @IsOptional()
-  event_fee_in_person: string
+  in_person_event_fee: string
+
+  @IsOptional()
+  @IsArray()
+  core_features: []
+
+  @IsOptional()
+  physical_location: string
+
+  @IsOptional()
+  event_type: string
+
+  @IsOptional()
+  start_time: string
+
+  @IsOptional()
+  end_time: string
+
+
 
   // @IsOptional()
   // event_schedule_date: string
@@ -77,7 +95,7 @@ export class ServicePageDto{
   @IsOptional()
   max_number_of_participants: number
 
-  @IsOptional()services
+  @IsOptional()
   start_date: string
 
   @IsOptional()

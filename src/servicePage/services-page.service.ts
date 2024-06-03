@@ -33,8 +33,8 @@ export class ServicePageManager {
       virtual_meeting_link: serviceData.virtual_meeting_link,
       availability_schedule: serviceData.availability_schedule,
       
-      virtual_event_fee: serviceData.event_fee_virtual,
-      in_person_event_fee: serviceData.event_fee_in_person,
+      virtual_event_fee: serviceData.virtual_event_fee,
+      in_person_event_fee: serviceData.in_person_event_fee,
       event_schedule: serviceData.event_schedule,
       start_date: serviceData.start_date || "not-allocated",
       end_date: serviceData.end_date || "not-allocated",
@@ -43,7 +43,12 @@ export class ServicePageManager {
       notice_period: serviceData.notice_period || "",
       appointment_buffer: serviceData.appointment_buffer || "",
       booking_period: serviceData.booking_period || "",
-      service_status: "ACTIVE"
+      service_status: "ACTIVE",
+      core_features: serviceData.core_features,
+      physical_location: serviceData.physical_location || '',
+      start_time: serviceData.start_time,
+      end_time: serviceData.end_time,
+      event_type: serviceData.event_type
     }
     
     try {
@@ -69,8 +74,8 @@ export class ServicePageManager {
       virtual_meeting_link: serviceData.virtual_meeting_link,
       availability_schedule: serviceData.availability_schedule,
       
-      virtual_event_fee: serviceData.event_fee_virtual,
-      in_person_event_fee: serviceData.event_fee_in_person,
+      virtual_event_fee: serviceData.virtual_event_fee,
+      in_person_event_fee: serviceData.in_person_event_fee,
       event_schedule: serviceData.event_schedule,
       start_date: serviceData.start_date || "not-allocated",
       end_date: serviceData.end_date || "not-allocated",
@@ -79,7 +84,13 @@ export class ServicePageManager {
       notice_period: serviceData.notice_period || "",
       appointment_buffer: serviceData.appointment_buffer || "",
       booking_period: serviceData.booking_period || "",
-      service_status: "ACTIVE"
+      service_status: "ACTIVE",
+      core_features: serviceData.core_features,
+      physical_location: serviceData.physical_location || '',
+      start_time: serviceData.start_time,
+      end_time: serviceData.end_time,
+      event_type: serviceData.event_type
+    
     }    
 
     try {
