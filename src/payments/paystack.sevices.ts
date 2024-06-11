@@ -309,7 +309,15 @@ export class PaymentsAPI {
 //     }
 //   }
 
- 
+async function generate_transfer_reference_string(length: number) {
+  const characters = 'abcdefghijklmnopqrstuvwxyz0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+  let i, result= "TRA-REF-";
+  for (i = 0; i <= length; i++) {
+    const randomIndex = Math.floor(Math.random() * characters.length);
+    result += characters.charAt(randomIndex);
+  }
+  return result
+}
 
 async function generate_random_string(length: number) {
   const characters = 'abcdefghijklmnopqrstuvwxyz0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';

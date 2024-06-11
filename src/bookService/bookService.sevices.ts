@@ -6,7 +6,7 @@ import { BookServiceDto } from "./bookServiceDto.js";
 import { TransactionsManger } from "../transaction/tansactions.service.js";
 import { PaymentsAPI } from "../payments/paystack.sevices.js";
 import { UserService } from "../user/user.service.js";
-import { bookingConfirmed_account_viewer, bookingConfirmed_service_provider, bookingRescheduled, booking_account_viewer } from "../utils/mail.services.js";
+import { bookingConfirmed_account_viewer, bookingConfirmed_service_provider, bookingRescheduled, booking_account_viewer, scheduleEmailCronJob } from "../utils/mail.services.js";
 import { CRMService } from "../crm/crm.service.js";
 import { ObjectId } from "mongodb";
 import { InsightService } from "../insights/insights.service.js";
@@ -79,6 +79,7 @@ export class BookingsManager {
         }
       }
       let service_booked = await this.bookingsManager.create(this._bKM, booking_Detail)
+      await scheduleEmailCronJob(booking_Detail.service_details.date, booking_Detail)
 
       // ADD USER TO SERVICE PROVIDER CONTACTS
       let service_provider_id = new ObjectId(serviceDetails.service_provider_details.userId)

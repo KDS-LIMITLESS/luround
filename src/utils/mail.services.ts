@@ -1,5 +1,6 @@
 // import * as postmark from 'postmark';
 import { SendMailClient } from "zeptomail";
+import cron from 'node-cron'
 
 // const mail = new postmark.ServerClient('9f332d3f-5c4d-42d5-b4c4-0959b0dd648a');
 
@@ -217,7 +218,44 @@ export async function bookingConfirmed_service_provider(to:string, booking_detai
   });
 }
 
+export async function SendBookingNotificationEmail_ServiceProvider(to:string, booking_detail: any) {
+  return await client.sendMail({
+    from: {"address": "support@luround.com", "name": "Luround"},
+    to: [{"email_address": {"address": to,"name": booking_detail.booking_user_info.displayName.split(' ')[0]}}],
+    subject: `Upcoming Appointment`,
+    htmlBody: `<p>Hi <b>${booking_detail.service_provider_info.displayName.split(' ')[0]}</b>, </p>
+      <p> Your appointment with ${booking_detail.booking_user_info.displayName.split(' ')[0]} is coming up in 24 hours</P>
+      <p> Here’s the breakdown - </p>
+      <p> Name of Client: <b>${booking_detail.booking_user_info.displayName}</b> <br>
+      <p> Service booked: <b>${booking_detail.service_details.service_name}</b> <br>
+      Appointment Time: <b>${booking_detail.service_details.time} </b> <br>
+      Amount Paid: <b>${booking_detail.service_details.service_fee}</b> <br>
+      Type of booking: <b>${booking_detail.service_details.appointment_type} </b></p>
+      <p>For 24/7 Support: support@luround.com</p>`
+  });
+}
 
+
+
+export async function scheduleEmailCronJob(date:string, booking_detail:any) {
+  const targetDate = new Date(`${date}T00:00:00Z`);
+  targetDate.setDate(targetDate.getDate() - 1);
+
+  // Schedule the cron job to run at the target date and time
+  const targetCronTime = `${targetDate.getUTCMinutes()} ${targetDate.getUTCHours()} ${targetDate.getUTCDate()} ${targetDate.getUTCMonth() + 1} *`;
+
+  // CALCULATE 1 HOUR 
+  // const target_1hrCronTime = `${targetDate.getUTCMinutes()} ${targetDate.getUTCHours()} ${targetDate.getUTCDate()} ${targetDate.getUTCMonth() + 1} *`;
+
+  console.log('Cron schedule:', targetCronTime);
+
+  cron.schedule(targetCronTime, async () => {
+    console.log('Running email cron job');
+    await SendBookingNotificationEmail_ServiceProvider(booking_detail.service_provider_info.email, booking_detail);
+});
+
+console.log('Email cron job scheduled');
+}
 
 export async function generateRandomSixDigitNumber(): Promise<number> {
   const min = 100000; 
