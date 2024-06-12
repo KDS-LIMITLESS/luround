@@ -1,0 +1,36 @@
+[
+  {
+    "date": "0 0 11 6 0",
+    "booking_detail": {
+      "service_provider_info": {
+        "userId": "661c4895b286a79d233158d5",
+        "email": "uppist.tech@gmail.com",
+        "displayName": "Uppist Hub"
+      },
+      "booking_user_info": {
+        "email": "uppist.tech@gmail.com",
+        "displayName": "CC Achukwu",
+        "phone_number": "09017921639"
+      },
+      "booked_status": "PENDING CONFIRMATION",
+      "payment_reference_id": "BOOKING-1718108284150-QMTKMPOhe",
+      "invoice_id": "",
+      "booking_generated_from_invoice": "False",
+      "start_time": "",
+      "end_time": "",
+      "service_details": {
+        "service_id": "6661cad505e4dee5d5793714",
+        "service_name": "Hey",
+        "appointment_type": "Virtual",
+        "date": "2024-06-12",
+        "time": "00:50",
+        "duration": "50 mins",
+        "message": "DND",
+        "file": null,
+        "location": "Anywhere in the world",
+        "created_at": 1718108284473
+      },
+      "_id": "6668407c858361981b3635a1"
+    }
+  }
+]

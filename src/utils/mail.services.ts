@@ -1,6 +1,8 @@
 // import * as postmark from 'postmark';
 import { SendMailClient } from "zeptomail";
 import cron from 'node-cron'
+import fs from 'fs-extra'
+import { BadRequestException } from "@nestjs/common";
 
 // const mail = new postmark.ServerClient('9f332d3f-5c4d-42d5-b4c4-0959b0dd648a');
 
@@ -221,7 +223,7 @@ export async function bookingConfirmed_service_provider(to:string, booking_detai
 export async function SendBookingNotificationEmail_ServiceProvider(to:string, booking_detail: any) {
   return await client.sendMail({
     from: {"address": "support@luround.com", "name": "Luround"},
-    to: [{"email_address": {"address": to,"name": booking_detail.booking_user_info.displayName.split(' ')[0]}}],
+    to: [{"email_address": {"address": to,"name": booking_detail.service_provider_info.displayName }}],
     subject: `Upcoming Appointment`,
     htmlBody: `<p>Hi <b>${booking_detail.service_provider_info.displayName.split(' ')[0]}</b>, </p>
       <p> Your appointment with ${booking_detail.booking_user_info.displayName.split(' ')[0]} is coming up in 24 hours</P>
@@ -235,14 +237,31 @@ export async function SendBookingNotificationEmail_ServiceProvider(to:string, bo
   });
 }
 
+export async function SendBookingNotificationEmail_Client(to:string, booking_detail: any) {
+  return await client.sendMail({
+    from: {"address": "support@luround.com", "name": "Luround"},
+    to: [{"email_address": {"address": to,"name": booking_detail.booking_user_info.displayName.split(' ')[0]}}],
+    subject: `Upcoming Appointment`,
+    htmlBody: `<p>Hi <b>${booking_detail.booking_user_info.displayName.split(' ')[0]}</b>, </p>
+      <p> Your appointment with ${booking_detail.service_provider_info.displayName } is coming up in 24 hours</P>
+      <p> Here’s the breakdown - </p>
+      <p> Service booked: <b>${booking_detail.service_details.service_name}</b> <br>
+      Appointment Time: <b>${booking_detail.service_details.time} </b> <br>
+      Meeting Link: <b>${booking_detail.service_details.meeting_link}</b> <br>
+      Type of booking: <b>${booking_detail.service_details.appointment_type} </b></p>
+      <p>For 24/7 Support: support@luround.com</p>`
+  });
+}
 
+const jobs = []
 
 export async function scheduleEmailCronJob(date:string, booking_detail:any) {
-  const targetDate = new Date(`${date}T00:00:00Z`);
+  const targetDate = new Date(`${date}`)
+  console.log(targetDate)
   targetDate.setDate(targetDate.getDate() - 1);
 
   // Schedule the cron job to run at the target date and time
-  const targetCronTime = `${targetDate.getUTCMinutes()} ${targetDate.getUTCHours()} ${targetDate.getUTCDate()} ${targetDate.getUTCMonth() + 1} *`;
+  const targetCronTime = `${targetDate.getUTCMinutes()} ${targetDate.getUTCHours()} ${targetDate.getUTCDate()} ${targetDate.getUTCMonth() + 1} 0`;
 
   // CALCULATE 1 HOUR 
   // const target_1hrCronTime = `${targetDate.getUTCMinutes()} ${targetDate.getUTCHours()} ${targetDate.getUTCDate()} ${targetDate.getUTCMonth() + 1} *`;
@@ -250,11 +269,45 @@ export async function scheduleEmailCronJob(date:string, booking_detail:any) {
   console.log('Cron schedule:', targetCronTime);
 
   cron.schedule(targetCronTime, async () => {
-    console.log('Running email cron job');
+    console.log('Running email cron job')
     await SendBookingNotificationEmail_ServiceProvider(booking_detail.service_provider_info.email, booking_detail);
-});
+    await SendBookingNotificationEmail_Client(booking_detail.booking_user_info.email, booking_detail)
+  });
+  jobs.push({targetCronTime, booking_detail}) // [ { } ]
+  await persistCronJobs()
 
-console.log('Email cron job scheduled');
+  console.log('Email cron job scheduled');
+}
+
+async function persistCronJobs() {
+  let savedJobs = jobs.map(job => ({
+    date: job.targetCronTime, booking_detail: job.booking_detail
+  }))
+  console.log(savedJobs)
+  fs.writeJson('./savedjobs.json', savedJobs, { spaces: 2})
+  .then(() => {
+    console.log("Success")
+  })
+  .catch((err: any) => {
+    throw new BadRequestException({message: err.message})
+  })
+}
+
+export async function loadCronJobs() {
+  try {
+    const jobConfigs = await fs.readJson('./savedjobs.json');
+    jobConfigs.forEach(async ({ date, booking_detail }) => {
+      cron.schedule(date, async () => {
+        console.log('Running email cron job');
+        await SendBookingNotificationEmail_ServiceProvider(booking_detail.service_provider_info.email, booking_detail);
+        await SendBookingNotificationEmail_Client(booking_detail.booking_user_info.email, booking_detail)
+      });
+    });
+    console.log('Email cron jobs re-scheduled');
+  } catch (error) {
+    console.error('Error loading cron jobs:', error);
+    throw new BadRequestException({message: error.message})
+  }
 }
 
 export async function generateRandomSixDigitNumber(): Promise<number> {

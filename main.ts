@@ -1,6 +1,7 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './src/app.module.js';
-import { InternalServerErrorException, ValidationPipe } from '@nestjs/common';
+import { ValidationPipe } from '@nestjs/common';
+import { loadCronJobs } from './src/utils/mail.services.js';
 
 
 async function bootstrap() {
@@ -8,6 +9,7 @@ async function bootstrap() {
   app.enableCors({origin: "*"})
   app.useGlobalPipes(new ValidationPipe())
   await app.listen(process.env.PORT);
+  await loadCronJobs()
 }
 bootstrap().catch((err: any) => {
   //console.log(err.message)
