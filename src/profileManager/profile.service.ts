@@ -163,12 +163,9 @@ export class ProfileService {
       let userCount = await this.profileManager.userDB.estimatedDocumentCount()
       let getUserNames = await this.profileManager.read(this._udb, email)
       // BUILD THE USER URL 
-      let url = {
-        longURL: `https://luround.com/profile/${getUserNames.displayName.replace(/\s/g, '_')}`,
-        shortURL:  `https://luround.me/${await generateRandomAlphabets(6)}`
-      }
+      let url = `https://luround.com/profile/${getUserNames.displayName.replace(/\s/g, '_')}`
       await this.profileManager.update(this._udb, email, "luround_url", url)
-      return url.shortURL
+      return url
 
     } catch(err: any) {
       throw new BadRequestException({
@@ -194,7 +191,7 @@ export class ProfileService {
   
   async get_user_profile_by_link(url: string) {
 
-    let user = await this.profileManager.findOneDocument(this._udb ,"luround_url.shortURL", url)
+    let user = await this.profileManager.findOneDocument(this._udb ,"luround_url", url)
 
     if (user === null) {
       throw new BadRequestException({

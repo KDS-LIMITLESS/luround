@@ -17,10 +17,7 @@ export class ServicePageManager {
   async add_new_service(user: any, serviceData: ServicePageDto){
     const { userId, email, displayName } = user
     let encryption = new Encrypter(process.env.ENCRYPTION_KEY as string)
-    let service_link = {
-      longURL:`https://luround.com/${serviceData.service_name.replace(/\s/g, "-")}/${encryption.encrypt(userId)}`,
-      shortURL: `luround.com/services/${serviceData.service_name.replace(/\s/g, "&")}/${encryption.encrypt((await generateRandomSixDigitNumber()).toString())}`
-    }
+    let service_link = `https://luround.com/${serviceData.service_name.replace(/\s/g, "-")}/${encryption.encrypt(userId)}`
 
     let service = {
       service_provider_details: { userId, email, displayName },
@@ -172,7 +169,7 @@ export class ServicePageManager {
   async getService(url: string, service_type: string) {
     try {
       //FIND AND RETURN SERVICE
-      let user_url = await this.servicePageManager.findOneDocument(this._udb, "luround_url.shortURL",  url)
+      let user_url = await this.servicePageManager.findOneDocument(this._udb, "luround_url",  url)
       if(user_url !== null) {
         let user_services = await this._spm_db.find({"service_provider_details.userId": user_url._id.toString()}).toArray()
         let services = []
