@@ -55,11 +55,6 @@ export class WalletController {
     return res.status(HttpStatus.OK).json(await this.walletManager.withdraw_funds(req.user, payload))
   }
 
-  @Post('withdraw')
-  async withdraw(@Req() req, @Res() res, @Body() payload: WithdrawDTO) {
-    return res.status(HttpStatus.OK).json(await this.walletManager.transfer(req.user, payload))
-  }
-
   @SkipAuth()
   @Get('get-banks')
   async getBanks(@Req() req, @Res() res) {

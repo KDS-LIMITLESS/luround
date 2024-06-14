@@ -124,6 +124,11 @@ export class PaymentsAPI {
     }
   }
 
+  async verifyTransferWebhook() {
+    
+  }
+
+
   async get_user_subscription_plan(userId: string) {
     let get_user = await this.databaseManager.findOneDocument(this._udb, "_id", userId)
     if (get_user !== null && get_user.payment_details !== undefined) return {subscription_plan : get_user.payment_details.current_plan}
@@ -226,6 +231,72 @@ export class PaymentsAPI {
     return tx_ref;
   }
 
+}
+
+export async function verifyAccountNumber(account_number: string, bank_code: string) {
+  const data = JSON.stringify({
+    'account_number': account_number,
+    'bank_code': bank_code
+  })
+  const options = {
+    hostname: 'api.paystack.co',
+    port: 443,
+    path: `/bank/resolve?account_number=${account_number}&bank_code=${bank_code}`,
+    method: 'GET',
+    headers: {
+      Authorization: `Bearer ${process.env.PAYSTACK_SECRET}`,
+      'Content-Type': 'application/json'
+    }
+  };
+  return await PaymentsAPI.makeRequest(data, options)
+};
+
+
+export async function createTransferRecipient(account_number: string, bank_code: string, name: string) {
+  const data = JSON.stringify({
+    'type': 'nuban',
+    'account_number': account_number,
+    'bank_code': bank_code,
+    'name': name
+  })
+  const options = {
+    hostname: 'api.paystack.co',
+    port: 443,
+    path: `/transferrecipient`,
+    method: 'GET',
+    headers: {
+      Authorization: `Bearer ${process.env.PAYSTACK_SECRET_TEST}`,
+      'Content-Type': 'application/json'
+    }
+  };
+  let response: any = await PaymentsAPI.makeRequest(data, options)
+  return response.data[0].recipient_code
+};
+
+export async function initiateTransferToUserBank(amount: string, recipient_code: string, reference: string, reason: string) {
+  const data = JSON.stringify({
+    'source': 'balance',
+    'amount': amount,
+    'recipient': recipient_code,
+    'reference': reference,
+    'reason': reason
+  })
+  const options = {
+    hostname: 'api.paystack.co',
+    port: 443,
+    path: `/transfer`,
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${process.env.PAYSTACK_SECRET_TEST}`,
+      'Content-Type': 'application/json'
+    }
+  };
+  let response: any = await PaymentsAPI.makeRequest(data, options)
+  return response
+};
+
+export async function verifyTransferStatus(transfer_reference_code: string) {
+  
 }
 
 //   static async initiate_flw_payment(amount: string, req: any, phone_number: string, tx_ref: any, booking_detail: any) {

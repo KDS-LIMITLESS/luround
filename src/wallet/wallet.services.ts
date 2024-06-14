@@ -1,12 +1,13 @@
-import { BadRequestException, Injectable } from "@nestjs/common";
+import { BadGatewayException, BadRequestException, Injectable } from "@nestjs/common";
 import { DatabaseService } from "../store/db.service.js";
 import * as bcrypt from 'bcrypt'
 import ResponseMessages from "../messageConstants.js";
 import { ObjectId } from "mongodb";
 import Flutterwave from 'flutterwave-node-v3';
-import { got } from "got";
 import { WithdrawalFailed, WithdrawalSuccess, generateRandomSixDigitNumber, sendWalletPinResetOTP } from "../utils/mail.services.js";
 import { UserWalletDto, WithdrawDTO } from "./wallet.dto.js";
+import { PaymentsAPI, createTransferRecipient, initiateTransferToUserBank, verifyAccountNumber } from "../payments/paystack.sevices.js";
+import { TransactionsManger } from "../transaction/tansactions.service.js";
 
 const flw = new Flutterwave(process.env.FLW_PUBLIC_KEY, process.env.FLW_SECRET_KEY)
 
@@ -16,15 +17,32 @@ export class WalletService {
   _uWDB = this.databaseManger.userDB;
   _wDB = this.databaseManger.walletDB
 
-  constructor (private databaseManger: DatabaseService) {}
+  constructor (private databaseManger: DatabaseService, private transactions: TransactionsManger) {}
 
-  async add_bank_details(user: any, bank_details: any) {
+  // VALIDATE THE ACCOUNT NUMBER ----->  https://api.paystack.co/bank/resolve?account_number=0001234567&bank_code=058
+  // CALL THE PAYSTACK CREATE TRANSFER RECEIPIENT API HERE AND SAVE THE RECEIPIENT CODE
+  async add_bank_details(user: any, bank_details: UserWalletDto) {
     try {
       const { email} = user
-      await this.databaseManger.updateArr(this._uWDB, 'email', email, "bank_details", [bank_details])
+      let verify_user_account_number: any = await verifyAccountNumber(bank_details.account_number, bank_details.bank_code)
+      if (verify_user_account_number.status !== true) throw new BadRequestException({message: 'Invalid account number or bank not resolved'})
+
+      let recipient_code = await createTransferRecipient(
+        verify_user_account_number.data.account_number, 
+        bank_details.bank_code, 
+        verify_user_account_number.data.account_name
+      )
+      
+      await this.databaseManger.updateArr(this._uWDB, 'email', email, "bank_details", [{
+        account_name: verify_user_account_number.data.account_name,
+        account_number: verify_user_account_number.data.account_number, 
+        recipient_code,
+        bank_code: bank_details.bank_code,
+        country: bank_details.country
+      }])
       return ResponseMessages.WalletDetailAdded
     } catch (err: any) {
-      throw new BadRequestException({message: "An error occured" })
+      throw new BadRequestException({message: err})
     }    
   }
 
@@ -57,10 +75,15 @@ export class WalletService {
 
   async verify_wallet_pin(userId:string, wallet_pin: string) {
     const isUser:any = await this.databaseManger.findOneDocument(this._wDB, '_id',  userId)
-    if (isUser.wallet_pin && await bcrypt.compare(wallet_pin, isUser.wallet_pin)) {
-      return ResponseMessages.Success
+    try {
+      if (isUser.wallet_pin && await bcrypt.compare(wallet_pin, isUser.wallet_pin)) {
+        return ResponseMessages.Success
+      }
+      throw new BadRequestException({message: ResponseMessages.InvalidWalletPin})
+    } catch(err:any) {
+      throw new BadGatewayException({message: err.message})
     }
-    throw new BadRequestException({message: ResponseMessages.InvalidWalletPin})
+    
   }
 
   async get_wallet_balance(userId: string){
@@ -129,72 +152,32 @@ export class WalletService {
     }
   }
   
+  // API FOR INITIATING TRANSFER1
   // wite validations.
   async withdraw_funds(user: any, payload: WithdrawDTO) {
     const {userId, email, displayName} = user
+    await this.verify_wallet_pin(userId, payload.wallet_pin)
     const { wallet_balance } = await this.get_wallet_balance(userId)
     try {
-      // const { wallet_balance } = await this.get_wallet_balance(userId)
       if (wallet_balance >= payload.amount) {
-        await this.verify_wallet_pin(userId, payload.wallet_pin)
-        const response  = await got.post('https://api.flutterwave.com/v3/transfers', {
-          headers: {
-            Authorization: `Bearer ${process.env.FLW_SECRET_KEY}`
-          },
-          json: {
-            account_bank: payload.account_bank,
-            account_number: payload.account_number,
-            amount: payload.amount,
-            currency: "NGN",
-            narration: "Luround Funds Withdrawal",
-            debit_currency: "NGN"
-          }
-        }).json()
-        const responseData = await response
-        await this.deduct_wallet_balance(userId, payload.amount)
-        await WithdrawalSuccess(email, displayName, wallet_balance, payload.amount)
-        console.log(responseData)
-        return responseData
+        // CALL INITIATE TRANSFER FUNCTION
+        let transfer = await initiateTransferToUserBank(payload.amount, payload.recipient_code, payload.reference, payload.reason)
+        console.log(transfer)
+        if (transfer.status === true) {
+          // SAVE TRANSFER REFERENCE AD RECIPIENT CODE TO DB
+          await this.transactions.record_user_transfer_transactions(userId, payload)
+          return 'transfer processing...'
+        }
+        throw new BadRequestException({message: 'Transfer Failed'})
+        // MAKE WEBHOOK FUNCTION FOR VERIFYING TRANSFER STATUS
       } 
-      return new BadRequestException({message: 'Your wallet balance is low'})
+      throw new BadRequestException({message: 'Your wallet balance is low'})
     } catch(err: any) {
       await WithdrawalFailed(email, displayName, wallet_balance, payload.amount)
-      throw new BadRequestException({message: err.message})
+      throw new BadRequestException({message: err})
     }
   }
 
-  async transfer(user: any, payload: any) {
-    const {userId, email, displayName} = user
-    const { wallet_balance } = await this.get_wallet_balance(userId)
-    if (wallet_balance >= payload.amount) {
-      const details = {
-        account_bank: payload.account_bank,
-        account_number: payload.account_number,
-        amount: payload.amount,
-        currency: "NGN",
-        narration: "Luround Funds Withdrawal",
-        //reference: generateTransactionReference(),
-      };
-      let transfer = await flw.Transfer.initiate(details)
-      if(transfer.status === "success") {
-        await this.deduct_wallet_balance(userId, payload.amount)
-        await WithdrawalSuccess(email, displayName, wallet_balance, payload.amount)
-        return transfer
-      }
-      throw new BadRequestException({mesage: transfer.message})
-
-    }
-    //     .then(async () => {
-    //       
-    //       console.log(details)
-    //       return details
-    //     })
-    //     .catch((err: any) => {return err.message});
-    // }
-
-  }
-    
-    
   // on successful balance withdrawal    (Transfer API), deduct wallet balance.
   // on successful payment verification (Verify Payments API) increase wallet balance.
 }

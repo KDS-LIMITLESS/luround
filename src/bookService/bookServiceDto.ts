@@ -28,6 +28,9 @@ export class BookServiceDto {
   file? : File
 
   @IsOptional()
+  service_fee : string
+
+  @IsOptional()
   message: string 
 
   @IsNotEmpty()

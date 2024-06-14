@@ -1,7 +1,8 @@
 import { Body, Controller, Get, HttpStatus, Param, Post, Query, Req, Res } from "@nestjs/common";
 import { Request, Response } from "express";
-import { PaymentsAPI } from "../payments/paystack.sevices.js";
+import { PaymentsAPI, verifyAccountNumber } from "../payments/paystack.sevices.js";
 import { SkipAuth } from "../auth/jwt.strategy.js";
+import crypto from 'crypto'
 
 @Controller('api/v1/payments')
 export class Payments {
@@ -20,9 +21,31 @@ export class Payments {
   }
 
   @SkipAuth()
+  @Get('verify-account-number')
+  async verifyAccountNumber(@Req() req, @Body() body: any, @Res() res: Response) {
+    return res.status(200).json(await verifyAccountNumber(body.account_number, body.bank_code))
+  }
+
+  @SkipAuth()
   @Get('verify-booking-payment')
   async verifyBookingPayments(@Req() req, @Query() query: any, @Res() res: Response) {
     return res.status(200).json(await this.paymentManager.verifyBookingPayment(query.transaction_ref))
+  }
+
+  @SkipAuth()
+  @Post('verify-transfer')
+  async transferWebhook(@Req() req, @Res() res: Response) {
+     //validate event
+     let secret = process.env.PAYSTACK_SECRET
+     const hash = crypto.createHmac('sha512', secret).update(JSON.stringify(req.body)).digest('hex');
+    if (hash == req.headers['x-paystack-signature']) {
+      // Retrieve the request's body
+      const event = req.body;
+      console.log(event)
+      // Do something with event  
+      return res.status(200)
+    }
+    return res.status(400)
   }
 
   // @Get('initialize-flw-payment')
