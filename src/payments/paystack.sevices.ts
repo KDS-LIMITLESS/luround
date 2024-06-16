@@ -246,7 +246,6 @@ export async function verifyAccountNumber(account_number: string, bank_code: str
     'account_number': account_number,
     'bank_code': bank_code
   })
-  console.log(data)
   const options = {
     hostname: 'api.paystack.co',
     port: 443,
@@ -257,7 +256,8 @@ export async function verifyAccountNumber(account_number: string, bank_code: str
       'Content-Type': 'application/json'
     }
   };
-  return await PaymentsAPI.makeRequest(data, options)
+  let response: any = await PaymentsAPI.makeRequest(data, options)
+  return response
 };
 
 
@@ -268,7 +268,6 @@ export async function createTransferRecipient(account_number: string, bank_code:
     'bank_code': bank_code,
     'name': name
   });
-  console.log(data)
   const options = {
     hostname: 'api.paystack.co',
     port: 443,
@@ -284,7 +283,7 @@ export async function createTransferRecipient(account_number: string, bank_code:
     return response;
 
   } catch (err) {
-    throw new BadRequestException({message: err})
+    throw new BadRequestException({message: err.message})
   }
   
 }
