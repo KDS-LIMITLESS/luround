@@ -26,7 +26,6 @@ export class WalletService {
       const { email} = user
 
       let verify_user_account_number: any = await verifyAccountNumber(bank_details.account_number, bank_details.bank_code)
-      console.log(verify_user_account_number)
       if (verify_user_account_number.status !== true) throw new BadRequestException({message: 'Invalid account number or bank not resolved'})
 
       let recipient_code = await createTransferRecipient(

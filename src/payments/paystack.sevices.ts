@@ -275,7 +275,7 @@ export async function createTransferRecipient(account_number: string, bank_code:
     }
   };
   let response: any = await PaymentsAPI.makeRequest(data, options)
-  return response.data[0].recipient_code
+  return response.data.recipient_code
 };
 
 export async function initiateTransferToUserBank(amount: string, recipient_code: string, reference: string, reason: string) {
