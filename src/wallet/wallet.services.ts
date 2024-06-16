@@ -167,7 +167,12 @@ export class WalletService {
         if (transfer.status === true) {
           // SAVE TRANSFER REFERENCE AD RECIPIENT CODE TO DB
           await this.transactions.record_user_transfer_transactions(userId, payload, transfer.data.transfer_code)
-          return 'transfer processing...'
+          return {
+            transaction_ref: transfer.data.reference,
+            transaction_date: transfer.data.createdAt,
+            transaction_time: transfer.data.updatedAt,
+            message: "Transfer Processing..."
+          }
         }
         throw new BadRequestException({message: 'Transfer Failed'})
         // MAKE WEBHOOK FUNCTION FOR VERIFYING TRANSFER STATUS

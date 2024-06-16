@@ -265,7 +265,7 @@ export async function createTransferRecipient(account_number: string, bank_code:
     path: `/transferrecipient`,
     method: 'GET',
     headers: {
-      Authorization: `Bearer ${process.env.PAYSTACK_SECRET}`,
+      Authorization: `Bearer ${process.env.PAYSTACK_SECRET_TEST}`,
       'Content-Type': 'application/json'
     }
   };
@@ -287,12 +287,17 @@ export async function initiateTransferToUserBank(amount: string, recipient_code:
     path: `/transfer`,
     method: 'POST',
     headers: {
-      Authorization: `Bearer ${process.env.PAYSTACK_SECRET}`,
+      Authorization: `Bearer ${process.env.PAYSTACK_SECRET_TEST}`,
       'Content-Type': 'application/json'
     }
   };
-  let response: any = await PaymentsAPI.makeRequest(data, options)
-  return response
+  try {
+    let response: any = await PaymentsAPI.makeRequest(data, options)
+    response
+  } catch (err: any) {
+    throw new BadRequestException({message: err.code})
+  }
+  return 
 };
 
 export async function verifyTransferStatus(transfer_reference_code: string) {
