@@ -176,7 +176,7 @@ export class PaymentsAPI {
   }
   
   
-  static async  makeRequest(data: any, options: any) {
+  static async makeRequest(data: any, options: any) {
     try {
       return new Promise((resolve, reject) => {
         const req = request(options, (res) => {
@@ -310,7 +310,7 @@ export async function initiateTransferToUserBank(amount: string, recipient_code:
   };
   try {
     let response: any = await PaymentsAPI.makeRequest(data, options)
-    return response
+    return response.data
   } catch (err: any) {
     throw new BadRequestException({message: err.code})
   }

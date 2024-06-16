@@ -1,6 +1,6 @@
 import { Body, Controller, Get, HttpStatus, Param, Post, Query, Req, Res } from "@nestjs/common";
 import { Request, Response } from "express";
-import { PaymentsAPI, verifyAccountNumber } from "../payments/paystack.sevices.js";
+import { PaymentsAPI, createTransferRecipient, verifyAccountNumber } from "../payments/paystack.sevices.js";
 import { SkipAuth } from "../auth/jwt.strategy.js";
 import crypto from 'crypto'
 
@@ -64,6 +64,11 @@ export class Payments {
   @Get('payment-history')
   async userPaymentHistory(@Req() req, @Res() res: Response) {
     return res.status(200).json(await this.paymentManager.get_user_payment_history(req.user.userId))
+  }
+  
+  @Post('transfer-recipient')
+  async ransfer(@Req() req, @Res() res: Response, @Body() body) {
+    return res.status(200).json(await createTransferRecipient(body.account_number, body.bank_code, body.name))
   }
 
   @SkipAuth()
