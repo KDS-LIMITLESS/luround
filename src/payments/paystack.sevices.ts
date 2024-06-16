@@ -263,6 +263,7 @@ export async function createTransferRecipient(account_number: string, bank_code:
     'bank_code': bank_code,
     'name': name
   })
+  console.log(data)
   const options = {
     hostname: 'api.paystack.co',
     port: 443,
@@ -274,7 +275,6 @@ export async function createTransferRecipient(account_number: string, bank_code:
     }
   };
   let response: any = await PaymentsAPI.makeRequest(data, options)
-  console.log(response)
   return response.data[0].recipient_code
 };
 
