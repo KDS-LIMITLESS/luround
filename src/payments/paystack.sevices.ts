@@ -293,11 +293,10 @@ export async function initiateTransferToUserBank(amount: string, recipient_code:
   };
   try {
     let response: any = await PaymentsAPI.makeRequest(data, options)
-    response
+    return response
   } catch (err: any) {
     throw new BadRequestException({message: err.code})
   }
-  return 
 };
 
 export async function verifyTransferStatus(transfer_reference_code: string) {
