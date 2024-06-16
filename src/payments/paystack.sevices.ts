@@ -175,33 +175,37 @@ export class PaymentsAPI {
     return user_payments ? user_payments.payment_info : []
   }
   
-  static async makeRequest(data: any, options: {}) {
+  
+  static async  makeRequest(data: any, options: any) {
     try {
-      return new Promise(function(resolve, reject) {
-        const req = request(options, function (res) {
+      return new Promise((resolve, reject) => {
+        const req = request(options, (res) => {
           let responseData = '';
-      
+
           res.on('data', (chunk) => {
             responseData += chunk;
           });
-      
+
           res.on('end', () => {
-            const parsedData = JSON.parse(responseData);
-            resolve(parsedData); 
+            try {
+              const parsedData = JSON.parse(responseData);
+              resolve(parsedData);
+            } catch (error) {
+              reject(new Error('Invalid JSON response'));
+            }
           });
-      
         }).on('error', (error) => {
-          reject(error); 
-          throw new BadRequestException({
+          reject(new BadRequestException({
             statusCode: 400,
             message: error.message
-          })
+          }));
         });
+
         req.write(data);
-        req.end();  
-      })
-    } catch(err: any) {
-      throw new BadRequestException({message: err.message})
+        req.end();
+      });
+    } catch (err) {
+      throw new BadRequestException({ message: err.message });
     }
   }
 
@@ -262,7 +266,7 @@ export async function createTransferRecipient(account_number: string, bank_code:
     'account_number': account_number,
     'bank_code': bank_code,
     'name': name
-  })
+  });
 
   const options = {
     hostname: 'api.paystack.co',
@@ -274,9 +278,10 @@ export async function createTransferRecipient(account_number: string, bank_code:
       'Content-Type': 'application/json'
     }
   };
-  let response: any = await PaymentsAPI.makeRequest(data, options)
-  return response
-};
+
+  let response: any = await PaymentsAPI.makeRequest(data, options);
+  return response;
+}
 
 export async function initiateTransferToUserBank(amount: string, recipient_code: string, reference: string, reason: string) {
   const data = JSON.stringify({
