@@ -263,12 +263,12 @@ export async function createTransferRecipient(account_number: string, bank_code:
     'bank_code': bank_code,
     'name': name
   })
-  console.log(data)
+
   const options = {
     hostname: 'api.paystack.co',
     port: 443,
     path: `/transferrecipient`,
-    method: 'GET',
+    method: 'POST',
     headers: {
       Authorization: `Bearer ${process.env.PAYSTACK_SECRET_TEST}`,
       'Content-Type': 'application/json'
