@@ -3,7 +3,7 @@ import { IsNotEmpty, IsNumber, IsOptional, IsString } from "class-validator";
 export class UserWalletDto {
 
   @IsString()
-  @IsNotEmpty()
+  @IsOptional()
   account_name: string
 
   @IsString()
@@ -11,7 +11,7 @@ export class UserWalletDto {
   account_number: string
 
   @IsString()
-  @IsNotEmpty()
+  @IsOptional()
   bank_name: string
 
   @IsNotEmpty()
