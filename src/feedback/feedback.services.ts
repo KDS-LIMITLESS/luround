@@ -1,7 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import ResponseMessages from "../messageConstants.js";
 import { DatabaseService } from "../store/db.service.js";
-import { SendFeedBackEmail } from "src/utils/mail.services.js";
+import { SendFeedBackEmail } from "../utils/mail.services.js";
 
 
 @Injectable()
