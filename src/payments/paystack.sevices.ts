@@ -47,7 +47,7 @@ export class PaymentsAPI {
       path: `/transaction/verify/${transaction_ref}`,
       method: 'GET',
       headers: {
-        Authorization: `Bearer ${process.env.PAYSTACK_SECRET}`,
+        Authorization: `Bearer ${process.env.PAYSTACK_SECRET_TEST}`,
         'Content-Type': 'application/json'
       }
     }    
@@ -89,7 +89,7 @@ export class PaymentsAPI {
       path: `/transaction/verify/${transaction_ref}`,
       method: 'GET',
       headers: {
-        Authorization: `Bearer ${process.env.PAYSTACK_SECRET}`,
+        Authorization: `Bearer ${process.env.PAYSTACK_SECRET_TEST}`,
         'Content-Type': 'application/json'
       }
     }    
@@ -248,7 +248,7 @@ export async function verifyAccountNumber(account_number: string, bank_code: str
     path: `/bank/resolve?account_number=${account_number}&bank_code=${bank_code}`,
     method: 'GET',
     headers: {
-      Authorization: `Bearer ${process.env.PAYSTACK_SECRET}`,
+      Authorization: `Bearer ${process.env.PAYSTACK_SECRET_TEST}`,
       'Content-Type': 'application/json'
     }
   };
