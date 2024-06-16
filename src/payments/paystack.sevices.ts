@@ -189,7 +189,6 @@ export class PaymentsAPI {
           res.on('end', () => {
             try {
               const parsedData = JSON.parse(responseData);
-              console.log('ParsedData:', parsedData)
               resolve(parsedData);
             } catch (error) {
               reject(new Error('Invalid JSON response'));
@@ -268,7 +267,7 @@ export async function createTransferRecipient(account_number: string, bank_code:
     'bank_code': bank_code,
     'name': name
   });
-
+  console.log(data)
   const options = {
     hostname: 'api.paystack.co',
     port: 443,
