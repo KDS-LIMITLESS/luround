@@ -278,9 +278,14 @@ export async function createTransferRecipient(account_number: string, bank_code:
       'Content-Type': 'application/json'
     }
   };
-
-  let response: any = await PaymentsAPI.makeRequest(data, options);
-  return response;
+  try {
+    let response: any = await PaymentsAPI.makeRequest(data, options);
+    return response;
+  } catch (err) {
+    console.log(err)
+    throw new BadRequestException({message: err})
+  }
+  
 }
 
 export async function initiateTransferToUserBank(amount: string, recipient_code: string, reference: string, reason: string) {
