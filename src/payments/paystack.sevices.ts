@@ -186,7 +186,6 @@ export class PaymentsAPI {
           });
       
           res.on('end', () => {
-            console.log(responseData)
             const parsedData = JSON.parse(responseData);
             resolve(parsedData); 
           });
@@ -269,7 +268,7 @@ export async function createTransferRecipient(account_number: string, bank_code:
     hostname: 'api.paystack.co',
     port: 443,
     path: `/transferrecipient`,
-    method: 'POST',
+    method: 'GET',
     headers: {
       Authorization: `Bearer ${process.env.PAYSTACK_SECRET_TEST}`,
       'Content-Type': 'application/json'
