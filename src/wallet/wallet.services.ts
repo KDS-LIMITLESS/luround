@@ -24,7 +24,7 @@ export class WalletService {
   async add_bank_details(user: any, bank_details: UserWalletDto) {
     try {
       const { email} = user
-      
+
       let verify_user_account_number: any = await verifyAccountNumber(bank_details.account_number, bank_details.bank_code)
       if (verify_user_account_number.status !== true) throw new BadRequestException({message: 'Invalid account number or bank not resolved'})
 
@@ -163,7 +163,7 @@ export class WalletService {
       if (wallet_balance >= payload.amount) {
         // CALL INITIATE TRANSFER FUNCTION
         let transfer = await initiateTransferToUserBank(payload.amount, payload.recipient_code, payload.reference, payload.reason)
-        console.log(transfer)
+
         if (transfer.status === true) {
           // SAVE TRANSFER REFERENCE AD RECIPIENT CODE TO DB
           await this.transactions.record_user_transfer_transactions(userId, payload, transfer.data.transfer_code)

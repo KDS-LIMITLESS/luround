@@ -17,7 +17,7 @@ export class BookServiceDto {
   @IsNotEmpty()
   phone_number: string
 
-  payment_proof: string
+  payment_reference: string
   
   displayName: string
 

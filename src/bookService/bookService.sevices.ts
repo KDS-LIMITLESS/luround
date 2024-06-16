@@ -58,8 +58,7 @@ export class BookingsManager {
           phone_number: bookingDetail.phone_number 
         },
         booked_status: "PENDING CONFIRMATION",
-        payment_reference_id: transaction_ref || tx_ref,
-        payment_proof: bookingDetail.payment_proof,
+        payment_reference_id: transaction_ref || bookingDetail.payment_reference,
         invoice_id: invoice_id || "",
         booking_generated_from_invoice: booking_generated_from_invoice || "False",
         start_time: "",

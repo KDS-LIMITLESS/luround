@@ -55,21 +55,21 @@ export class WalletController {
     return res.status(HttpStatus.OK).json(await this.walletManager.withdraw_funds(req.user, payload))
   }
 
-  @SkipAuth()
-  @Get('get-banks')
-  async getBanks(@Req() req, @Res() res) {
-    const response = await got.get('https://api.flutterwave.com/v3/banks/NG', {
-      headers: {
-        Authorization: `Bearer ${process.env.FLW_SECRET_KEY}`
-      },
-    })
-    return res.status(HttpStatus.OK).json(JSON.parse(response.body))
-  }
+  // @SkipAuth()
+  // @Get('get-banks')
+  // async getBanks(@Req() req, @Res() res) {
+  //   const response = await got.get('https://api.flutterwave.com/v3/banks/NG', {
+  //     headers: {
+  //       Authorization: `Bearer ${process.env.FLW_SECRET_KEY}`
+  //     },
+  //   })
+  //   return res.status(HttpStatus.OK).json(JSON.parse(response.body))
+  // }
 
-  @Post('deduct-wallet-balance')
-  async deductWalletBalance(@Req() req, @Res() res, @Body() payload) {
-    return res.status(HttpStatus.OK).json(await this.walletManager.deduct_wallet_balance(req.user.userId, payload.amount))
-  }
+  // @Post('deduct-wallet-balance')
+  // async deductWalletBalance(@Req() req, @Res() res, @Body() payload) {
+  //   return res.status(HttpStatus.OK).json(await this.walletManager.deduct_wallet_balance(req.user.userId, payload.amount))
+  // }
 
   @Get('balance')
   async getWalletBalance(@Req() req, @Res() res) {

@@ -253,6 +253,16 @@ export async function SendBookingNotificationEmail_Client(to:string, booking_det
   });
 }
 
+export async function SendFeedBackEmail(from:string, name: string, subject: string, description: string) {
+  return await client.sendMail({
+    from: {"address": from, "name": name},
+    to: [{"email_address": {"address": "support@luround.com","name": "Luround"}}],
+    subject: subject,
+    htmlBody: `<p>${description} </p>`
+  });
+}
+
+
 const jobs = []
 
 export async function scheduleEmailCronJob(date:string, booking_detail:any) {
