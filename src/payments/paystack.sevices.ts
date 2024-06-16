@@ -280,11 +280,10 @@ export async function createTransferRecipient(account_number: string, bank_code:
     }
   };
   try {
-    console.log('m here')
     let response: any = await PaymentsAPI.makeRequest(data, options);
     return response;
+
   } catch (err) {
-    console.log(err)
     throw new BadRequestException({message: err})
   }
   
