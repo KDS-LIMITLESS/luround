@@ -246,6 +246,7 @@ export async function verifyAccountNumber(account_number: string, bank_code: str
     'account_number': account_number,
     'bank_code': bank_code
   })
+  console.log(data)
   const options = {
     hostname: 'api.paystack.co',
     port: 443,
