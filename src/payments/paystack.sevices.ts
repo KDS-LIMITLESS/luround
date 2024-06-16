@@ -176,29 +176,33 @@ export class PaymentsAPI {
   }
   
   static async makeRequest(data: any, options: {}) {
-    return new Promise(function(resolve, reject) {
-      const req = request(options, function (res) {
-        let responseData = '';
-    
-        res.on('data', (chunk) => {
-          responseData += chunk;
+    try {
+      return new Promise(function(resolve, reject) {
+        const req = request(options, function (res) {
+          let responseData = '';
+      
+          res.on('data', (chunk) => {
+            responseData += chunk;
+          });
+      
+          res.on('end', () => {
+            const parsedData = JSON.parse(responseData);
+            resolve(parsedData); 
+          });
+      
+        }).on('error', (error) => {
+          reject(error); 
+          throw new BadRequestException({
+            statusCode: 400,
+            message: error.message
+          })
         });
-    
-        res.on('end', () => {
-          const parsedData = JSON.parse(responseData);
-          resolve(parsedData); 
-        });
-    
-      }).on('error', (error) => {
-        reject(error); 
-        throw new BadRequestException({
-          statusCode: 400,
-          message: error.message
-        })
-      });
-      req.write(data);
-      req.end();  
-    })
+        req.write(data);
+        req.end();  
+      })
+    } catch(err: any) {
+      throw new BadRequestException({message: err.message})
+    }
   }
 
   static async create_monthly_payment_plan() {
