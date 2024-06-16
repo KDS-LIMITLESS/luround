@@ -186,6 +186,7 @@ export class PaymentsAPI {
           });
       
           res.on('end', () => {
+            console.log(responseData)
             const parsedData = JSON.parse(responseData);
             resolve(parsedData); 
           });
