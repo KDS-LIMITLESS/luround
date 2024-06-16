@@ -257,7 +257,7 @@ export async function verifyAccountNumber(account_number: string, bank_code: str
     }
   };
   let response: any = await PaymentsAPI.makeRequest(data, options)
-  return response
+  return response.data
 };
 
 

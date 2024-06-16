@@ -32,9 +32,9 @@ export class WalletService {
       }
       console.log('Creating transfer recipient code')
       let recipient_code = await createTransferRecipient(
-        verify_user_account_number.data.account_number, 
+        verify_user_account_number.account_number, 
         bank_details.bank_code, 
-        verify_user_account_number.data.account_name
+        verify_user_account_number.account_name
       )
       
       await this.databaseManger.updateArr(this._uWDB, 'email', email, "bank_details", [{
