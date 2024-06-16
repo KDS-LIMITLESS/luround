@@ -274,6 +274,7 @@ export async function createTransferRecipient(account_number: string, bank_code:
     }
   };
   let response: any = await PaymentsAPI.makeRequest(data, options)
+  console.log(response)
   return response.data[0].recipient_code
 };
 
