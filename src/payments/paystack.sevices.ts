@@ -265,7 +265,7 @@ export async function createTransferRecipient(account_number: string, bank_code:
     path: `/transferrecipient`,
     method: 'GET',
     headers: {
-      Authorization: `Bearer ${process.env.PAYSTACK_SECRET_TEST}`,
+      Authorization: `Bearer ${process.env.PAYSTACK_SECRET}`,
       'Content-Type': 'application/json'
     }
   };
@@ -287,7 +287,7 @@ export async function initiateTransferToUserBank(amount: string, recipient_code:
     path: `/transfer`,
     method: 'POST',
     headers: {
-      Authorization: `Bearer ${process.env.PAYSTACK_SECRET_TEST}`,
+      Authorization: `Bearer ${process.env.PAYSTACK_SECRET}`,
       'Content-Type': 'application/json'
     }
   };
