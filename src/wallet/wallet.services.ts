@@ -27,11 +27,12 @@ export class WalletService {
 
       let verify_user_account_number: any = await verifyAccountNumber(bank_details.account_number, bank_details.bank_code)
       if (verify_user_account_number.status !== true) throw new BadRequestException({message: 'Invalid account number or bank not resolved'})
+      let account_name = verify_user_account_number.data.account_name
 
       let recipient_code = await createTransferRecipient(
-        verify_user_account_number.data.account_number, 
+        bank_details.account_number,
         bank_details.bank_code, 
-        verify_user_account_number.data.account_name
+        account_name
       )
       
       await this.databaseManger.updateArr(this._uWDB, 'email', email, "bank_details", [{
