@@ -37,7 +37,7 @@ export class WalletService {
       await this.databaseManger.updateArr(this._uWDB, 'email', email, "bank_details", [{
         account_name: verify_user_account_number.data.account_name,
         account_number: verify_user_account_number.data.account_number, 
-        recipient_code,
+        recipient_code: recipient_code.data.recipient_code,
         bank_code: bank_details.bank_code,
         country: bank_details.country
       }])

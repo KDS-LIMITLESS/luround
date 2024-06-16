@@ -11,7 +11,6 @@ export class WalletController {
 
   @Post('add-bank-details')
   async addBankDetails(@Req() req, @Res() res, @Body() payload: UserWalletDto ) {
-    console.log(req.user, payload)
     return res.status(HttpStatus.OK).json(await this.walletManager.add_bank_details(req.user, payload))
   }
 
