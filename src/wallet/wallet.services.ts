@@ -24,23 +24,21 @@ export class WalletService {
   async add_bank_details(user: any, bank_details: UserWalletDto) {
     try {
       const { email} = user
-
       let verify_user_account_number: any = await verifyAccountNumber(bank_details.account_number, bank_details.bank_code)
-      console.log(verify_user_account_number)
+
       if (verify_user_account_number.status !== true) {
         throw new BadRequestException({message: 'Invalid account number or bank not resolved'})
       }
-      console.log('Creating transfer recipient code')
-      let recipient_code = await createTransferRecipient(
-        verify_user_account_number.account_number, 
-        bank_details.bank_code, 
-        verify_user_account_number.account_name
-      )
       
+      let recipient_code = await createTransferRecipient(
+        verify_user_account_number.data.account_number, 
+        bank_details.bank_code, 
+        verify_user_account_number.data.account_name
+      )
       await this.databaseManger.updateArr(this._uWDB, 'email', email, "bank_details", [{
         account_name: verify_user_account_number.data.account_name,
         account_number: verify_user_account_number.data.account_number, 
-        recipient_code: recipient_code.recipient_code,
+        recipient_code: recipient_code.data.recipient_code,
         bank_code: bank_details.bank_code,
         country: bank_details.country
       }])

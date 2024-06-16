@@ -257,7 +257,7 @@ export async function verifyAccountNumber(account_number: string, bank_code: str
     }
   };
   let response: any = await PaymentsAPI.makeRequest(data, options)
-  return response.data
+  return response
 };
 
 
@@ -282,7 +282,7 @@ export async function createTransferRecipient(account_number: string, bank_code:
     let response: any = await PaymentsAPI.makeRequest(data, options);
     return response;
 
-  } catch (err) {
+  } catch (err: any) {
     throw new BadRequestException({message: err.message})
   }
   
