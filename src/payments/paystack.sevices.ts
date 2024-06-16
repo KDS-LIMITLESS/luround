@@ -189,6 +189,7 @@ export class PaymentsAPI {
           res.on('end', () => {
             try {
               const parsedData = JSON.parse(responseData);
+              console.log('ParsedData:', parsedData)
               resolve(parsedData);
             } catch (error) {
               reject(new Error('Invalid JSON response'));
@@ -280,6 +281,7 @@ export async function createTransferRecipient(account_number: string, bank_code:
   };
   try {
     let response: any = await PaymentsAPI.makeRequest(data, options);
+    console.log(response)
     return response;
   } catch (err) {
     console.log(err)
