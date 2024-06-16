@@ -165,7 +165,7 @@ export class WalletService {
         console.log(transfer)
         if (transfer.status === true) {
           // SAVE TRANSFER REFERENCE AD RECIPIENT CODE TO DB
-          await this.transactions.record_user_transfer_transactions(userId, payload)
+          await this.transactions.record_user_transfer_transactions(userId, payload, transfer.data.transfer_code)
           return 'transfer processing...'
         }
         throw new BadRequestException({message: 'Transfer Failed'})

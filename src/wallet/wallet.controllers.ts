@@ -52,6 +52,7 @@ export class WalletController {
 
   @Post('withdraw-funds')
   async withdrawFund(@Req() req, @Res() res, @Body() payload: WithdrawDTO) {
+    console.log(req)
     return res.status(HttpStatus.OK).json(await this.walletManager.withdraw_funds(req.user, payload))
   }
 

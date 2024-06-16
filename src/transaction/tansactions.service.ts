@@ -32,15 +32,16 @@ export class TransactionsManger {
     return ResponseMessages.TransactionRecorded
   }
 
-  async record_user_transfer_transactions(userId: string, payload: any) {
+  async record_user_transfer_transactions(userId: string, payload: any, transfer_code:string) {
     let dt = new Date()
     let transfers = {
       reference: payload.reference,
       recipient_code: payload.recipient_code,
-      reason: payload.reason,
+      reason: payload.reason || '',
+      transfer_code,
       amount: payload.amount,
       transfer_status: "PENDING",
-      transfer_date: Date.now(),
+      transfer_date: `${dt.getDate()}/${dt.getMonth()}/${dt.getFullYear()}`,
       transfer_time: dt.getHours() + ":" + dt.getMinutes() + ":" + dt.getSeconds()
     }
     let find_user_transactions = await this.databaseManger.findOneDocument(this._tDB, "_id", userId)
