@@ -14,14 +14,14 @@ export enum BookingGeneratedFromInvoice {
 
 export class BookServiceDto {
 
-  @IsNotEmpty()
+  @IsOptional()
   phone_number: string
 
   payment_reference: string
   
   displayName: string
 
-  @IsNotEmpty() @IsEnum(AppointmentTypes)
+  @IsOptional() @IsEnum(AppointmentTypes)
   appointment_type: string
 
   @IsOptional()
@@ -33,16 +33,16 @@ export class BookServiceDto {
   @IsOptional()
   message: string 
 
-  @IsNotEmpty()
+  @IsOptional()
   date: any
 
-  @IsNotEmpty()
+  @IsOptional()
   time: string
 
-  @IsNotEmpty()
+  @IsOptional()
   duration: string
 
-  @IsNotEmpty()
+  @IsOptional()
   location: string
 
   @IsMongoId()
