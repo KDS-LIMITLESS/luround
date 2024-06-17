@@ -264,9 +264,9 @@ export async function verifyAccountNumber(account_number: string, bank_code: str
 export async function createTransferRecipient(account_number: string, bank_code: string, name: string) {
   const data = JSON.stringify({
     'type': 'nuban',
-    'account_number': account_number,
-    'bank_code': bank_code,
-    'name': name
+    'account_number': `${account_number}`,
+    'bank_code': `${bank_code}`,
+    'name': `${name}`
   });
   const options = {
     hostname: 'api.paystack.co',
