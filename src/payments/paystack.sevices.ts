@@ -156,9 +156,10 @@ export class PaymentsAPI {
           account_number: response.data.details.account_number, 
           recipient_code: response.data.recipient_code,
           bank_code: response.data.details.bank_code,
-          country: response.data.currency
+          country: response.data.currency,
+          bank_name: response.data.details.bank_name
         }])
-      return ResponseMessages.WalletDetailAdded
+      return {bank_details: response.data.details, recipient_code: response.data.recipient_code}
       }
       throw new BadRequestException({message: response.message})
     } catch (err: any) {
