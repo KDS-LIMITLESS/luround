@@ -6,6 +6,7 @@ import { sendPaymentSuccessMail } from "../utils/mail.services.js";
 import { ObjectId } from "mongodb";
 import ResponseMessages from "../messageConstants.js";
 import { WalletService } from "../wallet/wallet.services.js";
+import { error } from "console";
 
 const flw = new Flutterwave(process.env.FLW_PUBLIC_KEY, process.env.FLW_SECRET_KEY)
 
@@ -17,6 +18,7 @@ export class PaymentsAPI {
   _idb = this.databaseManager.invoiceDB
   _udb = this.databaseManager.userDB
   _spm = this.databaseManager.servicePaymentDB
+  _uWDB = this.databaseManager.userDB;
 
   constructor(private databaseManager: DatabaseService, private walletService: WalletService) {}
 
@@ -128,6 +130,42 @@ export class PaymentsAPI {
     
   }
 
+  async createTransferRecipient(email: string, account_number: string, bank_code: string, name: string) {
+    const data = JSON.stringify({
+      'type': 'nuban',
+      'account_number': `${account_number}`,
+      'bank_code': `${bank_code}`,
+      'name': `${name}`
+    });
+    const options = {
+      hostname: 'api.paystack.co',
+      port: 443,
+      path: `/transferrecipient`,
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${process.env.PAYSTACK_SECRET_TEST}`,
+        'Content-Type': 'application/json'
+      }
+    };
+    try {
+      let response: any = await PaymentsAPI.makeRequest(data, options);
+      console.log(response)
+      if (response.status === true) {
+        await this.databaseManager.updateArr(this._uWDB, 'email', email, "bank_details", [{
+          account_name: response.data.details.account_name,
+          account_number: response.data.details.account_number, 
+          recipient_code: response.data.recipient_code,
+          bank_code: response.data.details.bank_code,
+          country: response.data.currency
+        }])
+      return ResponseMessages.WalletDetailAdded
+      }
+      throw new BadRequestException({message: response.message})
+    } catch (err: any) {
+      throw new BadRequestException({message: err.message})
+    }
+  }
+
 
   async get_user_subscription_plan(userId: string) {
     let get_user = await this.databaseManager.findOneDocument(this._udb, "_id", userId)
@@ -185,7 +223,7 @@ export class PaymentsAPI {
           res.on('data', (chunk) => {
             responseData += chunk;
           });
-
+          
           res.on('end', () => {
             try {
               const parsedData = JSON.parse(responseData);
@@ -261,32 +299,7 @@ export async function verifyAccountNumber(account_number: string, bank_code: str
 };
 
 
-export async function createTransferRecipient(account_number: string, bank_code: string, name: string) {
-  const data = JSON.stringify({
-    'type': 'nuban',
-    'account_number': `${account_number}`,
-    'bank_code': `${bank_code}`,
-    'name': `${name}`
-  });
-  const options = {
-    hostname: 'api.paystack.co',
-    port: 443,
-    path: `/transferrecipient`,
-    method: 'POST',
-    headers: {
-      Authorization: `Bearer ${process.env.PAYSTACK_SECRET_TEST}`,
-      'Content-Type': 'application/json'
-    }
-  };
-  try {
-    let response: any = await PaymentsAPI.makeRequest(data, options);
-    return response;
 
-  } catch (err: any) {
-    throw new BadRequestException({message: err.message})
-  }
-  
-}
 
 export async function initiateTransferToUserBank(amount: string, recipient_code: string, reference: string, reason: string) {
   const data = JSON.stringify({
