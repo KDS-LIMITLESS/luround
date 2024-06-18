@@ -36,8 +36,9 @@ export class Payments {
   @Post('verify-transfer')
   async transferWebhook(@Req() req, @Res() res: Response) {
      //validate event
-     let secret = process.env.PAYSTACK_SECRET
+     let secret = process.env.PAYSTACK_SECRET_TEST
      const hash = crypto.createHmac('sha512', secret).update(JSON.stringify(req.body)).digest('hex');
+     console.log(hash)
     if (hash == req.headers['x-paystack-signature']) {
       // Retrieve the request's body
       const event = req.body;

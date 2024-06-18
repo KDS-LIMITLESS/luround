@@ -33,6 +33,9 @@ export class BookingsManager {
   // Increase price based on the service duration
   async book_service(bookingDetail: BookServiceDto, serviceID: string, user: any, invoice_id?:string, amount_paid?: string, transaction_ref?: string, due_date?: string, note?: string, booking_generated_from_invoice?: string) {
     try {
+      if (bookingDetail.payment_reference === ''){
+        throw new BadRequestException({message: 'Please ensure you complete the payment for this service.'})
+      }
       // GET UNIQUE TRANSACTION REFERENCE CODE
       let tx_ref = await this.paymentsManager.generateUniqueTransactionCode("BOOKING")
 
@@ -42,7 +45,7 @@ export class BookingsManager {
       // CHECK IF USER IS TRYING TO BOOK THEMSELVES
       // if (serviceDetails && serviceDetails.service_provider_details.userId !== userId) {
       let amount: string;
-      if (bookingDetail.appointment_type === 'In-Person' ) {
+      if (bookingDetail.appointment_type === 'In-Person') {
         amount = serviceDetails.service_charge_in_person
       } else if (bookingDetail.appointment_type === 'Virtual') {
         amount = serviceDetails.service_charge_virtual

@@ -17,6 +17,7 @@ export class BookServiceDto {
   @IsOptional()
   phone_number: string
 
+  @IsNotEmpty()
   payment_reference: string
   
   displayName: string
