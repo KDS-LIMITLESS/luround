@@ -45,17 +45,17 @@ export class Payments {
       const eventData = req.body;
       console.log(eventData)
       if(eventData.event === 'transfer.success') {
-        console.log("Verifying Transfer...:", eventData.reference )
+        console.log("Verifying Transfer...:", eventData.data.reference )
         await this.walletService.record_user_transfer_transaction(
           // THE USER ID IS SAVED AS THE REASON FOR THE TRANSFER
           eventData.reason, 
           {
             amount: eventData.data.amount,
-            reason: `Funds transfer to user: ${eventData.reason}`,
-            recipient_code: eventData.recipient.recipient_code,
-            reference: eventData.reference
+            reason: `Funds transfer to user: ${eventData.data.reason}`,
+            recipient_code: eventData.data.recipient.recipient_code,
+            reference: eventData.data.reference
           },   
-          eventData.transfer_code
+          eventData.data.transfer_code
         )
         
       }
