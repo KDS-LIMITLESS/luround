@@ -172,8 +172,7 @@ export class WalletService {
     }
   }
 
-  async record_user_transfer_transaction(user: any, payload: any, transfer_code: string) {
-    const {email, displayName, userId} = user
+  async record_user_transfer_transaction(userId: any, payload: any, transfer_code: string) {
     // DEDUCT USER WALLET BALANCE
     await this.deduct_wallet_balance(userId, payload.amount)
           // SAVE TRANSFER REFERENCE AD RECIPIENT CODE TO DB
