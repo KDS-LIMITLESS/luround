@@ -27,11 +27,11 @@ export class Payments {
     return res.status(200).json(await verifyAccountNumber(body.account_number, body.bank_code))
   }
 
-  @SkipAuth()
-  @Get('verify-booking-payment')
-  async verifyBookingPayments(@Req() req, @Query() query: any, @Res() res: Response) {
-    return res.status(200).json(await this.paymentManager.verifyBookingPayment(query.transaction_ref))
-  }
+  // @SkipAuth()
+  // @Get('verify-booking-payment')
+  // async verifyBookingPayments(@Req() req, @Query() query: any, @Res() res: Response) {
+  //   return res.status(200).json(await this.paymentManager.verifyBookingPayment(query.transaction_ref))
+  // }
 
   @SkipAuth()
   @Post('verify-transfer')
@@ -42,6 +42,7 @@ export class Payments {
      
     if (hash === req.headers['x-paystack-signature']) {
       const eventData = req.body;
+      console.log(eventData)
       if(eventData.event === 'transfer.success') {
         console.log("Verifying Transfer...:", eventData.data.reference )
         await this.walletService.record_user_transfer_transaction(
@@ -54,8 +55,11 @@ export class Payments {
             reference: eventData.data.reference
           },   
           eventData.data.transfer_code
-        )
-        
+        )        
+      }
+      if (eventData.event === 'charge.success') {
+        console.log("OK GO AHEAD")
+        // this.paymentManager.verifyBookingPayment()
       }
       return res.sendStatus(200)
     }

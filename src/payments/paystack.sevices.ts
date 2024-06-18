@@ -84,43 +84,43 @@ export class PaymentsAPI {
 
   // REFACTOR FUNCTION FOR WITHDRAWING USERS FUNDS TO USE PAYSTACK APIS
 
-  async verifyBookingPayment(transaction_ref: string) {
-    const options = {
-      hostname: 'api.paystack.co',
-      port: 443,
-      path: `/transaction/verify/${transaction_ref}`,
-      method: 'GET',
-      headers: {
-        Authorization: `Bearer ${process.env.PAYSTACK_SECRET_TEST}`,
-        'Content-Type': 'application/json'
-      }
-    }    
+  async verifyBookingPayment(transaction_ref: string, charged_amount: number) {
+    // const options = {
+    //   hostname: 'api.paystack.co',
+    //   port: 443,
+    //   path: `/transaction/verify/${transaction_ref}`,
+    //   method: 'GET',
+    //   headers: {
+    //     Authorization: `Bearer ${process.env.PAYSTACK_SECRET_TEST}`,
+    //     'Content-Type': 'application/json'
+    //   }
+    // }    
     try {
-      let request: any = await PaymentsAPI.makeRequest(transaction_ref, options)
-      if (request.data.status === 'success') {
-        console.log(request.data)
+      // let request: any = await PaymentsAPI.makeRequest(transaction_ref, options)
+      // if (request.data.status === 'success') {
+      //   console.log(request.data)
         // callbook service api
         // register service payment with
-        let get_booking_reference = await this.databaseManager.findOneDocument(this._bkDb, "payment_reference_id", transaction_ref)
+        let get_booking = await this.databaseManager.findOneDocument(this._bkDb, "payment_reference_id", transaction_ref)
         
         // update the booked_status to successful. 
-        if (get_booking_reference !== null) {
-          let service_providerId = get_booking_reference.service_provider_details.userId
+        if (get_booking !== null) {
+          let service_providerId = get_booking.service_provider_details.userId
           // UPDATE MATCHING BOOKING STATUS
-          await this.databaseManager.updateProperty(this._bkDb, get_booking_reference._id, "booked_status", {booked_status: "SUCCESSFUL"})
+          await this.databaseManager.updateProperty(this._bkDb, get_booking._id, "booked_status", {booked_status: "SUCCESSFUL"})
           // SET WALLET BALANCE
-          await this.walletService.increase_wallet_balance(service_providerId, request.data.charged_amount)
+          await this.walletService.increase_wallet_balance(service_providerId, charged_amount)
           
           // SAVE PAYMENT DETAILS TO SERVICE PAYMENTS DATABASE
           // let payment_ref_id = (await this.databaseManager.create(this._pdb, transaction_details)).insertedId
          // await sendPaymentSuccessMail(request.data.customer.email, request.data.meta.consumer_name, request.data.meta.payment_receiver_name, request.data.charged_amount, request.data.meta.service_name )
-         return {booking_status: "Success", transaction_ref: request.data.tx_ref }
+         return {booking_status: "Success", transaction_ref: get_booking.payment_reference_id }
         }
         // throw new BadRequestException({message: ResponseMessages.PaymentNotResolved})
-      } else {
-        // await paymentFailed(response.data.customer.email, response.data.meta.consumer_name, response.data.meta.payment_receiver_name, response.data.charged_amount, response.data.meta.service_name )
-        throw new BadRequestException({message: request.data.status, transaction_ref})
-      } 
+      // } else {
+      //   // await paymentFailed(response.data.customer.email, response.data.meta.consumer_name, response.data.meta.payment_receiver_name, response.data.charged_amount, response.data.meta.service_name )
+      //   throw new BadRequestException({message: request.data.status, transaction_ref})
+      // } 
     } catch (err: any) {
       throw new BadRequestException({message: err.message })
     }
