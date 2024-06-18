@@ -69,7 +69,6 @@ export class TransactionsManger {
       let transfers: [] = get_user_records.transfers
 
       let find_reference = transfers.find((element: any) => {element.reference === ref_code})
-      console.log(find_reference)
       if (find_reference !== undefined) {
         let reference = "find_reference.reference"
         await this.databaseManger.updateProperty(this._tDB, userId, reference, {transfer_status: transfer_status})
