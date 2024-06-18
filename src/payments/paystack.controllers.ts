@@ -43,12 +43,12 @@ export class Payments {
     if (hash === req.headers['x-paystack-signature']) {
       // Retrieve the request's body
       const eventData = req.body;
-      console.log(eventData)
+      console.log(eventData.data)
       if(eventData.event === 'transfer.success') {
         console.log("Verifying Transfer...:", eventData.data.reference )
         await this.walletService.record_user_transfer_transaction(
           // THE USER ID IS SAVED AS THE REASON FOR THE TRANSFER
-          eventData.reason, 
+          eventData.data.reason, 
           {
             amount: eventData.data.amount,
             reason: `Funds transfer to user: ${eventData.data.reason}`,

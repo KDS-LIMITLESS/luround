@@ -173,19 +173,17 @@ export class WalletService {
   }
 
   async record_user_transfer_transaction(userId: any, payload: any, transfer_code: string) {
-    // DEDUCT USER WALLET BALANCE
-    await this.deduct_wallet_balance(userId, payload.amount)
-          // SAVE TRANSFER REFERENCE AD RECIPIENT CODE TO DB
-    await this.transactions.record_user_transfer_transactions(userId, payload, transfer_code)
-    console.log('User wallet deducted')
-    return;
-    // return {
-    //   transaction_ref: transfer.data.reference,
-    //   transaction_date: transfer.data.createdAt,
-    //   transaction_time: transfer.data.updatedAt,
-    //   message: "Transfer Processing..."
-    // }
-      
+    try {
+      // DEDUCT USER WALLET BALANCE
+      await this.deduct_wallet_balance(userId, payload.amount)
+      // SAVE TRANSFER REFERENCE AD RECIPIENT CODE TO DB
+      console.log("passed")
+      await this.transactions.record_user_transfer_transactions(userId, payload, transfer_code)
+      console.log('User wallet deducted')
+      return;
+    } catch(err: any) {
+      throw new BadRequestException({message: err})
+    }
   }
 
   // on successful balance withdrawal    (Transfer API), deduct wallet balance.
