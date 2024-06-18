@@ -41,8 +41,8 @@ export class TransactionsManger {
       transfer_code,
       amount: payload.amount,
       transfer_status: "transfer.success",
-      transfer_date: `${dt.getDate()}/${dt.getMonth()}/${dt.getFullYear()}`,
-      transfer_time: dt.getHours() + ":" + dt.getMinutes() + ":" + dt.getSeconds()
+      transfer_verification_date: `${dt.getDate()}/${dt.getMonth()}/${dt.getFullYear()}`,
+      transfer_verification_time: (dt.getHours() +1) + ":" + dt.getMinutes() + ":" + dt.getSeconds()
     }
     let find_user_transactions = await this.databaseManger.findOneDocument(this._tDB, "_id", userId)
     if (find_user_transactions !== null) {

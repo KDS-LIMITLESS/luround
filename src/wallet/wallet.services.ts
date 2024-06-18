@@ -177,9 +177,7 @@ export class WalletService {
       // DEDUCT USER WALLET BALANCE
       await this.deduct_wallet_balance(userId, payload.amount)
       // SAVE TRANSFER REFERENCE AD RECIPIENT CODE TO DB
-      console.log("passed")
       await this.transactions.record_user_transfer_transactions(userId, payload, transfer_code)
-      console.log('User wallet deducted')
       return;
     } catch(err: any) {
       throw new BadRequestException({message: err})

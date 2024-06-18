@@ -41,9 +41,7 @@ export class Payments {
     const hash = crypto.createHmac('sha512', secret).update(JSON.stringify(req.body)).digest('hex');
      
     if (hash === req.headers['x-paystack-signature']) {
-      // Retrieve the request's body
       const eventData = req.body;
-      console.log(eventData.data)
       if(eventData.event === 'transfer.success') {
         console.log("Verifying Transfer...:", eventData.data.reference )
         await this.walletService.record_user_transfer_transaction(
@@ -59,8 +57,7 @@ export class Payments {
         )
         
       }
-      // Do something with event  
-      return res.send(200)
+      return res.sendStatus(200)
     }
     console.log("Message:", "HACKERS TRYING!!!!")
     return res.status(400).json({message: "This request is not from Paystack!"})
