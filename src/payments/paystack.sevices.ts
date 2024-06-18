@@ -302,13 +302,13 @@ export async function verifyAccountNumber(account_number: string, bank_code: str
 
 
 
-export async function initiateTransferToUserBank(amount: string, recipient_code: string, reference: string, reason: string) {
+export async function initiateTransferToUserBank(user: any, amount: number, recipient_code: string, reference: string, reason: string) {
   const data = JSON.stringify({
     'source': 'balance',
     'amount': amount,
     'recipient': recipient_code,
     'reference': reference,
-    'reason': reason
+    'reason':  `${user.userId}`
   })
   const options = {
     hostname: 'api.paystack.co',
@@ -322,9 +322,9 @@ export async function initiateTransferToUserBank(amount: string, recipient_code:
   };
   try {
     let response: any = await PaymentsAPI.makeRequest(data, options)
-    return response.data
+    return response
   } catch (err: any) {
-    throw new BadRequestException({message: err.code})
+    throw new BadRequestException({message: err})
   }
 };
 

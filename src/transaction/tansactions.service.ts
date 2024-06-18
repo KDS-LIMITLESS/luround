@@ -40,7 +40,7 @@ export class TransactionsManger {
       reason: payload.reason || '',
       transfer_code,
       amount: payload.amount,
-      transfer_status: "PENDING",
+      transfer_status: "transfer.success",
       transfer_date: `${dt.getDate()}/${dt.getMonth()}/${dt.getFullYear()}`,
       transfer_time: dt.getHours() + ":" + dt.getMinutes() + ":" + dt.getSeconds()
     }

@@ -116,7 +116,7 @@ export async function WithdrawalSuccess(to:string, name: string, wallet_balance:
   });
 }
 
-export async function WithdrawalFailed(to:string, name: string, wallet_balance: number, amount: string) {
+export async function WithdrawalFailed(to:string, name: string, wallet_balance: number, amount: number) {
   return await client.sendMail({
     from: {"address": "support@luround.com", "name": "Luround"},
     to: [{"email_address": {"address": to,"name": name}}],

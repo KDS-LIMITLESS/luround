@@ -29,7 +29,7 @@ export class WithdrawDTO {
   recipient_code: string
 
   @IsNotEmpty()
-  amount: string
+  amount: number
 
   @IsNotEmpty()
   wallet_pin: string

@@ -3,10 +3,11 @@ import { Request, Response } from "express";
 import { PaymentsAPI, verifyAccountNumber } from "../payments/paystack.sevices.js";
 import { SkipAuth } from "../auth/jwt.strategy.js";
 import crypto from 'crypto'
+import { WalletService } from "../wallet/wallet.services.js";
 
 @Controller('api/v1/payments')
 export class Payments {
-  constructor(private paymentManager: PaymentsAPI) {}
+  constructor(private paymentManager: PaymentsAPI, private walletService: WalletService) {}
 
   @Post('initialize-payment')
   async makepayments(@Req() req: Request, @Res() res: Response) {
@@ -35,18 +36,34 @@ export class Payments {
   @SkipAuth()
   @Post('verify-transfer')
   async transferWebhook(@Req() req, @Res() res: Response) {
-     //validate event
-     let secret = process.env.PAYSTACK_SECRET_TEST
-     const hash = crypto.createHmac('sha512', secret).update(JSON.stringify(req.body)).digest('hex');
-     console.log(hash)
-    if (hash == req.headers['x-paystack-signature']) {
+    // VALIDATE EVENT IS FROM PAYSTACK
+    let secret = process.env.PAYSTACK_SECRET_TEST
+    const hash = crypto.createHmac('sha512', secret).update(JSON.stringify(req.body)).digest('hex');
+     
+    if (hash === req.headers['x-paystack-signature']) {
       // Retrieve the request's body
-      const event = req.body;
-      console.log(event)
+      const eventData = req.body;
+      console.log(eventData)
+      if(eventData.event === 'transfer.success') {
+        console.log("Verifying Transfer...:", eventData.reference )
+        await this.walletService.record_user_transfer_transaction(
+          // THE USER ID IS SAVED AS THE REASON FOR THE TRANSFER
+          eventData.reason, 
+          {
+            amount: eventData.data.amount,
+            reason: `Funds transfer to user: ${eventData.reason}`,
+            recipient_code: eventData.recipient.recipient_code,
+            reference: eventData.reference
+          },   
+          eventData.transfer_code
+        )
+        
+      }
       // Do something with event  
-      return res.status(200)
+      return res.send(200)
     }
-    return res.status(400)
+    console.log("Message:", "HACKERS TRYING!!!!")
+    return res.status(400).json({message: "This request is not from Paystack!"})
   }
 
   // @Get('initialize-flw-payment')

@@ -150,11 +150,11 @@ export class WalletService {
     try {
       if (wallet_balance >= payload.amount) {
         // CALL INITIATE TRANSFER FUNCTION
-        let transfer = await initiateTransferToUserBank(payload.amount, payload.recipient_code, payload.reference, payload.reason)
-
+        let transfer = await initiateTransferToUserBank(user, payload.amount, payload.recipient_code, payload.reference, payload.reason)
+        console.log(transfer)
         if (transfer.status === true) {
           // SAVE TRANSFER REFERENCE AD RECIPIENT CODE TO DB
-          await this.transactions.record_user_transfer_transactions(userId, payload, transfer.data.transfer_code)
+          // await this.transactions.record_user_transfer_transactions(userId, payload, transfer.data.transfer_code)
           return {
             transaction_ref: transfer.data.reference,
             transaction_date: transfer.data.createdAt,
@@ -162,14 +162,29 @@ export class WalletService {
             message: "Transfer Processing..."
           }
         }
-        throw new BadRequestException({message: 'Transfer Failed'})
+        throw new BadRequestException({message: transfer.message})
         // MAKE WEBHOOK FUNCTION FOR VERIFYING TRANSFER STATUS
       } 
       throw new BadRequestException({message: 'Your wallet balance is low'})
     } catch(err: any) {
       await WithdrawalFailed(email, displayName, wallet_balance, payload.amount)
-      throw new BadRequestException({message: err.code})
+      throw new BadRequestException({message: err})
     }
+  }
+
+  async record_user_transfer_transaction(user: any, payload: any, transfer_code: string) {
+    const {email, displayName, userId} = user
+    // DEDUCT USER WALLET BALANCE
+    await this.deduct_wallet_balance(userId, payload.amount)
+          // SAVE TRANSFER REFERENCE AD RECIPIENT CODE TO DB
+    await this.transactions.record_user_transfer_transactions(userId, payload, transfer_code)
+    // return {
+    //   transaction_ref: transfer.data.reference,
+    //   transaction_date: transfer.data.createdAt,
+    //   transaction_time: transfer.data.updatedAt,
+    //   message: "Transfer Processing..."
+    // }
+      
   }
 
   // on successful balance withdrawal    (Transfer API), deduct wallet balance.
