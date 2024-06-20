@@ -55,10 +55,11 @@ export class Payments {
             reference: eventData.data.reference
           },   
           eventData.data.transfer_code
-        )        
+        )
+        return res.sendStatus(200)        
       }
       if (eventData.event === 'charge.success') {
-        console.log("OK GO AHEAD")
+        await this.paymentManager.verifyBookingPayment(eventData.data.reference, eventData.data.amount)
         // this.paymentManager.verifyBookingPayment()
       }
       return res.sendStatus(200)

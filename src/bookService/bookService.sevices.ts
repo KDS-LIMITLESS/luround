@@ -69,7 +69,7 @@ export class BookingsManager {
         service_details: {
           service_id: serviceDetails._id,
           service_name: serviceDetails.service_name,
-          service_fee: amount_paid || amount || serviceDetails.service_fee,
+          service_fee: serviceDetails.service_fee,
           appointment_type: bookingDetail.appointment_type,
           date: due_date || bookingDetail.date,
           time: bookingDetail.time,

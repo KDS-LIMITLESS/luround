@@ -37,15 +37,19 @@ export class CRMService {
   async get_customer_transaction_history(userId: string, customer_email: string) {
     let txns_history = []
     let user_transactions = await this.databaseService.findOneDocument(this._txnsDB, "_id", userId)
-    user_transactions.transactions.map(function (customer) {
-      customer.customer_email === customer_email ? txns_history.push({
-        service_name: customer.service_name, 
-        amount: customer.amount,
-        email: customer.customer_email,
-        date: customer.transaction_date
-      }): []
-    })
+    if (user_transactions !== null) {
+      user_transactions.transactions.map(function (customer) {
+        customer.customer_email === customer_email ? txns_history.push({
+          service_name: customer.service_name, 
+          amount: customer.amount,
+          email: customer.customer_email,
+          date: customer.transaction_date
+        }): []
+      })
+      return txns_history
+    }
     return txns_history
+    
   }
 
   async delete_customer_contact(userId: string, obj: ContactDTO) {
