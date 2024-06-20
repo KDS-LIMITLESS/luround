@@ -4,10 +4,11 @@ import { PaymentsAPI, verifyAccountNumber } from "../payments/paystack.sevices.j
 import { SkipAuth } from "../auth/jwt.strategy.js";
 import crypto from 'crypto'
 import { WalletService } from "../wallet/wallet.services.js";
+import { BookingsManager } from "../bookService/bookService.sevices.js";
 
 @Controller('api/v1/payments')
 export class Payments {
-  constructor(private paymentManager: PaymentsAPI, private walletService: WalletService) {}
+  constructor(private paymentManager: PaymentsAPI, private walletService: WalletService, public bookingService: BookingsManager) {}
 
   @Post('initialize-payment')
   async makepayments(@Req() req: Request, @Res() res: Response) {
@@ -56,10 +57,11 @@ export class Payments {
           },   
           eventData.data.transfer_code
         )
-        return res.sendStatus(200)        
       }
       if (eventData.event === 'charge.success') {
-        await this.paymentManager.verifyBookingPayment(eventData.data.reference, eventData.data.amount)
+        let verify_booking = await this.paymentManager.verifyBookingPayment(eventData.data.reference, eventData.data.amount)
+        await this.bookingService.confirm_booking(verify_booking.booking_id)
+
         // this.paymentManager.verifyBookingPayment()
       }
       return res.sendStatus(200)

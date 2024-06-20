@@ -150,7 +150,7 @@ export class BookingsManager {
           service_fee: get_booking.service_details.service_fee, transaction_ref: get_booking.payment_reference_id, transaction_status: "RECEIVED", 
           affliate_user: get_booking.booking_user_info.displayName, customer_email: get_booking.booking_user_info.email
         })
-        // rEGISTER SERVICE INSIGHTS.
+        // REGISTER SERVICE INSIGHTS.
         await this.serviceInsights.store_service_booking_history(
           get_booking.service_details.service_id,
           get_booking.service_details.service_name, 

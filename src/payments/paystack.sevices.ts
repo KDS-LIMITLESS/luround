@@ -118,7 +118,7 @@ export class PaymentsAPI {
           // SAVE PAYMENT DETAILS TO SERVICE PAYMENTS DATABASE
           // let payment_ref_id = (await this.databaseManager.create(this._pdb, transaction_details)).insertedId
          // await sendPaymentSuccessMail(request.data.customer.email, request.data.meta.consumer_name, request.data.meta.payment_receiver_name, request.data.charged_amount, request.data.meta.service_name )
-         return {booking_status: "Success", transaction_ref: get_booking.payment_reference_id }
+         return {booking_status: "Success", transaction_ref: get_booking.payment_reference_id, booking_id: get_booking._id }
         }
         // throw new BadRequestException({message: ResponseMessages.PaymentNotResolved})
       // } else {

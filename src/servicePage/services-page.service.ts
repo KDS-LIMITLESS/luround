@@ -45,7 +45,8 @@ export class ServicePageManager {
       physical_location: serviceData.physical_location || '',
       start_time: serviceData.start_time,
       end_time: serviceData.end_time,
-      event_type: serviceData.event_type
+      event_type: serviceData.event_type,
+      stop_time: serviceData.stop_time
     }
     
     try {
@@ -86,7 +87,8 @@ export class ServicePageManager {
       physical_location: serviceData.physical_location || '',
       start_time: serviceData.start_time,
       end_time: serviceData.end_time,
-      event_type: serviceData.event_type
+      event_type: serviceData.event_type,
+      stop_time: serviceData.stop_time
     
     }    
 

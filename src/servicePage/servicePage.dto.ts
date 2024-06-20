@@ -40,6 +40,9 @@ export class ServicePageDto{
   @IsOptional()
   notice_period: string
 
+  @IsOptional()
+  stop_time: string
+
   @IsMongoId()
   @IsOptional()
   serviceId: string
