@@ -96,35 +96,29 @@ export class PaymentsAPI {
     //   }
     // }    
     try {
-      // let request: any = await PaymentsAPI.makeRequest(transaction_ref, options)
-      // if (request.data.status === 'success') {
-      //   console.log(request.data)
-        // callbook service api
-        // register service payment with
-        let get_booking = await this.databaseManager.findOneDocument(this._bkDb, "payment_reference_id", transaction_ref)
-        console.log(transaction_ref, charged_amount)
-
-        console.log("GET BOOKING: ", get_booking)
+      let get_booking = await this.databaseManager.findOneDocument(this._bkDb, "payment_reference_id", `${transaction_ref}`)
+      console.log(transaction_ref, charged_amount)
+      console.log("GET BOOKING: ", get_booking)
+      
+      // update the booked_status to successful. 
+      if (get_booking !== null) {
+        let service_providerId = get_booking.service_provider_details.userId
+        // UPDATE MATCHING BOOKING STATUS
+        await this.databaseManager.updateProperty(this._bkDb, get_booking._id, "booked_status", {booked_status: "SUCCESSFUL"})
+        // SET WALLET BALANCE
+        // DEDUCT 3%
+        charged_amount = charged_amount / 100
+        let deduct_service_charge = 3/100 * charged_amount
+        console.log(deduct_service_charge)
+        charged_amount -= deduct_service_charge
+        await this.walletService.increase_wallet_balance(service_providerId, charged_amount)
         
-        // update the booked_status to successful. 
-        if (get_booking !== null) {
-          let service_providerId = get_booking.service_provider_details.userId
-          // UPDATE MATCHING BOOKING STATUS
-          await this.databaseManager.updateProperty(this._bkDb, get_booking._id, "booked_status", {booked_status: "SUCCESSFUL"})
-          // SET WALLET BALANCE
-          // DEDUCT 3%
-          charged_amount = charged_amount / 100
-          let deduct_service_charge = 3/100 * charged_amount
-          console.log(deduct_service_charge)
-          charged_amount -= deduct_service_charge
-          await this.walletService.increase_wallet_balance(service_providerId, charged_amount)
-          
-          // SAVE PAYMENT DETAILS TO SERVICE PAYMENTS DATABASE
-          // let payment_ref_id = (await this.databaseManager.create(this._pdb, transaction_details)).insertedId
-         // await sendPaymentSuccessMail(request.data.customer.email, request.data.meta.consumer_name, request.data.meta.payment_receiver_name, request.data.charged_amount, request.data.meta.service_name )
-         return {booking_status: "Success", transaction_ref: get_booking.payment_reference_id, booking_id: get_booking._id }
-        }
-        // throw new BadRequestException({message: ResponseMessages.PaymentNotResolved})
+        // SAVE PAYMENT DETAILS TO SERVICE PAYMENTS DATABASE
+        // let payment_ref_id = (await this.databaseManager.create(this._pdb, transaction_details)).insertedId
+       // await sendPaymentSuccessMail(request.data.customer.email, request.data.meta.consumer_name, request.data.meta.payment_receiver_name, request.data.charged_amount, request.data.meta.service_name )
+       return {booking_status: "Success", transaction_ref: get_booking.payment_reference_id, booking_id: get_booking._id }
+      }
+      throw new BadRequestException({message: ResponseMessages.PaymentNotResolved})
       // } else {
       //   // await paymentFailed(response.data.customer.email, response.data.meta.consumer_name, response.data.meta.payment_receiver_name, response.data.charged_amount, response.data.meta.service_name )
       //   throw new BadRequestException({message: request.data.status, transaction_ref})
