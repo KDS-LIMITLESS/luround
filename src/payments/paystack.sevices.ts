@@ -102,6 +102,7 @@ export class PaymentsAPI {
         // callbook service api
         // register service payment with
         let get_booking = await this.databaseManager.findOneDocument(this._bkDb, "payment_reference_id", transaction_ref)
+        console.log(transaction_ref, charged_amount)
 
         console.log("GET BOOKING: ", get_booking)
         
@@ -112,6 +113,7 @@ export class PaymentsAPI {
           await this.databaseManager.updateProperty(this._bkDb, get_booking._id, "booked_status", {booked_status: "SUCCESSFUL"})
           // SET WALLET BALANCE
           // DEDUCT 3%
+          charged_amount = charged_amount / 100
           let deduct_service_charge = 3/100 * charged_amount
           console.log(deduct_service_charge)
           charged_amount -= deduct_service_charge
