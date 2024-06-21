@@ -323,7 +323,7 @@ export async function initiateTransferToUserBank(user: any, amount: number, reci
     path: `/transfer`,
     method: 'POST',
     headers: {
-      Authorization: `Bearer ${process.env.PAYSTACK_SECRET}`,
+      Authorization: `Bearer ${process.env.PAYSTACK_SECRET_TEST}`,
       'Content-Type': 'application/json'
     }
   };
