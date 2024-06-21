@@ -27,6 +27,8 @@ export class ServicePageDto{
   @IsNotEmpty()
   description: string
 
+  @IsNotEmpty()
+  service_fee: string
 
   @IsOptional()
   appointment_buffer: string
