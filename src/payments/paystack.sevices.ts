@@ -49,7 +49,7 @@ export class PaymentsAPI {
       path: `/transaction/verify/${transaction_ref}`,
       method: 'GET',
       headers: {
-        Authorization: `Bearer ${process.env.PAYSTACK_SECRET_TEST}`,
+        Authorization: `Bearer ${process.env.PAYSTACK_SECRET}`,
         'Content-Type': 'application/json'
       }
     }    
@@ -91,7 +91,7 @@ export class PaymentsAPI {
     //   path: `/transaction/verify/${transaction_ref}`,
     //   method: 'GET',
     //   headers: {
-    //     Authorization: `Bearer ${process.env.PAYSTACK_SECRET_TEST}`,
+    //     Authorization: `Bearer ${process.env.PAYSTACK_SECRET}`,
     //     'Content-Type': 'application/json'
     //   }
     // }    
@@ -150,7 +150,7 @@ export class PaymentsAPI {
       path: `/transferrecipient`,
       method: 'POST',
       headers: {
-        Authorization: `Bearer ${process.env.PAYSTACK_SECRET_TEST}`,
+        Authorization: `Bearer ${process.env.PAYSTACK_SECRET}`,
         'Content-Type': 'application/json'
       }
     };
