@@ -32,6 +32,7 @@ export class BookingsManager {
 
   // Increase price based on the service duration
   async book_service(bookingDetail: BookServiceDto, serviceID: string, user: any, invoice_id?:string, amount_paid?: string, transaction_ref?: string, due_date?: string, note?: string, booking_generated_from_invoice?: string) {
+    console.log(bookingDetail)
     try {
       if (bookingDetail.payment_reference === ''){
         throw new BadRequestException({message: 'Please ensure you complete the payment for this service.'})

@@ -18,7 +18,7 @@ export class ServicePageManager {
     const { userId, email, displayName } = user
     let encryption = new Encrypter(process.env.ENCRYPTION_KEY as string)
     let service_link = `https://luround.com/${serviceData.service_name.replace(/\s/g, "-")}/${encryption.encrypt(userId)}`
-
+    console.log(serviceData)
     let service = {
       service_provider_details: { userId, email, displayName },
       service_link,
