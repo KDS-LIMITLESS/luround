@@ -46,7 +46,7 @@ export class Payments {
       console.log(eventData)
       if(eventData.event === 'transfer.success') {
         console.log("Verifying Transfer...:", eventData.data.reference )
-        await this.walletService.record_user_transfer_transaction(
+        let record_transaction = await this.walletService.record_user_transfer_transaction(
           // THE USER ID IS SAVED AS THE REASON FOR THE TRANSFER
           eventData.data.reason, 
           {
@@ -57,6 +57,7 @@ export class Payments {
           },   
           eventData.data.transfer_code
         )
+        console.log("Record Transaction: ", record_transaction)
       }
       if (eventData.event === 'charge.success') {
         let verify_booking = await this.paymentManager.verifyBookingPayment(eventData.data.reference, eventData.data.amount)
