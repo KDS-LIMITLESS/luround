@@ -310,6 +310,7 @@ export async function verifyAccountNumber(account_number: string, bank_code: str
 
 
 export async function initiateTransferToUserBank(user: any, amount: number, recipient_code: string, reference: string, reason: string) {
+  console.log(recipient_code)
   const data = JSON.stringify({
     'source': 'balance',
     'amount': amount,
