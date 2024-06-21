@@ -27,7 +27,7 @@ export class ServicePageDto{
   @IsNotEmpty()
   description: string
 
-  @IsNotEmpty()
+  @IsOptional()
   service_fee: string
 
   @IsOptional()
