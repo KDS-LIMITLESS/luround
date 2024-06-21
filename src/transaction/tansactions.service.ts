@@ -39,7 +39,7 @@ export class TransactionsManger {
       recipient_code: payload.recipient_code,
       reason: payload.reason || '',
       transfer_code,
-      amount: payload.amount,
+      amount: payload.service_fee,
       transfer_status: "transfer.success",
       transfer_verification_date: `${dt.getDate()}/${dt.getMonth()}/${dt.getFullYear()}`,
       transfer_verification_time: (dt.getHours() +1) + ":" + dt.getMinutes() + ":" + dt.getSeconds()

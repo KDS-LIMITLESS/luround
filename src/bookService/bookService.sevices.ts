@@ -64,8 +64,8 @@ export class BookingsManager {
         payment_reference_id: transaction_ref || bookingDetail.payment_reference,
         invoice_id: invoice_id || "",
         booking_generated_from_invoice: booking_generated_from_invoice || "False",
-        start_time: "",
-        end_time: "",
+        start_time: bookingDetail.start_time,
+        end_time: bookingDetail.end_time,
         service_details: {
           service_id: serviceDetails._id,
           service_name: serviceDetails.service_name,

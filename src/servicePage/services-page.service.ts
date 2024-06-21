@@ -46,7 +46,8 @@ export class ServicePageManager {
       start_time: serviceData.start_time,
       end_time: serviceData.end_time,
       event_type: serviceData.event_type,
-      stop_time: serviceData.stop_time
+      stop_time: serviceData.stop_time,
+      date: serviceData.date
     }
     
     try {
@@ -81,6 +82,7 @@ export class ServicePageManager {
       max_number_of_participants: serviceData.max_number_of_participants,
       notice_period: serviceData.notice_period || "",
       appointment_buffer: serviceData.appointment_buffer || "",
+      appointment_time: serviceData.appointment_time,
       booking_period: serviceData.booking_period || "",
       service_status: "ACTIVE",
       core_features: serviceData.core_features,
@@ -88,7 +90,8 @@ export class ServicePageManager {
       start_time: serviceData.start_time,
       end_time: serviceData.end_time,
       event_type: serviceData.event_type,
-      stop_time: serviceData.stop_time
+      stop_time: serviceData.stop_time,
+      date: serviceData.date
     
     }    
 

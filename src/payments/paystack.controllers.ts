@@ -60,6 +60,7 @@ export class Payments {
       }
       if (eventData.event === 'charge.success') {
         let verify_booking = await this.paymentManager.verifyBookingPayment(eventData.data.reference, eventData.data.amount)
+        console.log("Verified Booking:", verify_booking)
         await this.bookingService.confirm_booking(verify_booking.booking_id)
 
         // this.paymentManager.verifyBookingPayment()

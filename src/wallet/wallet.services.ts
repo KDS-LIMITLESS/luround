@@ -150,7 +150,7 @@ export class WalletService {
     try {
       if (wallet_balance >= payload.amount) {
         // CALL INITIATE TRANSFER FUNCTION
-        let amount = payload.amount *100
+        let amount = payload.amount * 100
         let transfer = await initiateTransferToUserBank(user, amount, payload.recipient_code, payload.reference, payload.reason)
         console.log(transfer)
         if (transfer.status === true) {

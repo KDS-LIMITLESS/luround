@@ -66,6 +66,9 @@ export class ServicePageDto{
   virtual_event_fee: string
 
   @IsOptional()
+  date: string
+
+  @IsOptional()
   in_person_event_fee: string
 
   @IsOptional()
@@ -116,7 +119,8 @@ export class ServicePageDto{
   @IsOptional()
   event_schedule: any
 
-
+  @IsOptional()
+  appointment_time: string
 
 }
 

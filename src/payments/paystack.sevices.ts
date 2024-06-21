@@ -102,6 +102,8 @@ export class PaymentsAPI {
         // callbook service api
         // register service payment with
         let get_booking = await this.databaseManager.findOneDocument(this._bkDb, "payment_reference_id", transaction_ref)
+
+        console.log("GET BOOKING: ", get_booking)
         
         // update the booked_status to successful. 
         if (get_booking !== null) {
@@ -126,7 +128,8 @@ export class PaymentsAPI {
       //   throw new BadRequestException({message: request.data.status, transaction_ref})
       // } 
     } catch (err: any) {
-      throw new BadRequestException({message: err.message })
+      console.log(err)
+      throw new BadRequestException({message: err })
     }
   }
 
