@@ -1,6 +1,6 @@
 import { Body, Controller, Get, HttpStatus, Param, Post, Query, Req, Res } from "@nestjs/common";
 import { Request, Response } from "express";
-import { PaymentsAPI, verifyAccountNumber } from "../payments/paystack.sevices.js";
+import { PaymentsAPI } from "../payments/paystack.sevices.js";
 import { SkipAuth } from "../auth/jwt.strategy.js";
 import crypto from 'crypto'
 import { WalletService } from "../wallet/wallet.services.js";
@@ -22,11 +22,11 @@ export class Payments {
     return res.status(200).json(await this.paymentManager.verifyPayment(query.ref_id, req.user.userId))
   }
 
-  @SkipAuth()
-  @Get('verify-account-number')
-  async verifyAccountNumber(@Req() req, @Body() body: any, @Res() res: Response) {
-    return res.status(200).json(await verifyAccountNumber(body.account_number, body.bank_code))
-  }
+  // @SkipAuth()
+  // @Get('verify-account-number')
+  // async verifyAccountNumber(@Req() req, @Body() body: any, @Res() res: Response) {
+  //   return res.status(200).json(await verifyAccountNumber(body.account_number, body.bank_code))
+  // }
 
   // @SkipAuth()
   // @Get('verify-booking-payment')
@@ -46,7 +46,7 @@ export class Payments {
       console.log(eventData)
       if(eventData.event === 'transfer.success') {
         console.log("Verifying Transfer...:", eventData.data.reference )
-        let record_transaction = await this.walletService.record_user_transfer_transaction(
+        await this.walletService.record_user_transfer_transaction(
           // THE USER ID IS SAVED AS THE REASON FOR THE TRANSFER
           eventData.data.reason, 
           {
@@ -57,7 +57,7 @@ export class Payments {
           },   
           eventData.data.transfer_code
         )
-        console.log("Record Transaction: ", record_transaction)
+        console.log("Status:", "Transaction Recorded Successfully!")
       }
       if (eventData.event === 'charge.success') {
         console.log(typeof(eventData.data.reference), eventData.data.reference.toString())

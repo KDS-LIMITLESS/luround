@@ -147,13 +147,12 @@ export class PaymentsAPI {
       path: `/transferrecipient`,
       method: 'POST',
       headers: {
-        Authorization: `Bearer ${process.env.PAYSTACK_SECRET}`,
+        Authorization: `Bearer ${process.env.PAYSTACK_SECRET_TEST}`,
         'Content-Type': 'application/json'
       }
     };
     try {
       let response: any = await PaymentsAPI.makeRequest(data, options);
-      console.log(response)
       if (response.status === true) {
         await this.databaseManager.updateArr(this._uWDB, 'email', email, "bank_details", [{
           account_name: response.data.details.account_name,
@@ -284,26 +283,24 @@ export class PaymentsAPI {
 
 }
 
-export async function verifyAccountNumber(account_number: string, bank_code: string) {
-  const data = JSON.stringify({
-    'account_number': account_number,
-    'bank_code': bank_code
-  })
-  const options = {
-    hostname: 'api.paystack.co',
-    port: 443,
-    path: `/bank/resolve?account_number=${account_number}&bank_code=${bank_code}`,
-    method: 'GET',
-    headers: {
-      Authorization: `Bearer ${process.env.PAYSTACK_SECRET}`,
-      'Content-Type': 'application/json'
-    }
-  };
-  let response: any = await PaymentsAPI.makeRequest(data, options)
-  return response
-};
-
-
+// export async function verifyAccountNumber(account_number: string, bank_code: string) {
+//   const data = JSON.stringify({
+//     'account_number': account_number,
+//     'bank_code': bank_code
+//   })
+//   const options = {
+//     hostname: 'api.paystack.co',
+//     port: 443,
+//     path: `/bank/resolve?account_number=${account_number}&bank_code=${bank_code}`,
+//     method: 'GET',
+//     headers: {
+//       Authorization: `Bearer ${process.env.PAYSTACK_SECRET}`,
+//       'Content-Type': 'application/json'
+//     }
+//   };
+//   let response: any = await PaymentsAPI.makeRequest(data, options)
+//   return response
+// };
 
 
 export async function initiateTransferToUserBank(user: any, amount: number, recipient_code: string, reference: string, reason: string) {
@@ -321,11 +318,12 @@ export async function initiateTransferToUserBank(user: any, amount: number, reci
     path: `/transfer`,
     method: 'POST',
     headers: {
-      Authorization: `Bearer ${process.env.PAYSTACK_SECRET}`,
+      Authorization: `Bearer ${process.env.PAYSTACK_SECRET_TEST}`,
       'Content-Type': 'application/json'
     }
   };
   try {
+    console.log(data)
     let response: any = await PaymentsAPI.makeRequest(data, options)
     return response
   } catch (err: any) {

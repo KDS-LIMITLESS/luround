@@ -9,10 +9,10 @@ import { SkipAuth } from "../auth/jwt.strategy.js";
 export class WalletController {
   constructor (private walletManager: WalletService) {}
 
-  @Post('verify-bank-detail')
-  async verifyBankDetails(@Req() req, @Res() res, @Body() payload: UserWalletDto ) {
-    return res.status(HttpStatus.OK).json(await this.walletManager.verify_bank_details(req.user, payload))
-  }
+  // @Post('verify-bank-detail')
+  // async verifyBankDetails(@Req() req, @Res() res, @Body() payload: UserWalletDto ) {
+  //   return res.status(HttpStatus.OK).json(await this.walletManager.verify_bank_details(req.user, payload))
+  // }
 
   @SkipAuth()
   @Get('get-saved-banks')
