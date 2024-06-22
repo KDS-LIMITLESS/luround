@@ -71,12 +71,12 @@ export class BookingsManager {
           service_id: serviceDetails._id,
           service_name: serviceDetails.service_name,
           service_fee: bookingDetail.service_fee,
+          service_type: bookingDetail.service_type || serviceDetails.service_type,
           appointment_type: bookingDetail.appointment_type,
           date: due_date || bookingDetail.date,
           time: bookingDetail.time,
           duration: bookingDetail.duration,
           message: note || bookingDetail.message || null,
-          file: bookingDetail.file || null,
           location: bookingDetail.location,
           created_at: Date.now()
         }

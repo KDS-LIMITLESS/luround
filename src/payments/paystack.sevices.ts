@@ -84,7 +84,7 @@ export class PaymentsAPI {
 
   // REFACTOR FUNCTION FOR WITHDRAWING USERS FUNDS TO USE PAYSTACK APIS
 
-  async verifyBookingPayment(transaction_ref: string, charged_amount: number) {
+  async verifyBookingPayment(payment_reference_id: string, charged_amount: number) {
     // const options = {
     //   hostname: 'api.paystack.co',
     //   port: 443,
@@ -96,8 +96,9 @@ export class PaymentsAPI {
     //   }
     // }    
     try {
-      let get_booking = await this.databaseManager.findOneDocument(this._bkDb, "payment_reference_id", `${transaction_ref}`)
-      console.log(transaction_ref, charged_amount)
+      let get_booking = await this.databaseManager.findOneDocument(this._bkDb, "payment_reference_id", payment_reference_id)
+      
+      console.log(payment_reference_id, charged_amount)
       console.log("GET BOOKING: ", get_booking)
       
       // update the booked_status to successful. 

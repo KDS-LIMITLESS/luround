@@ -26,7 +26,7 @@ export class BookServiceDto {
   appointment_type: string
 
   @IsOptional()
-  file? : File
+  service_type: string
 
   @IsOptional()
   service_fee : string
