@@ -267,7 +267,6 @@ const jobs = []
 
 export async function scheduleEmailCronJob(date:string, booking_detail:any) {
   const targetDate = new Date(`${date}`)
-  console.log(targetDate)
   targetDate.setDate(targetDate.getDate() - 1);
 
   // Schedule the cron job to run at the target date and time
@@ -275,8 +274,6 @@ export async function scheduleEmailCronJob(date:string, booking_detail:any) {
 
   // CALCULATE 1 HOUR 
   // const target_1hrCronTime = `${targetDate.getUTCMinutes()} ${targetDate.getUTCHours()} ${targetDate.getUTCDate()} ${targetDate.getUTCMonth() + 1} *`;
-
-  console.log('Cron schedule:', targetCronTime);
 
   cron.schedule(targetCronTime, async () => {
     console.log('Running email cron job')
@@ -293,10 +290,9 @@ async function persistCronJobs() {
   let savedJobs = jobs.map(job => ({
     date: job.targetCronTime, booking_detail: job.booking_detail
   }))
-  console.log(savedJobs)
   fs.writeJson('./savedjobs.json', savedJobs, { spaces: 2})
   .then(() => {
-    console.log("Success")
+    console.log("Cron Job Persisted!")
   })
   .catch((err: any) => {
     throw new BadRequestException({message: err.message})

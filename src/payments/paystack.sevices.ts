@@ -146,7 +146,7 @@ export class PaymentsAPI {
       path: `/transferrecipient`,
       method: 'POST',
       headers: {
-        Authorization: `Bearer ${process.env.PAYSTACK_SECRET_TEST}`,
+        Authorization: `Bearer ${process.env.PAYSTACK_SECRET}`,
         'Content-Type': 'application/json'
       }
     };
@@ -317,7 +317,7 @@ export async function initiateTransferToUserBank(user: any, amount: number, reci
     path: `/transfer`,
     method: 'POST',
     headers: {
-      Authorization: `Bearer ${process.env.PAYSTACK_SECRET_TEST}`,
+      Authorization: `Bearer ${process.env.PAYSTACK_SECRET}`,
       'Content-Type': 'application/json'
     }
   };
