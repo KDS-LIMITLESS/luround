@@ -96,8 +96,8 @@ export class BookingsManager {
       // CHECK FOR PAYMENT CONFIRMED AND SEND NOTIFICATION
       if (service_booked.acknowledged) {
         // SEND EMAILS
-        // await booking_account_viewer(booking_Detail.booking_user_info.email, booking_Detail)
-        // await bookingConfirmed_service_provider(booking_Detail.service_provider_info.email, booking_Detail)
+        await booking_account_viewer(booking_Detail.booking_user_info.email, booking_Detail)
+        await bookingConfirmed_service_provider(booking_Detail.service_provider_info.email, booking_Detail)
         // *********INITIATE AND RECORD PAYMENT *************
         // let response: any = await PaymentsAPI.initiate_flw_payment(amount, user, bookingDetail.phone_number, tx_ref, 
         //   {

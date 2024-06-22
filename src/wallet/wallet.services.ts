@@ -168,7 +168,7 @@ export class WalletService {
       } 
       throw new BadRequestException({message: 'Your wallet balance is low'})
     } catch(err: any) {
-      // await WithdrawalFailed(email, displayName, wallet_balance, payload.amount)
+      await WithdrawalFailed(email, displayName, wallet_balance, payload.amount)
       throw new BadRequestException({message: err})
     }
   }
