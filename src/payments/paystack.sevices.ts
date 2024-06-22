@@ -98,12 +98,11 @@ export class PaymentsAPI {
     try {
       let get_booking = await this.databaseManager.findOneDocument(this._bkDb, "payment_reference_id", payment_reference_id)
       
-      console.log(payment_reference_id, charged_amount)
       console.log("GET BOOKING: ", get_booking)
       
       // update the booked_status to successful. 
       if (get_booking !== null) {
-        let service_providerId = get_booking.service_provider_details.userId
+        let service_providerId = get_booking.service_provider_info.userId
         // UPDATE MATCHING BOOKING STATUS
         await this.databaseManager.updateProperty(this._bkDb, get_booking._id, "booked_status", {booked_status: "SUCCESSFUL"})
         // SET WALLET BALANCE
@@ -126,7 +125,7 @@ export class PaymentsAPI {
       // } 
     } catch (err: any) {
       console.log(err)
-      throw new BadRequestException({message: err })
+      throw new BadRequestException({message: err.message })
     }
   }
 
