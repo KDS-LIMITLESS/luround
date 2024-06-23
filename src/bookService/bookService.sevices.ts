@@ -97,7 +97,7 @@ export class BookingsManager {
       if (service_booked.acknowledged) {
         // SEND EMAILS
         await booking_account_viewer(booking_Detail.booking_user_info.email, booking_Detail)
-        await bookingConfirmed_service_provider(booking_Detail.service_provider_info.email, booking_Detail)
+        // await bookingConfirmed_service_provider(booking_Detail.service_provider_info.email, booking_Detail)
         // *********INITIATE AND RECORD PAYMENT *************
         // let response: any = await PaymentsAPI.initiate_flw_payment(amount, user, bookingDetail.phone_number, tx_ref, 
         //   {
@@ -159,7 +159,8 @@ export class BookingsManager {
           get_booking.service_details.created_at, 
           get_booking.booking_user_info.displayName 
         )
-        await bookingConfirmed_account_viewer(get_booking.booking_user_info.email, get_booking)
+        // await bookingConfirmed_account_viewer(get_booking.booking_user_info.email, get_booking)
+        await bookingConfirmed_service_provider(get_booking.service_provider_info.email, get_booking)
         // supress bounced emails
         .then(async () => {
           return await this.bookingsManager.updateProperty(this._bKM, booking_id, "booked_status", {booked_status: "CONFIRMED"})

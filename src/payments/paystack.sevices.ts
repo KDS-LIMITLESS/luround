@@ -279,7 +279,6 @@ export class PaymentsAPI {
   
     return tx_ref;
   }
-
 }
 
 // export async function verifyAccountNumber(account_number: string, bank_code: string) {
@@ -330,9 +329,7 @@ export async function initiateTransferToUserBank(user: any, amount: number, reci
   }
 };
 
-export async function verifyTransferStatus(transfer_reference_code: string) {
-  
-}
+export async function verifyTransferStatus(transfer_reference_code: string) {}
 
 //   static async initiate_flw_payment(amount: string, req: any, phone_number: string, tx_ref: any, booking_detail: any) {
 //     try {
