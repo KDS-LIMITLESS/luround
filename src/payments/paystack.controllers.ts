@@ -50,7 +50,7 @@ export class Payments {
           // THE USER ID IS SAVED AS THE REASON FOR THE TRANSFER
           eventData.data.reason, 
           {
-            amount: eventData.data.amount,
+            amount: eventData.data.amount / 100,
             reason: `Funds transfer to user: ${eventData.data.reason}`,
             recipient_code: eventData.data.recipient.recipient_code,
             reference: eventData.data.reference
