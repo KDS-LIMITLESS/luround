@@ -74,6 +74,12 @@ export class ServicePageDto{
   in_person_event_fee: string
 
   @IsOptional()
+  oneoff_type: string
+
+  @IsOptional()
+  price: string
+
+  @IsOptional()
   @IsArray()
   core_features: []
 

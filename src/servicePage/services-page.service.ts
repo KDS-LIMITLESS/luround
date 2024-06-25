@@ -48,7 +48,9 @@ export class ServicePageManager {
       event_type: serviceData.event_type,
       stop_time: serviceData.stop_time,
       date: serviceData.date,
-      service_fee: serviceData.service_fee
+      service_fee: serviceData.service_fee,
+      oneoff_type: serviceData.oneoff_type,
+      price: serviceData.price
     }
     
     try {
@@ -93,7 +95,9 @@ export class ServicePageManager {
       event_type: serviceData.event_type,
       stop_time: serviceData.stop_time,
       date: serviceData.date,
-      service_fee: serviceData.service_fee
+      service_fee: serviceData.service_fee,
+      oneoff_type: serviceData.oneoff_type,
+      price: serviceData.price
     
     }    
 
