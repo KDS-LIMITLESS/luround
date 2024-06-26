@@ -61,11 +61,12 @@ export class Payments {
         console.log("Status:", "Transaction Recorded Successfully!")
       }
       if (eventData.event === 'charge.success') {
-        let verify_booking = await this.paymentManager.verifyBookingPayment(eventData.data.reference.toString(), eventData.data.amount)
-        console.log("Verified Booking:", verify_booking)
-        await this.bookingService.confirm_booking(verify_booking.booking_id)
-
-        // this.paymentManager.verifyBookingPayment()
+        // SET TIMEOUT TO ALLOW FOR THE BOOKING TO REGISTER FIRST
+        setTimeout(async () => {
+          let verify_booking = await this.paymentManager.verifyBookingPayment(eventData.data.reference.toString(), eventData.data.amount)
+          console.log("Verified Booking:", verify_booking)
+          await this.bookingService.confirm_booking(verify_booking.booking_id)
+        }, 3000)
       }
       return res.sendStatus(200)
     }
