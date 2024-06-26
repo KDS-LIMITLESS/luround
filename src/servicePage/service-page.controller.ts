@@ -57,4 +57,12 @@ export class ServiceController {
     .status(HttpStatus.OK)
     .json(await this.services.getService(query.url, query.service_type)) 
   }
+
+  @SkipAuth()
+  @Get('/get-service')
+  async get_service3(@Query() query, @Res() res: Response) {
+    return res
+    .status(HttpStatus.OK)
+    .json(await this.services.get_service( query.service_link)) 
+  }
 }

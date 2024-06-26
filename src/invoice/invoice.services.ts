@@ -7,7 +7,6 @@ import { BookingsManager } from "../bookService/bookService.sevices.js";
 import { ProfileService } from "../profileManager/profile.service.js";
 import { generateRandomSixDigitNumber } from "../utils/mail.services.js";
 import { TransactionsManger } from "../transaction/tansactions.service.js";
-import { InvoiceDto } from "./invooiceDto.js";
 
 
 @Injectable()
@@ -38,7 +37,8 @@ export class InvoiceService {
     // let encryption = new Encrypter(process.env.ENCRYPTION_KEY as string)
     // const service_provider: any = await this.databaseManager.findOneDocument(this._udb, "email", email)
 
-    // let tx_ref = await this.paymentsManager.generateUniqueTransactionCode("LUROUND-INVOICE")
+    let tx_ref = await this.paymentsManager.generateUniqueTransactionCode("LUROUND-INVOICE")
+    let payment_link = await this.paymentsManager.initializePayment(invoice_data.send_to_email, invoice_data.sub_total, tx_ref)
 
     const invoice = {
       invoice_id,
@@ -65,6 +65,9 @@ export class InvoiceService {
       note: invoice_data.note,
       due_date: invoice_data.due_date,
       created_at: Date.now(),
+      payment_link: payment_link.data.authorization_url,
+      tx_ref
+
       //invoice_generated_from_quote: invoice_data.invoice_generated_from_quote
       // time: `${time.getHours()}:${time.getMinutes()}:${time.getSeconds()}`
     }
@@ -78,8 +81,13 @@ export class InvoiceService {
     // )
     try {
       let create_invoice = await this.databaseManager.create(this._idb, invoice)
+      console.log(create_invoice)
       await this.databaseManager.updateArr(this._idb, "_id", new ObjectId(create_invoice.insertedId), "product_detail", invoice_data.product_detail)
-      return { invoice_id, service_provider_address: address['link'] || '', service_provider_phone_number: phone_number['link'] || ''}
+      return { 
+        invoice_id, service_provider_address: address['link'] || '', 
+        service_provider_phone_number: phone_number['link'] || '', 
+        payment_link: payment_link.data.authorization_url
+      }
 
     } catch (err: any) {
       throw new BadRequestException({message: "Invoice Not sent"})
@@ -100,34 +108,38 @@ export class InvoiceService {
 
   async enter_invoice_payment(invoice_id: string, data: any) {
     let tx_ref = await this.paymentsManager.generateUniqueTransactionCode("INVOICE")
-
-    const payment_details = {
-      amount_paid: data.amount_paid,
-      payment_method: data.payment_method,
-      tx_ref
-    }
     try {
-      let [invoice, _] = await Promise.all([await this.get_invoice(invoice_id), await this.databaseManager.updateDocument(this._idb, invoice_id, payment_details) ])
-      console.log(invoice)
-      await this.transactionsManger.record_transaction(invoice.service_provider.userId, {
-        service_id: invoice.product_detail[0].service_id, service_name: invoice.product_detail[0].service_name, 
-        service_fee: data.amount_paid, transaction_ref: payment_details.tx_ref, transaction_status: "RECEIVED", 
-        affliate_user: invoice.send_to_name, customer_email: invoice.send_to_email
-      })
-      let book_service = await this.bookingService.book_service(
-        invoice.product_detail[0], 
-        invoice.product_detail[0].service_id, 
-        {
-          userId: invoice.service_provider.userId, 
-          email: invoice.service_provider.email, 
-          displayName: invoice.service_provider.displayName
-        }, 
-        invoice.invoice_id, payment_details.amount_paid,
-        payment_details.tx_ref, invoice.due_date, invoice.note, "True"
-      )
-
-      await this.bookingService.confirm_booking_with_invoice_id(invoice.invoice_id)
-      return {book_service, product_detail: await this.databaseManager.updateProperty(this._idb, invoice_id, "payment_status", {payment_status: "SUCCESSFUL"})}
+      let invoice = await this.get_invoice(invoice_id)
+      if (invoice) {
+        const payment_details = {
+          amount_paid: data.amount_paid,
+          payment_method: data.payment_method,
+          tx_ref: invoice.tx_ref
+        }
+      
+        await this.databaseManager.updateDocument(this._idb, invoice_id, payment_details)
+        console.log(invoice)
+        await this.transactionsManger.record_transaction(invoice.service_provider.userId, {
+          service_id: invoice.product_detail[0].service_id, service_name: invoice.product_detail[0].service_name, 
+          service_fee: data.amount_paid, transaction_ref: payment_details.tx_ref, transaction_status: "RECEIVED", 
+          affliate_user: invoice.send_to_name, customer_email: invoice.send_to_email
+        })
+        let book_service = await this.bookingService.book_service(
+          invoice.product_detail[0], 
+          invoice.product_detail[0].service_id, 
+          {
+            userId: invoice.service_provider.userId, 
+            email: invoice.service_provider.email, 
+            displayName: invoice.service_provider.displayName
+          }, 
+          invoice.invoice_id, payment_details.amount_paid,
+          payment_details.tx_ref, invoice.due_date, invoice.note, "True"
+        )
+  
+        await this.bookingService.confirm_booking_with_invoice_id(invoice.invoice_id)
+        return {book_service, product_detail: await this.databaseManager.updateProperty(this._idb, invoice_id, "payment_status", {payment_status: "SUCCESSFUL"})}
+      }
+      
     } catch(err: any) {
       throw new BadRequestException({message: "Invoice not found Error"})
     }

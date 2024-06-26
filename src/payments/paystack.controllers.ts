@@ -10,12 +10,12 @@ import { BookingsManager } from "../bookService/bookService.sevices.js";
 export class Payments {
   constructor(private paymentManager: PaymentsAPI, private walletService: WalletService, public bookingService: BookingsManager) {}
 
-  @Post('initialize-payment')
-  async makepayments(@Req() req: Request, @Res() res: Response) {
-    res.status(200).json(
-      await PaymentsAPI.initializePayment(req.body.email, req.body.amount)
-    )
-  }
+  // @Post('initialize-payment')
+  // async makepayments(@Req() req: Request, @Res() res: Response) {
+  //   res.status(200).json(
+  //     await PaymentsAPI.initializePayment(req.body.email, req.body.amount)
+  //   )
+  // }
 
   @Get('verify-payment')
   async verifySubscriptionPayments(@Req() req, @Query() query: any, @Res() res: Response) {

@@ -210,4 +210,15 @@ export class ServicePageManager {
     find_service = await this.servicePageManager.updateDocument(this._spm_db, serviceId, {service_status: "ACTIVE"})
     return find_service
   }
+
+  async get_service(service_link: string) {
+    let service = await this.servicePageManager.findOneDocument(this._spm_db, "service_link", service_link)
+    if (service === undefined) {
+      throw new BadRequestException({
+        status: 400,
+        message: "Service Not found"
+      })
+    }
+    return service
+  }
 }

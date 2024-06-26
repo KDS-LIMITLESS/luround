@@ -22,11 +22,11 @@ export class PaymentsAPI {
 
   constructor(private databaseManager: DatabaseService, private walletService: WalletService) {}
 
-  static async initializePayment(email: string, amount: string): Promise<any> {
+  async initializePayment(email: string, amount: number, reference: string): Promise<any> {
     const data = JSON.stringify({
       'email': email,
-      'amount': amount,
-      'plan': 'PLN_ub6qpgfwsc3820e'
+      'amount': amount * 100,
+      "reference": reference
     });
 
     const options = {
@@ -39,7 +39,9 @@ export class PaymentsAPI {
         'Content-Type': 'application/json'
       }
     };
-    return await this.makeRequest(data, options)
+    let response:any = await PaymentsAPI.makeRequest(data, options)
+    console.log(response)
+    return response
   };
   
   async verifyPayment(transaction_ref: string, userId: any) {
