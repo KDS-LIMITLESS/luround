@@ -211,9 +211,9 @@ export class ServicePageManager {
     return find_service
   }
 
-  async get_service(service_link: string) {
+  async get_service_by_link(service_link: string) {
     let service = await this.servicePageManager.findOneDocument(this._spm_db, "service_link", service_link)
-    if (service === undefined) {
+    if (service === null) {
       throw new BadRequestException({
         status: 400,
         message: "Service Not found"

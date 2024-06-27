@@ -1,5 +1,6 @@
 import { PartialType, PickType } from "@nestjs/mapped-types";
-import { IsArray, IsEnum, IsMongoId, IsNotEmpty, IsNumber, IsOptional } from "class-validator";
+import { Type } from "class-transformer";
+import { IsArray, IsEmail, IsEnum, IsMongoId, IsNotEmpty, IsNumber, IsOptional } from "class-validator";
 
 enum SERVICE_TYPE {
   program = 'Program',
@@ -131,6 +132,52 @@ export class ServicePageDto{
   appointment_time: string
 
 }
+
+export class ServiceProviderDto {
+  @IsNotEmpty()
+  @IsMongoId()
+  userId: string
+
+  @IsEmail()
+  @IsNotEmpty()
+  email: string
+
+  @IsNotEmpty()
+  displayName: string
+
+}
+
+export class OneOffServiceDTO {
+
+  @Type(() => ServiceProviderDto)
+  service_provider_details: ServiceProviderDto
+
+  @IsNotEmpty()
+  service_name: string
+
+  @IsOptional()
+  description: string
+
+  @IsNotEmpty()
+  price: string
+
+  @IsNotEmpty()
+  @IsEnum(SERVICE_TYPE)
+  service_type: string
+
+  @IsNotEmpty()
+  oneoff_type: string
+
+  @IsNotEmpty()
+  availability_schedule: []
+
+  @IsOptional()
+  virtual_meeting_link: string
+
+  @IsOptional()
+  pricing: []
+}
+
 
 export class ServiceDto extends PartialType(ServicePageDto) {}
 export class ServiceTypeDTO extends PickType(ServicePageDto, ['service_type'] as const) {}
