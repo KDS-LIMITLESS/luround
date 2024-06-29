@@ -30,6 +30,7 @@ export class InsightService {
     const serviceId = new ObjectId(service_id);
     
     const serviceInsights = await this._insightsDB.find({ "_id": serviceId }).toArray();
+    if (!serviceInsights[0].bookings) return {clicks: serviceInsights[0].clicks || 0}
 
     let totalBookingCount = 0;
     let serviceBookings = [];
@@ -42,7 +43,8 @@ export class InsightService {
     // Return booking count and bookings as separate objects in a tuple
     return [
        { booking_count: totalBookingCount }, 
-       { bookings: serviceBookings }
+       { bookings: serviceBookings },
+       {clicks: serviceInsights[0].clicks || 0}
     ];
   }
 
