@@ -6,7 +6,7 @@ import { DatabaseService } from "../store/db.service.js";
 
 @Module({
   controllers: [InsightsController],
-  providers: [InsightService, ServicePageManager, DatabaseService]
+  providers: [InsightService, DatabaseService]
 })
 
 export class InsightsModule {}

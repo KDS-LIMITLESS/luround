@@ -13,10 +13,10 @@ export class InsightsController {
     return res.status(HttpStatus.OK).json(await this.insightService.get_service_insight(query.service_id))
   }
 
-  @SkipAuth()
-  @Get('get-service-url')
-  async record_service_link_clicks(@Res() res: Response, @Query() query) {
-    let redirect_url = await this.insightService.record_service_link_clicks(query.url)
-    return res.redirect(redirect_url)
-  }
+  // @SkipAuth()
+  // @Get('get-service-url')
+  // async record_service_link_clicks(@Res() res: Response, @Query() query) {
+  //   let redirect_url = await this.insightService.record_service_link_clicks(query.url)
+  //   return res.redirect(redirect_url)
+  // }
 }

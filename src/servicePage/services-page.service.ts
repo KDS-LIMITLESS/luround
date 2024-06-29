@@ -4,6 +4,7 @@ import { DatabaseService } from "../store/db.service.js";
 import { Encrypter } from "../utils/Encryption.js";
 import { ServiceDto, ServicePageDto } from "./servicePage.dto.js";
 import { generateRandomSixDigitNumber } from "../utils/mail.services.js";
+import { InsightService } from "../insights/insights.service.js";
 
 
 @Injectable()
@@ -12,7 +13,7 @@ export class ServicePageManager {
   _spm_db = this.servicePageManager.serviceDB
   _udb = this.servicePageManager.userDB
 
-  constructor(private servicePageManager: DatabaseService) {}
+  constructor(private servicePageManager: DatabaseService, private Insights: InsightService) {}
 
   async add_new_service(user: any, serviceData: ServicePageDto){
     const { userId, email, displayName } = user
@@ -219,6 +220,7 @@ export class ServicePageManager {
         message: "Service Not found"
       })
     }
+    await this.Insights.record_service_link_clicks(service_link, service._id)
     return service
   }
 }

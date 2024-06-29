@@ -9,7 +9,7 @@ export class InsightService {
 
   _insightsDB = this.DatabaseService.insightDB
   _SPM = this.DatabaseService.serviceDB
-  constructor(private DatabaseService: DatabaseService, private serviceManager:ServicePageManager) {}
+  constructor(private DatabaseService: DatabaseService) {}
 
   // STORE INSIGHTS OF EACH AND EVERY SERVICE CREATED.
   async store_service_booking_history(service_id: string, service_name: string, 
@@ -46,22 +46,17 @@ export class InsightService {
     ];
   }
 
-  async record_service_link_clicks(shortURL: string) {
-    // FIND THE SERVICE WITH SPECIFIED SHORTURL
-    let findService = await this.DatabaseService.findOneDocument(this._SPM, "service_link.shortURL", shortURL)
-      
-    if (findService !== null) {
-      // CHECK IF SERVICES HAS AN INSIGHTS DOCUMENT ON DB AND UPDATE
-      let getServiceInsigts = await this.DatabaseService.findOneDocument(this._insightsDB, "_id", findService._id.toString())
-      if (getServiceInsigts !== null) {
-        await this.DatabaseService.updateDocument(this._insightsDB, findService._id, {clicks: getServiceInsigts.clicks += 1})
-        return findService.service_link.longURL
-      }
-      // ELSE CREATE A NEW INSIGHTS DOCUMENT FOR THE SERVICE
-      await this.DatabaseService.create(this._insightsDB, {"_id": new ObjectId(findService._id.toString()), clicks: 1})
-      return findService.service_link.longURL  // RETURN THE LONG URL OF THE SERVICE
+  async record_service_link_clicks(service_link: string, service_id: string) {
+    // CHECK IF SERVICES HAS AN INSIGHTS DOCUMENT ON DB AND UPDATE
+    let getServiceInsigts = await this.DatabaseService.findOneDocument(this._insightsDB, "_id",service_id)
+    if (getServiceInsigts !== null) {
+      await this.DatabaseService.updateDocument(this._insightsDB, service_id, {clicks: getServiceInsigts.clicks += 1})
+      return service_link
     }
-    throw new BadRequestException({message: "Bad or broken link"})
+    // ELSE CREATE A NEW INSIGHTS DOCUMENT FOR THE SERVICE
+    await this.DatabaseService.create(this._insightsDB, {"_id": new ObjectId(service_id.toString()), clicks: 1})
+    return service_link // RETURN THE LONG URL OF THE SERVICE
+  
   }
 
 }
