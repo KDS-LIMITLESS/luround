@@ -79,11 +79,11 @@ export class Payments {
         } else {
           console.log("Did you continue invoice here?")
           // SET TIMEOUT TO ALLOW FOR THE BOOKING TO REGISTER FIRST
-          setTimeout(async () => {
+          
             let verify_booking = await this.paymentManager.verifyBookingPayment(eventData.data.reference.toString(), eventData.data.amount)
             console.log("Verified Booking:", verify_booking)
             await this.bookingService.confirm_booking(verify_booking.booking_id)
-          }, 3000)
+          
         }
       }
       return res.sendStatus(200)
