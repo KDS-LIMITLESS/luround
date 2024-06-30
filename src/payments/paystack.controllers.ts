@@ -69,7 +69,7 @@ export class Payments {
       // EVENT TYPE = CHARGE.SUCCESS
       if (eventData.event === 'charge.success') {
         if(eventData.data.reference.startsWith("INVOICE")){
-          let invoice = this.invoiceService.get_invoice_with_reference(eventData.data.reference)
+          let invoice = await this.invoiceService.get_invoice_with_reference(eventData.data.reference)
           if (invoice !== null) {
             console.log(invoice)
             let data = { amount_paid: eventData.data.amount, tx_ref: eventData.data.reference }
