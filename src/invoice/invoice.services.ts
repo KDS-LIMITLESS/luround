@@ -38,7 +38,7 @@ export class InvoiceService {
     // const service_provider: any = await this.databaseManager.findOneDocument(this._udb, "email", email)
 
     let tx_ref = await this.paymentsManager.generateUniqueTransactionCode("INVOICE")
-    let payment_amount = invoice_data.sub_total * 0.05
+    let payment_amount = invoice_data.sub_total * 0.05 + invoice_data.total
     let payment_link = await this.paymentsManager.initializePayment(invoice_data.send_to_email, payment_amount, tx_ref)
 
     const invoice = {
@@ -88,7 +88,7 @@ export class InvoiceService {
         invoice_id, service_provider_address: address['link'] || '', 
         service_provider_phone_number: phone_number['link'] || '', 
         payment_link: payment_link.data.authorization_url,
-        processing_fee: payment_amount
+        processing_fee: invoice_data.sub_total * 0.05
       }
 
     } catch (err: any) {

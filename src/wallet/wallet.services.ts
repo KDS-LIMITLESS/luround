@@ -129,10 +129,10 @@ export class WalletService {
   // increase wallet balance.
   async increase_wallet_balance(userId: string, amount: number) {
     try {
-      let { wallet_balance } = await this.get_wallet_balance(userId)
-      if ( wallet_balance !== null ) {
-        wallet_balance += amount
-        await this.databaseManger.updateProperty(this._wDB, userId, 'wallet_ballance', {wallet_balance})
+      let balance  = await this.get_wallet_balance(userId)
+      if ( balance.wallet_balance !== null ) {
+        let bal= balance.wallet_balance + amount
+        await this.databaseManger.updateProperty(this._wDB, userId, 'wallet_ballance', {bal})
         return ResponseMessages.TransactionSuccessful
       }
       await this.create_wallet(userId, '0000')  
