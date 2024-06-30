@@ -72,7 +72,7 @@ export class Payments {
           let invoice = await this.invoiceService.get_invoice_with_reference(eventData.data.reference)
           if (invoice !== null) {
             console.log(invoice)
-            let data = { amount_paid: eventData.data.amount, tx_ref: eventData.data.reference }
+            let data = { amount_paid: eventData.data.amount / 100, tx_ref: eventData.data.reference }
             await this.invoiceService.enter_invoice_payment(invoice, data)
             console.log("FInished Invoice here")
           }
