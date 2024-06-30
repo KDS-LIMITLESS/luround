@@ -31,7 +31,7 @@ export class BookingsManager {
   // If payment valid update booked status
 
   // Increase price based on the service duration
-  async book_service(bookingDetail: BookServiceDto, serviceID: string, user: any, invoice_id?:string, amount_paid?: string, transaction_ref?: string, due_date?: string, note?: string, booking_generated_from_invoice?: string) {
+  async book_service(bookingDetail: BookServiceDto, serviceID: string, user: any, invoice_id?:string, amount_paid?: string, transaction_ref?: string, due_date?: string, note?: string, booking_generated_from_invoice?: string, phone_number?: string) {
     try {
       if (bookingDetail.payment_reference === ''){
         throw new BadRequestException({message: 'Please ensure you complete the payment for this service.'})
@@ -58,7 +58,7 @@ export class BookingsManager {
           // userId: "" || user.userId,
           email: bookingDetail.email,
           displayName: bookingDetail.displayName, 
-          phone_number: bookingDetail.phone_number 
+          phone_number: bookingDetail.phone_number || phone_number
         },
         booked_status: "PENDING CONFIRMATION",
         payment_reference_id: transaction_ref || bookingDetail.payment_reference,
@@ -69,7 +69,7 @@ export class BookingsManager {
         service_details: {
           service_id: serviceDetails._id,
           service_name: serviceDetails.service_name,
-          service_fee: bookingDetail.service_fee,
+          service_fee: bookingDetail.service_fee || amount_paid,
           service_type: bookingDetail.service_type || serviceDetails.service_type,
           appointment_type: bookingDetail.appointment_type,
           date: due_date || bookingDetail.date,
