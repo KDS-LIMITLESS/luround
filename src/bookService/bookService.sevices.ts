@@ -32,7 +32,6 @@ export class BookingsManager {
 
   // Increase price based on the service duration
   async book_service(bookingDetail: BookServiceDto, serviceID: string, user: any, invoice_id?:string, amount_paid?: string, transaction_ref?: string, due_date?: string, note?: string, booking_generated_from_invoice?: string) {
-    console.log(bookingDetail)
     try {
       if (bookingDetail.payment_reference === ''){
         throw new BadRequestException({message: 'Please ensure you complete the payment for this service.'})
@@ -176,8 +175,12 @@ export class BookingsManager {
   }
 
   async confirm_booking_with_invoice_id(invoice_id: string) {
+
+    console.log(invoice_id)
     try {
       let get_booking = await this.bookingsManager.findOneDocument(this._bKM, "invoice_id", invoice_id)
+      console.log(get_booking)
+
       if (get_booking !== null ) {
         await this.serviceInsights.store_service_booking_history(
           get_booking.service_details.service_id,
@@ -186,7 +189,7 @@ export class BookingsManager {
           get_booking.service_details.created_at, 
           get_booking.booking_user_info.displayName 
         )
-        await bookingConfirmed_account_viewer(get_booking.booking_user_info.email, get_booking)
+        await bookingConfirmed_service_provider(get_booking.booking_user_info.email, get_booking)
         // supress bounced emails
         .then(async () => {
           return await this.bookingsManager.updateProperty(this._bKM, get_booking._id, "booked_status", {booked_status: "CONFIRMED"})

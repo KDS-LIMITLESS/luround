@@ -37,14 +37,15 @@ export class InvoiceService {
     // let encryption = new Encrypter(process.env.ENCRYPTION_KEY as string)
     // const service_provider: any = await this.databaseManager.findOneDocument(this._udb, "email", email)
 
-    let tx_ref = await this.paymentsManager.generateUniqueTransactionCode("LUROUND-INVOICE")
-    let payment_link = await this.paymentsManager.initializePayment(invoice_data.send_to_email, invoice_data.sub_total, tx_ref)
+    let tx_ref = await this.paymentsManager.generateUniqueTransactionCode("INVOICE")
+    let payment_amount = invoice_data.sub_total * 0.05
+    let payment_link = await this.paymentsManager.initializePayment(invoice_data.send_to_email, payment_amount, tx_ref)
 
     const invoice = {
       invoice_id,
       // userId: user.userId,
       send_to_name: invoice_data.send_to_name,
-      sent_to_email: invoice_data.send_to_email,
+      send_to_email: invoice_data.send_to_email,
       service_provider: {
         name: user.displayName,
         email: user.email ,
@@ -86,7 +87,8 @@ export class InvoiceService {
       return { 
         invoice_id, service_provider_address: address['link'] || '', 
         service_provider_phone_number: phone_number['link'] || '', 
-        payment_link: payment_link.data.authorization_url
+        payment_link: payment_link.data.authorization_url,
+        processing_fee: payment_amount
       }
 
     } catch (err: any) {
@@ -106,19 +108,22 @@ export class InvoiceService {
     return await this.databaseManager.findOneDocument(this._idb, "_id", invoice_id)
   }
 
-  async enter_invoice_payment(invoice_id: string, data: any) {
-    let tx_ref = await this.paymentsManager.generateUniqueTransactionCode("INVOICE")
+  async get_invoice_with_reference(tx_ref: string) {
+    return await this.databaseManager.findOneDocument(this._idb, "tx_ref", tx_ref)
+  }
+  
+  async enter_invoice_payment(invoice: any, data: any) {
+    // let tx_ref = await this.paymentsManager.generateUniqueTransactionCode("INVOICE")
     try {
-      let invoice = await this.get_invoice(invoice_id)
-      if (invoice) {
+      // let get_invoice = await this.get_invoice(invoice.invoice_id)
+      if (invoice !== null) {
         const payment_details = {
           amount_paid: data.amount_paid,
-          payment_method: data.payment_method,
+          // payment_method: data.payment_method,
           tx_ref: invoice.tx_ref
         }
       
-        await this.databaseManager.updateDocument(this._idb, invoice_id, payment_details)
-        console.log(invoice)
+        await this.databaseManager.updateDocument(this._idb, invoice._id.toString(), payment_details)
         await this.transactionsManger.record_transaction(invoice.service_provider.userId, {
           service_id: invoice.product_detail[0].service_id, service_name: invoice.product_detail[0].service_name, 
           service_fee: data.amount_paid, transaction_ref: payment_details.tx_ref, transaction_status: "RECEIVED", 
@@ -137,7 +142,7 @@ export class InvoiceService {
         )
   
         await this.bookingService.confirm_booking_with_invoice_id(invoice.invoice_id)
-        return {book_service, product_detail: await this.databaseManager.updateProperty(this._idb, invoice_id, "payment_status", {payment_status: "SUCCESSFUL"})}
+        return {book_service, product_detail: await this.databaseManager.updateProperty(this._idb, invoice._id, "payment_status", {payment_status: "SUCCESSFUL"})}
       }
       
     } catch(err: any) {

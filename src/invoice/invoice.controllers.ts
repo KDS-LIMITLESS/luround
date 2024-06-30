@@ -1,6 +1,7 @@
 import { Body, Controller, Res, Req, HttpStatus, Post, Query, Get, Delete, Put } from "@nestjs/common";
 import { InvoiceService } from "./invoice.services.js";
 import { InvoiceDto, InvoicePaymentDto } from "./invooiceDto.js";
+import { SkipAuth } from "../auth/jwt.strategy.js";
 
 @Controller('api/v1/invoice')
 export class InvoiceControllers {
@@ -19,6 +20,12 @@ export class InvoiceControllers {
   @Get('paid-invoices')
   async getPaidInvoices(@Req() req, @Res() res) {
     return res.status(HttpStatus.OK).json(await this.invoiceService.get_paid_invoices(req.user.userId))
+  }
+
+  @SkipAuth()
+  @Get('invoices')
+  async getPaidInvoice(@Req() req, @Res() res, @Query() query) {
+    return res.status(HttpStatus.OK).json(await this.invoiceService.get_invoice_with_reference(query.reference))
   }
 
   @Get('unpaid-invoices')
