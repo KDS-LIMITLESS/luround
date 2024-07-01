@@ -282,7 +282,7 @@ export class BookingsManager {
       })
       console.log(schedule)
       if (schedules.length === 0 ) {
-       return await this.databaseManager.updateArr(this._sdl, "service_name", service_name, "schedule", {...schedule})
+       return await this.databaseManager.readAndWriteToArray(this._sdl, "shedules", schedule)
       }
       throw new BadRequestException({message: "Booking schedule taken"})
     }
