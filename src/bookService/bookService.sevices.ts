@@ -268,23 +268,23 @@ export class BookingsManager {
   async register_booking_schedule(service_name: string, date: any, time: string) {
     try { 
       let booking_schedule = await this.databaseManager.findOneDocument(this._sdl, "service_name", service_name)
-      let schedule = [{
+      let data = [{
         selected_time: time,
         selected_date: date
       }]
       if(booking_schedule === null) {
 
-        return await this.databaseManager.create(this._sdl, {"service_name": service_name, schedules: schedule})
+        return await this.databaseManager.create(this._sdl, {"service_name": service_name, schedules: data})
       }
       console.log(booking_schedule)
       let schedules = booking_schedule.schedules.filter((obj: any) => {
         obj.selected_time === time && obj.selected_date === date
       })
-      console.log(schedule)
+      console.log(schedules)
       if (schedules.length === 0 ) {
-       return await this.databaseManager.updateArr(this._sdl, "service_name", service_name, "schedules", schedule)
+       return await this.databaseManager.updateArr(this._sdl, "service_name", service_name, "schedules", data)
       }
-      throw new BadRequestException({message: "Booking schedule taken"})
+      throw new BadRequestException({message: "Booking data taken"})
     }
     catch (err: any){
       throw new BadRequestException({message: err.message})
