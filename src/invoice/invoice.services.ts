@@ -40,6 +40,7 @@ export class InvoiceService {
     let tx_ref = await this.paymentsManager.generateUniqueTransactionCode("INVOICE")
     let payment_amount = 5/100 * invoice_data.total + invoice_data.total
     let payment_link = await this.paymentsManager.initializePayment(invoice_data.send_to_email, payment_amount, tx_ref)
+    console.log(payment_link)
 
     const invoice = {
       invoice_id,
@@ -82,7 +83,6 @@ export class InvoiceService {
     // )
     try {
       let create_invoice = await this.databaseManager.create(this._idb, invoice)
-      console.log(create_invoice)
       await this.databaseManager.updateArr(this._idb, "_id", new ObjectId(create_invoice.insertedId), "product_detail", invoice_data.product_detail)
       return { 
         invoice_id, service_provider_address: address['link'] || '', 

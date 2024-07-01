@@ -40,7 +40,6 @@ export class PaymentsAPI {
       }
     };
     let response:any = await PaymentsAPI.makeRequest(data, options)
-    console.log(response)
     return response
   };
   
