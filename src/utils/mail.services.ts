@@ -166,8 +166,8 @@ export async function bookingRescheduled(to:string, booking_detail: any) {
       New Date: <b>${booking_detail.service_details.date}</b>  <br>
       Time: <b>${booking_detail.service_details.time} </b> <br>
       Amount Paid: <b>${booking_detail.service_details.service_fee}</b> <br>
-      Delivery: <b>${booking_detail.service_details.appointment_type} </b>
-      Virtual Meeting Link ${meeting_location}</p>
+      Delivery: <b>${booking_detail.service_details.appointment_type} </b></p>
+      <p>Virtual Meeting Link: <b> ${meeting_location}</b></p>
       <p>For 24/7 Support: support@luround.com</p>`
   });
 }
@@ -185,8 +185,8 @@ export async function bookingConfirmed_account_viewer(to:string, booking_detail:
       Date: <b>${booking_detail.service_details.date}</b>  <br>
       Time: <b>${booking_detail.service_details.time} </b> <br>
       Amount Paid: <b>${booking_detail.service_details.service_fee}</b> <br>
-      Delivery: <b>${booking_detail.service_details.appointment_type} </b>
-      Virtual Meeting Link ${meeting_location}</p>`
+      Delivery: <b>${booking_detail.service_details.appointment_type} </b></p>
+      <p>Virtual Meeting Link: <b> ${meeting_location}</b></p>`
   });
 }
 async function check_meeting_location(booking_detail: any) {
@@ -209,8 +209,8 @@ export async function booking_account_viewer(to:string, booking_detail: any) {
       Date: <b>${booking_detail.service_details.date}</b>  <br>
       Time: <b>${booking_detail.service_details.time} </b> <br>
       Amount Paid: <b>${booking_detail.service_details.service_fee}</b> <br>
-      Delivery: <b>${booking_detail.service_details.appointment_type} </b>
-      Virtual Meeting Link ${meeting_location}</p>`
+      Delivery: <b>${booking_detail.service_details.appointment_type} </b></p>
+      <p>Virtual Meeting Link: <b> ${meeting_location}</b></p>`
   });
 }
 
@@ -230,8 +230,8 @@ export async function bookingConfirmed_service_provider(to:string, booking_detai
       Date: <b>${booking_detail.service_details.date}</b>  <br>
       Time: <b>${booking_detail.service_details.time} </b> <br>
       Amount Paid: <b>${booking_detail.service_details.service_fee}</b> <br>
-      Delivery: <b>${booking_detail.service_details.appointment_type} </b>
-      Virtual Meeting Link ${meeting_location}</p>
+      Delivery: <b>${booking_detail.service_details.appointment_type} </b></p>
+      <p>Virtual Meeting Link: <b> ${meeting_location}</b></p>
       <p>For 24/7 Support: support@luround.com</p>`
   });
 }
@@ -250,8 +250,8 @@ export async function SendBookingNotificationEmail_ServiceProvider(to:string, bo
       <p> Service booked: <b>${booking_detail.service_details.service_name}</b> <br>
       Appointment Time: <b>${booking_detail.service_details.time} </b> <br>
       Amount Paid: <b>${booking_detail.service_details.service_fee}</b> <br>
-      Type of booking: <b>${booking_detail.service_details.appointment_type} </b>
-      Virtual Meeting Link ${meeting_location}</p>
+      Type of booking: <b>${booking_detail.service_details.appointment_type} </b></p>
+      <p>Virtual Meeting Link: <b> ${meeting_location}</b></p>
       <p>For 24/7 Support: support@luround.com</p>`
   });
 }
@@ -269,8 +269,8 @@ export async function SendBookingNotificationEmail_Client(to:string, booking_det
       <p> Service booked: <b>${booking_detail.service_details.service_name}</b> <br>
       Appointment Time: <b>${booking_detail.service_details.time} </b> <br>
       Meeting Link: <b>${booking_detail.service_details.meeting_link}</b> <br>
-      Type of booking: <b>${booking_detail.service_details.appointment_type} </b>
-      Virtual Meeting Link ${meeting_location}</p>
+      Type of booking: <b>${booking_detail.service_details.appointment_type} </b></p>
+      <p>Virtual Meeting Link: <b> ${meeting_location}</b></p>
       <p>For 24/7 Support: support@luround.com</p>`
   });
 }
