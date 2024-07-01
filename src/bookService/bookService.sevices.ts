@@ -81,9 +81,7 @@ export class BookingsManager {
           created_at: Date.now()
         }
       }
-      if (serviceDetails.service_type === "One-Off" && serviceDetails.oneoff_type === "time based") {
-        await this.register_booking_schedule(booking_Detail.service_details.service_name, booking_Detail.service_details.date, booking_Detail.service_details.time)
-      }
+      
       let service_booked = await this.databaseManager.create(this._bKM, booking_Detail)
       await scheduleEmailCronJob(booking_Detail.service_details.date, booking_Detail)
 

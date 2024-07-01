@@ -43,4 +43,10 @@ export class BookingsController {
   async confirmBooking(@Query() query: BookingId, @Res() res: Response) {
     return res.status(200).json(await this.bookingsManager.confirm_booking(query.bookingId))
   }
+
+  @SkipAuth()
+  @Post('/check-booking-schedules')
+  async booking_schedules(@Req() req, @Body() payload, @Res() res: Response, @Query() query: ServiceId) {
+    return res.status(200).json(await this.bookingsManager.register_booking_schedule(payload.service_name, payload.date, payload.time))
+  }
 }
