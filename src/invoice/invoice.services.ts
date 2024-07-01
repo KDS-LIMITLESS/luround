@@ -38,11 +38,11 @@ export class InvoiceService {
     // const service_provider: any = await this.databaseManager.findOneDocument(this._udb, "email", email)
 
     let tx_ref = await this.paymentsManager.generateUniqueTransactionCode("INVOICE")
-    let payment_amount = 0.05 * invoice_data.total
+    let payment_amount = 0.05 * invoice_data.total + invoice_data.total
 
-    console.log(payment_amount)
-    let payment_link = await this.paymentsManager.initializePayment(invoice_data.send_to_email, payment_amount + invoice_data.total, tx_ref)
-    console.log(payment_link)
+    console.log(payment_amount, invoice_data)
+    console.log(invoice_data.total)
+    let payment_link = await this.paymentsManager.initializePayment(invoice_data.send_to_email, payment_amount, tx_ref)
 
     const invoice = {
       invoice_id,
