@@ -264,30 +264,34 @@ export class BookingsManager {
       message: ResponseMessages.BOOKING_ID_NOT_FOUND
     })
   }
-
-  async register_booking_schedule(service_name: string, date: any, time: string) {
+  async registerBookingSchedule(serviceName: string, date: any, time: string) {
     try { 
-      let booking_schedule = await this.databaseManager.findOneDocument(this._sdl, "service_name", service_name)
-      let data = [{
+      const bookingSchedule = await this.databaseManager.findOneDocument(this._sdl, "service_name", serviceName);
+  
+      const newData = {
         selected_time: time,
         selected_date: date
-      }]
-      if(booking_schedule === null) {
-
-        return await this.databaseManager.create(this._sdl, {"service_name": service_name, schedules: data})
+      };
+  
+      if (!bookingSchedule) {
+        const newSchedule = {
+          service_name: serviceName,
+          schedules: [newData]
+        };
+        return await this.databaseManager.create(this._sdl, newSchedule);
       }
-      console.log(booking_schedule)
-      let schedules = booking_schedule.schedules.filter((obj: any) => {
-        obj.selected_time === time && obj.selected_date === date
-      })
-      console.log(schedules)
-      if (schedules.length === 0 ) {
-       return await this.databaseManager.updateArr(this._sdl, "service_name", service_name, "schedules", data)
+  
+      const scheduleExists = bookingSchedule.schedules.some((schedule: any) =>
+        schedule.selected_time === time && schedule.selected_date === date
+      );
+  
+      if (!scheduleExists) {
+        return await this.databaseManager.updateArr(this._sdl, "service_name", serviceName, "schedules", [newData]);
       }
-      throw new BadRequestException({message: "Booking data taken"})
+  
+      throw new BadRequestException({ message: "Booking data taken" });
+    } catch (err: any) {
+      throw new BadRequestException({ message: err.message });
     }
-    catch (err: any){
-      throw new BadRequestException({message: err.message})
-    }
-  } 
+  }
 }
