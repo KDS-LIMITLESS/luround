@@ -39,6 +39,8 @@ export class InvoiceService {
 
     let tx_ref = await this.paymentsManager.generateUniqueTransactionCode("INVOICE")
     let payment_amount = 5/100 * invoice_data.total + invoice_data.total
+
+    console.log(invoice_data)
     let payment_link = await this.paymentsManager.initializePayment(invoice_data.send_to_email, payment_amount, tx_ref)
     console.log(payment_link)
 
