@@ -83,6 +83,7 @@ export class DatabaseService {
     let update: any;
      
     data.forEach(async (element) => {
+      console.log(element)
       update = {$push: {[arr_name]: element} }
       await db.findOneAndUpdate(
         {[searchParam]: value}, 
