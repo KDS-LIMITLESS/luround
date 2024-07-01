@@ -270,7 +270,7 @@ export class BookingsManager {
       let booking_schedule = await this.databaseManager.findOneDocument(this._sdl, "service_name", service_name)
       let schedule = {
         selected_time: time,
-        selected_date: date.service_details.date
+        selected_date: date
       }
       if(booking_schedule === null) {
 
