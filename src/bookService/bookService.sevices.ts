@@ -13,10 +13,11 @@ import { InsightService } from "../insights/insights.service.js";
 
 @Injectable()
 export class BookingsManager {
-  _bKM = this.bookingsManager.bookingsDB
+  _bKM = this.databaseManager.bookingsDB
+  _sdl = this.databaseManager.scheduleDB
   
   constructor(
-    private bookingsManager: DatabaseService, 
+    private databaseManager: DatabaseService, 
     private serviceManager: ServicePageManager,
     private transactionsManger: TransactionsManger,
     private paymentsManager: PaymentsAPI,
@@ -80,7 +81,10 @@ export class BookingsManager {
           created_at: Date.now()
         }
       }
-      let service_booked = await this.bookingsManager.create(this._bKM, booking_Detail)
+      if (serviceDetails.service_type === "One-Off" && serviceDetails.oneoff_type === "time based") {
+        await this.register_booking_schedule(booking_Detail.service_details.service_name, booking_Detail.service_details.date, booking_Detail.service_details.time)
+      }
+      let service_booked = await this.databaseManager.create(this._bKM, booking_Detail)
       await scheduleEmailCronJob(booking_Detail.service_details.date, booking_Detail)
 
       // ADD USER TO SERVICE PROVIDER CONTACTS
@@ -142,7 +146,7 @@ export class BookingsManager {
   async confirm_booking(booking_id: string) {
     try {
       
-      let get_booking = await this.bookingsManager.findOneDocument(this._bKM, "_id", booking_id)
+      let get_booking = await this.databaseManager.findOneDocument(this._bKM, "_id", booking_id)
       if (get_booking !== null) {
         // THE BOOKING ALREADY EXISTS. SO CONFIRM THE BOOKING BEFORE PROCEDDING WITH SENDING EMAILS.
         await this.transactionsManger.record_transaction(get_booking.service_provider_info.userId, {
@@ -162,11 +166,11 @@ export class BookingsManager {
         await bookingConfirmed_service_provider(get_booking.service_provider_info.email, get_booking)
         // supress bounced emails
         .then(async () => {
-          return await this.bookingsManager.updateProperty(this._bKM, booking_id, "booked_status", {booked_status: "CONFIRMED"})
+          return await this.databaseManager.updateProperty(this._bKM, booking_id, "booked_status", {booked_status: "CONFIRMED"})
         })
         // EVEN IF EMAIL IS NOT VALID, PROCEED WITH UPDATING THE BOOKING STATUS IN DB
         .catch(async () => {
-          return await this.bookingsManager.updateProperty(this._bKM, booking_id, "booked_status", {booked_status: "CONFIRMED"})
+          return await this.databaseManager.updateProperty(this._bKM, booking_id, "booked_status", {booked_status: "CONFIRMED"})
         })
       } 
     } catch(err: any){
@@ -178,7 +182,7 @@ export class BookingsManager {
 
     console.log(invoice_id)
     try {
-      let get_booking = await this.bookingsManager.findOneDocument(this._bKM, "invoice_id", invoice_id)
+      let get_booking = await this.databaseManager.findOneDocument(this._bKM, "invoice_id", invoice_id)
       console.log(get_booking)
 
       if (get_booking !== null ) {
@@ -192,10 +196,10 @@ export class BookingsManager {
         await bookingConfirmed_service_provider(get_booking.booking_user_info.email, get_booking)
         // supress bounced emails
         .then(async () => {
-          return await this.bookingsManager.updateProperty(this._bKM, get_booking._id, "booked_status", {booked_status: "CONFIRMED"})
+          return await this.databaseManager.updateProperty(this._bKM, get_booking._id, "booked_status", {booked_status: "CONFIRMED"})
         })
         .catch(async () => {
-          return await this.bookingsManager.updateProperty(this._bKM, get_booking._id, "booked_status", {booked_status: "CONFIRMED"})
+          return await this.databaseManager.updateProperty(this._bKM, get_booking._id, "booked_status", {booked_status: "CONFIRMED"})
         })
       }
     } catch(err: any){
@@ -204,7 +208,7 @@ export class BookingsManager {
   }
 
   async get_booked_service_detail(booking_id: string) {
-    let booking:any = await this.bookingsManager.findOneDocument(this._bKM, "_id", booking_id )
+    let booking:any = await this.databaseManager.findOneDocument(this._bKM, "_id", booking_id )
     if ( booking === null) {
       throw new NotFoundException({
         statusCode: 404,
@@ -223,8 +227,8 @@ export class BookingsManager {
       // BOOKED ME = MY SERVICES THAT CUSTOMERS BOOKED
       // i BOOKED = SERVICES THAT I BOOKED FROM OTHER USERS
       let [booked_me, i_booked] = await Promise.all([
-        await this.bookingsManager.readAndWriteToArray(this._bKM, filter1, userId), 
-        await this.bookingsManager.readAndWriteToArray(this._bKM, filter2, userId)
+        await this.databaseManager.readAndWriteToArray(this._bKM, filter1, userId), 
+        await this.databaseManager.readAndWriteToArray(this._bKM, filter2, userId)
       ])
       //  1st OBJECT --> BOOKINGS I MADE TO OTHER USERS
       //  2nd OBJECT -->  BOOKINGS I MADE TO OTHER USERS 
@@ -237,9 +241,9 @@ export class BookingsManager {
   
   // how do we diffarentiate a booking that has been carried out and one that hasnt
   async cancel_booking(booking_id: string) {
-    let booking = await this.bookingsManager.findOneDocument(this._bKM, "_id", booking_id)
+    let booking = await this.databaseManager.findOneDocument(this._bKM, "_id", booking_id)
     if (booking) {
-      return await this.bookingsManager.updateProperty(this._bKM, booking_id, "booked_status", {booked_status: "CANCELLED"})
+      return await this.databaseManager.updateProperty(this._bKM, booking_id, "booked_status", {booked_status: "CANCELLED"})
     }
     throw new NotFoundException({message: "Booking Not Found"})
   }
@@ -248,18 +252,42 @@ export class BookingsManager {
     let schedule_details = {"service_details.date": new_date, "service_details.time": new_time, "service_details.duration": duration, "end_time": end_time, "start_time": start_time}
     let update;
     Object.keys(schedule_details).forEach(async (key) => {
-      update = await this.bookingsManager.updateProperty(this._bKM, booking_id, key, schedule_details)
+      update = await this.databaseManager.updateProperty(this._bKM, booking_id, key, schedule_details)
     })
-    let get_booking = await this.bookingsManager.findOneDocument(this._bKM, "_id", booking_id )
+    let get_booking = await this.databaseManager.findOneDocument(this._bKM, "_id", booking_id )
     await bookingRescheduled(get_booking.booking_user_info.email, get_booking )
     return 'Booking schedule updated'
   }
 
   async delete_booking(booking_id: string) {
-    let booking = await this.bookingsManager.delete(this._bKM, booking_id)
+    let booking = await this.databaseManager.delete(this._bKM, booking_id)
     if (booking.value !== null) return `Booking deleted!` 
     throw new BadRequestException({
       message: ResponseMessages.BOOKING_ID_NOT_FOUND
     })
   }
+
+  async register_booking_schedule(service_name: string, date: any, time: string) {
+    try { 
+      let booking_schedule = await this.databaseManager.findOneDocument(this._sdl, "service_name", service_name)
+      let schedule = {
+        selected_time: time,
+        selected_date: date.service_details.date
+      }
+      if(booking_schedule === null) {
+
+        return await this.databaseManager.create(this._sdl, {"service_name": service_name, schedules: [schedule]})
+      }
+      let schedules = booking_schedule.schedules.filter((obj: any) => {
+        obj.selected_time === time && obj.selected_date === date
+      })
+      if (schedules.length === 0 ) {
+       return await this.databaseManager.updateArr(this._sdl, "service_name", service_name, "schedule", [schedule])
+      }
+      throw new BadRequestException({message: "Booking schedule taken"})
+    }
+    catch (err: any){
+      throw new BadRequestException({message: err.message})
+    }
+  } 
 }

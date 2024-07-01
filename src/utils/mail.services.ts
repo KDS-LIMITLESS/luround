@@ -153,6 +153,8 @@ export async function paymentFailed(to:string, name: string, service_provider: s
 }
 
 export async function bookingRescheduled(to:string, booking_detail: any) {
+  let meeting_location = await check_meeting_location(booking_detail)
+
   return await client.sendMail({
     from: {"address": "support@luround.com", "name": "Luround"},
     to: [{"email_address": {"address": to,"name": booking_detail.booking_user_info.displayName.split(' ')[0]}}],
@@ -164,12 +166,14 @@ export async function bookingRescheduled(to:string, booking_detail: any) {
       New Date: <b>${booking_detail.service_details.date}</b>  <br>
       Time: <b>${booking_detail.service_details.time} </b> <br>
       Amount Paid: <b>${booking_detail.service_details.service_fee}</b> <br>
-      Delivery: <b>${booking_detail.service_details.appointment_type} </b></p>
+      Delivery: <b>${booking_detail.service_details.appointment_type} </b>
+      Virtual Meeting Link ${meeting_location}</p>
       <p>For 24/7 Support: support@luround.com</p>`
   });
 }
 
 export async function bookingConfirmed_account_viewer(to:string, booking_detail: any) {
+  let meeting_location = await check_meeting_location(booking_detail)
   return await client.sendMail({
     from: {"address": "support@luround.com", "name": "Luround"},
     to: [{"email_address": {"address": to,"name": booking_detail.booking_user_info.displayName.split(' ')[0]}}],
@@ -181,11 +185,18 @@ export async function bookingConfirmed_account_viewer(to:string, booking_detail:
       Date: <b>${booking_detail.service_details.date}</b>  <br>
       Time: <b>${booking_detail.service_details.time} </b> <br>
       Amount Paid: <b>${booking_detail.service_details.service_fee}</b> <br>
-      Delivery: <b>${booking_detail.service_details.appointment_type} </b></p>`
+      Delivery: <b>${booking_detail.service_details.appointment_type} </b>
+      Virtual Meeting Link ${meeting_location}</p>`
   });
 }
-
+async function check_meeting_location(booking_detail: any) {
+  let meeting_link = booking_detail.service_details.appointment_type === 'Virtual' ? booking_detail.service_details.location 
+  : 'This is an In-Person event.'
+  return meeting_link
+}
 export async function booking_account_viewer(to:string, booking_detail: any) {
+  let meeting_location = await check_meeting_location(booking_detail)
+
   return await client.sendMail({
     from: {"address": "support@luround.com", "name": "Luround"},
     to: [{"email_address": {"address": to, "name": booking_detail.booking_user_info.displayName.split(' ')[0]}}],
@@ -197,12 +208,15 @@ export async function booking_account_viewer(to:string, booking_detail: any) {
       Date: <b>${booking_detail.service_details.date}</b>  <br>
       Time: <b>${booking_detail.service_details.time} </b> <br>
       Amount Paid: <b>${booking_detail.service_details.service_fee}</b> <br>
-      Delivery: <b>${booking_detail.service_details.appointment_type} </b></p>`
+      Delivery: <b>${booking_detail.service_details.appointment_type} </b>
+      Virtual Meeting Link ${meeting_location}</p>`
   });
 }
 
 
 export async function bookingConfirmed_service_provider(to:string, booking_detail: any) {
+  let meeting_location = await check_meeting_location(booking_detail)
+
   return await client.sendMail({
     from: {"address": "support@luround.com", "name": "Luround"},
     to: [{"email_address": {"address": to,"name": booking_detail.booking_user_info.displayName.split(' ')[0]}}],
@@ -215,12 +229,15 @@ export async function bookingConfirmed_service_provider(to:string, booking_detai
       Date: <b>${booking_detail.service_details.date}</b>  <br>
       Time: <b>${booking_detail.service_details.time} </b> <br>
       Amount Paid: <b>${booking_detail.service_details.service_fee}</b> <br>
-      Delivery: <b>${booking_detail.service_details.appointment_type} </b></p>
+      Delivery: <b>${booking_detail.service_details.appointment_type} </b>
+      Virtual Meeting Link ${meeting_location}</p>
       <p>For 24/7 Support: support@luround.com</p>`
   });
 }
 
 export async function SendBookingNotificationEmail_ServiceProvider(to:string, booking_detail: any) {
+  let meeting_location = await check_meeting_location(booking_detail)
+
   return await client.sendMail({
     from: {"address": "support@luround.com", "name": "Luround"},
     to: [{"email_address": {"address": to,"name": booking_detail.service_provider_info.displayName }}],
@@ -232,12 +249,15 @@ export async function SendBookingNotificationEmail_ServiceProvider(to:string, bo
       <p> Service booked: <b>${booking_detail.service_details.service_name}</b> <br>
       Appointment Time: <b>${booking_detail.service_details.time} </b> <br>
       Amount Paid: <b>${booking_detail.service_details.service_fee}</b> <br>
-      Type of booking: <b>${booking_detail.service_details.appointment_type} </b></p>
+      Type of booking: <b>${booking_detail.service_details.appointment_type} </b>
+      Virtual Meeting Link ${meeting_location}</p>
       <p>For 24/7 Support: support@luround.com</p>`
   });
 }
 
 export async function SendBookingNotificationEmail_Client(to:string, booking_detail: any) {
+  let meeting_location = await check_meeting_location(booking_detail)
+
   return await client.sendMail({
     from: {"address": "support@luround.com", "name": "Luround"},
     to: [{"email_address": {"address": to,"name": booking_detail.booking_user_info.displayName.split(' ')[0]}}],
@@ -248,7 +268,8 @@ export async function SendBookingNotificationEmail_Client(to:string, booking_det
       <p> Service booked: <b>${booking_detail.service_details.service_name}</b> <br>
       Appointment Time: <b>${booking_detail.service_details.time} </b> <br>
       Meeting Link: <b>${booking_detail.service_details.meeting_link}</b> <br>
-      Type of booking: <b>${booking_detail.service_details.appointment_type} </b></p>
+      Type of booking: <b>${booking_detail.service_details.appointment_type} </b>
+      Virtual Meeting Link ${meeting_location}</p>
       <p>For 24/7 Support: support@luround.com</p>`
   });
 }
