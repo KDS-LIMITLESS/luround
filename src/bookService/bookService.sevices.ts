@@ -280,7 +280,7 @@ export class BookingsManager {
         obj.selected_time === time && obj.selected_date === date
       })
       if (schedules.length === 0 ) {
-       return await this.databaseManager.updateArr(this._sdl, "service_name", service_name, "schedule", [schedule])
+       return await this.databaseManager.updateArr(this._sdl, "service_name", service_name, "schedule", schedule[0])
       }
       throw new BadRequestException({message: "Booking schedule taken"})
     }
