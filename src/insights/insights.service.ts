@@ -53,7 +53,8 @@ export class InsightService {
   async record_service_link_clicks(service_link: string, service_id: string) {
     // CHECK IF SERVICES HAS AN INSIGHTS DOCUMENT ON DB AND UPDATE
     let getServiceInsigts = await this.DatabaseService.findOneDocument(this._insightsDB, "_id",service_id)
-    if (getServiceInsigts !== null) {
+    console.log(getServiceInsigts.clicks)
+    if (getServiceInsigts !== null && getServiceInsigts.clicks !== undefined) {
       await this.DatabaseService.updateDocument(this._insightsDB, service_id, {clicks: getServiceInsigts.clicks += 1})
       return service_link
     }
