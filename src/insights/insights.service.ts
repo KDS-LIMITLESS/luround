@@ -55,8 +55,9 @@ export class InsightService {
     let getServiceInsigts = await this.DatabaseService.findOneDocument(this._insightsDB, "_id",service_id)
     console.log(getServiceInsigts.clicks)
     if (getServiceInsigts !== null ) {
-      getServiceInsigts.clicks === undefined ? Number(getServiceInsigts.clicks ?? 0) : Number(getServiceInsigts.clicks)
-      await this.DatabaseService.updateDocument(this._insightsDB, service_id, {clicks: getServiceInsigts.clicks += 1})
+      let clicks = 0
+      getServiceInsigts.clicks === undefined ? clicks = Number(getServiceInsigts.clicks ?? 0) : clicks = Number(getServiceInsigts.clicks)
+      await this.DatabaseService.updateDocument(this._insightsDB, service_id, {clicks: clicks += 1})
       return service_link
     }
     // ELSE CREATE A NEW INSIGHTS DOCUMENT FOR THE SERVICE
