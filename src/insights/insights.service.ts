@@ -30,6 +30,7 @@ export class InsightService {
     const serviceId = new ObjectId(service_id);
     
     const serviceInsights = await this._insightsDB.find({ "_id": serviceId }).toArray();
+    console.log(serviceInsights)
     if(serviceInsights === undefined) return []
     if (!serviceInsights[0].bookings) return {clicks: serviceInsights[0].clicks || 0}
 
