@@ -22,7 +22,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
       displayName: payload.displayName,
       photoUrl: payload.photoUrl,
       user_nToken: payload.user_nToken,
-      account_status: payload.account_status
+      // account_status: payload.account_status
     }
   }
 }

@@ -90,13 +90,18 @@ export class WalletService {
   }
 
   async forgot_wallet_pin(userId: string,  new_pin: string, otp: number) {
-    let document = await this.databaseManger.findOneDocument(this._wDB, "_id", userId)
-    if (document.pin_reset_otp === otp && new_pin.length === 4) {
-      const new_pin_hash = await bcrypt.hash(new_pin, 12)
-      await this.databaseManger.updateProperty(this._wDB, userId, "wallet_pin", {"wallet_pin": new_pin_hash})
-      return ResponseMessages.PinResetSuccessful
+    try {
+      let document = await this.databaseManger.findOneDocument(this._wDB, "_id", userId)
+      if (document.pin_reset_otp === otp && new_pin.length === 4) {
+        const new_pin_hash = await bcrypt.hash(new_pin, 12)
+        await this.databaseManger.updateProperty(this._wDB, userId, "wallet_pin", {"wallet_pin": new_pin_hash})
+        return ResponseMessages.PinResetSuccessful
+      }
+      throw new BadRequestException({message: "Invalid Otp"})
+    } catch (err: any) {
+      throw new BadGatewayException({message: "pin_reset_otp not generated"})
     }
-    throw new BadRequestException({message: "Invalid Otp"})
+    
   }
 
   async send_wallet_reset_pin_otp(user: any) {

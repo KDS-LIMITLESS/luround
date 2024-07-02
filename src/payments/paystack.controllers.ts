@@ -115,17 +115,17 @@ export class Payments {
     return res.status(200).json(await this.paymentManager.createTransferRecipient(req.user.email, body.account_number, body.bank_code, body.name))
   }
 
-  @SkipAuth()
-  @Get('create-monthly-plan')
-  async create_monthly_plan(@Req() req, @Res() res,) {
-    return res.status(HttpStatus.OK).json(await PaymentsAPI.create_monthly_payment_plan())
-  }
+  // @SkipAuth()
+  // @Get('create-monthly-plan')
+  // async create_monthly_plan(@Req() req, @Res() res,) {
+  //   return res.status(HttpStatus.OK).json(await PaymentsAPI.create_monthly_payment_plan())
+  // }
 
-  @SkipAuth()
-  @Get('create-yearly-plan')
-  async create_yearly_plan(@Req() req, @Res() res,) {
-    return res.status(HttpStatus.OK).json(await PaymentsAPI.create_yearly_payment_plan())
-  }
+  // @SkipAuth()
+  // @Get('create-yearly-plan')
+  // async create_yearly_plan(@Req() req, @Res() res,) {
+  //   return res.status(HttpStatus.OK).json(await PaymentsAPI.create_yearly_payment_plan())
+  // }
 
   @Get('user-subscription')
   async get_user_subscription_plan(@Req() req, @Res() res) {
