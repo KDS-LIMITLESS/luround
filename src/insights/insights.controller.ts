@@ -13,6 +13,7 @@ export class InsightsController {
     return res.status(HttpStatus.OK).json(await this.insightService.get_service_insight(query.service_id))
   }
 
+  @SkipAuth()
   @Post('record-service-click')
   async record_service_clicks(@Res() res, @Body() payload) {
     return res.status(HttpStatus.OK).json(await this.insightService.record_service_link_clicks(payload.service_link, payload.service_id))
