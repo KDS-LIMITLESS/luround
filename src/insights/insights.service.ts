@@ -57,7 +57,7 @@ export class InsightService {
       throw new BadRequestException({message: err.essage})
     }
   }
-
+  
   async record_service_link_clicks(service_link: string, service_id: string) {
     try {
        // CHECK IF SERVICES HAS AN INSIGHTS DOCUMENT ON DB AND UPDATE

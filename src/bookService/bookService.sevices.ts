@@ -83,6 +83,15 @@ export class BookingsManager {
       }
       
       let service_booked = await this.databaseManager.create(this._bKM, booking_Detail)
+      // REGISTER SERVICE INSIGHTS.
+      let dt = new Date()
+      await this.serviceInsights.store_service_booking_history(
+        serviceDetails._id,
+        serviceDetails.service_name, 
+        bookingDetail.service_fee, 
+        `${dt.getDate()}/${dt.getMonth()}/${dt.getFullYear()}`, 
+        bookingDetail.displayName 
+      )
       await scheduleEmailCronJob(booking_Detail.service_details.date, booking_Detail)
 
       // ADD USER TO SERVICE PROVIDER CONTACTS
@@ -152,14 +161,7 @@ export class BookingsManager {
           service_fee: get_booking.service_details.service_fee, transaction_ref: get_booking.payment_reference_id, transaction_status: "RECEIVED", 
           affliate_user: get_booking.booking_user_info.displayName, customer_email: get_booking.booking_user_info.email
         })
-        // REGISTER SERVICE INSIGHTS.
-        await this.serviceInsights.store_service_booking_history(
-          get_booking.service_details.service_id,
-          get_booking.service_details.service_name, 
-          get_booking.service_details.service_fee, 
-          get_booking.service_details.created_at, 
-          get_booking.booking_user_info.displayName 
-        )
+        
         // await bookingConfirmed_account_viewer(get_booking.booking_user_info.email, get_booking)
         await bookingConfirmed_service_provider(get_booking.service_provider_info.email, get_booking)
         // supress bounced emails
@@ -184,13 +186,7 @@ export class BookingsManager {
       console.log(get_booking)
 
       if (get_booking !== null ) {
-        await this.serviceInsights.store_service_booking_history(
-          get_booking.service_details.service_id,
-          get_booking.service_details.service_name, 
-          get_booking.service_details.service_fee, 
-          get_booking.service_details.created_at, 
-          get_booking.booking_user_info.displayName 
-        )
+       
         await bookingConfirmed_service_provider(get_booking.booking_user_info.email, get_booking)
         // supress bounced emails
         .then(async () => {
