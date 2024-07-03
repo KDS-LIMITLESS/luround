@@ -58,7 +58,6 @@ export class InsightService {
     try {
        // CHECK IF SERVICES HAS AN INSIGHTS DOCUMENT ON DB AND UPDATE
       let getServiceInsigts = await this.DatabaseService.findOneDocument(this._insightsDB, "_id",service_id)
-      console.log(getServiceInsigts.clicks)
       if (getServiceInsigts !== null ) {
         let clicks = 0
         getServiceInsigts.clicks === undefined ? clicks = Number(getServiceInsigts.clicks ?? 0) : clicks = Number(getServiceInsigts.clicks)

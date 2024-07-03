@@ -49,7 +49,7 @@ export class Payments {
      
     if (hash === req.headers['x-paystack-signature']) {
       const eventData = req.body;
-      console.log(eventData)
+
       if(eventData.event === 'transfer.success') {
         console.log("Verifying Transfer...:", eventData.data.reference )
         let amount = eventData.data.amount / 100
@@ -67,6 +67,7 @@ export class Payments {
         )
         console.log("Status:", "Transaction Recorded Successfully!")
       }
+
       // EVENT TYPE = CHARGE.SUCCESS
       if (eventData.event === 'charge.success') {
         if(eventData.data.reference.startsWith("INVOICE")){
@@ -75,16 +76,13 @@ export class Payments {
             console.log(invoice)
             let data = { amount_paid: Number(eventData.data.amount) / 100, tx_ref: eventData.data.reference }
             await this.invoiceService.enter_invoice_payment(invoice, data)
-            console.log("FInished Invoice here")
           }
         } else {
-          console.log("Did you continue invoice here?")
           // SET TIMEOUT TO ALLOW FOR THE BOOKING TO REGISTER FIRST
           
-            let verify_booking = await this.paymentManager.verifyBookingPayment(eventData.data.reference.toString(), Number(eventData.data.amount))
-            console.log("Verified Booking:", verify_booking)
-            await this.bookingService.confirm_booking(verify_booking.booking_id)
-          
+          let verify_booking = await this.paymentManager.verifyBookingPayment(eventData.data.reference.toString(), Number(eventData.data.amount))
+          console.log("Verified Booking:", verify_booking)
+          await this.bookingService.confirm_booking(verify_booking.booking_id)
         }
       }
       return res.sendStatus(200)
