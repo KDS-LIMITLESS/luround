@@ -26,7 +26,7 @@ export class ServiceController {
   async suspend_user_service(@Req() req, @Query() query, @Res() res: Response) {
     return res
     .status(HttpStatus.OK)
-    .json(await this.services.suspend_service(req.user.userId, query.service_id)) 
+    .json(await this.services.suspend_service(query.service_id)) 
   }
 
   @Delete('/delete')

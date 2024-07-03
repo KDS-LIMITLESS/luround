@@ -198,7 +198,7 @@ export class ServicePageManager {
     }
   }
 
-  async suspend_service(userId: string, serviceId: string) {
+  async suspend_service(serviceId: string) {
     if (serviceId === undefined) throw new BadRequestException({
       message: "Invalid Service Id"
     })
