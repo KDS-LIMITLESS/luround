@@ -27,27 +27,31 @@ export class InsightService {
 
   // RETURN THE BOOKINGS MADE FOR A PARTICULAR SERVICE
   async get_service_insight(service_id: string) {
-    const serviceId = new ObjectId(service_id);
+    try {
+      const serviceId = new ObjectId(service_id);
     
-    const serviceInsights = await this._insightsDB.find({ "_id": serviceId }).toArray();
-    console.log(serviceInsights)
-    if(serviceInsights === undefined) return []
-    if (!serviceInsights[0].bookings) return {clicks: serviceInsights[0].clicks || 0}
+      const serviceInsights = await this._insightsDB.find({ "_id": serviceId }).toArray();
+      console.log(serviceInsights)
+      if(serviceInsights === undefined) return []
+      if (!serviceInsights[0].bookings) return {clicks: serviceInsights[0].clicks || 0}
 
-    let totalBookingCount = 0;
-    let serviceBookings = [];
+      let totalBookingCount = 0;
+      let serviceBookings = [];
 
-    serviceInsights.forEach((insight) => {
-        serviceBookings.push(...insight.bookings);  // flatten bookings array wit spread
-        totalBookingCount += insight.bookings.length;
-    });
+      serviceInsights.forEach((insight) => {
+          serviceBookings.push(...insight.bookings);  // flatten bookings array wit spread
+          totalBookingCount += insight.bookings.length;
+      });
 
-    // Return booking count and bookings as separate objects in a tuple
-    return [
-       { booking_count: totalBookingCount }, 
-       { bookings: serviceBookings },
-       {clicks: serviceInsights[0].clicks || 0}
-    ];
+      // Return booking count and bookings as separate objects in a tuple
+      return [
+         { booking_count: totalBookingCount }, 
+         { bookings: serviceBookings },
+         {clicks: serviceInsights[0].clicks || 0}
+      ];
+    }catch(err: any) {
+      throw new BadRequestException({message: err.essage})
+    }
   }
 
   async record_service_link_clicks(service_link: string, service_id: string) {
