@@ -72,7 +72,7 @@ export class Payments {
           let invoice = await this.invoiceService.get_invoice_with_reference(eventData.data.reference)
           if (invoice !== null) {
             console.log(invoice)
-            let data = { amount_paid: eventData.data.amount / 100, tx_ref: eventData.data.reference }
+            let data = { amount_paid: Number(eventData.data.amount) / 100, tx_ref: eventData.data.reference }
             await this.invoiceService.enter_invoice_payment(invoice, data)
             console.log("FInished Invoice here")
           }
@@ -80,7 +80,7 @@ export class Payments {
           console.log("Did you continue invoice here?")
           // SET TIMEOUT TO ALLOW FOR THE BOOKING TO REGISTER FIRST
           
-            let verify_booking = await this.paymentManager.verifyBookingPayment(eventData.data.reference.toString(), eventData.data.amount)
+            let verify_booking = await this.paymentManager.verifyBookingPayment(eventData.data.reference.toString(), Number(eventData.data.amount))
             console.log("Verified Booking:", verify_booking)
             await this.bookingService.confirm_booking(verify_booking.booking_id)
           
