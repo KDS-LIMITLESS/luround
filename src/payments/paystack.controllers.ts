@@ -60,7 +60,8 @@ export class Payments {
             amount: amount,
             reason: `Funds transfer to user: ${eventData.data.reason}`,
             recipient_code: eventData.data.recipient.recipient_code,
-            reference: eventData.data.reference
+            reference: eventData.data.reference,
+            session: eventData.data.session
           },   
           eventData.data.transfer_code
         )
