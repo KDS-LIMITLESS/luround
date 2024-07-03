@@ -212,14 +212,20 @@ export class ServicePageManager {
   }
 
   async get_service_by_link(service_link: string) {
-    let service = await this.servicePageManager.findOneDocument(this._spm_db, "service_link", service_link)
-    if (service === null) {
-      throw new BadRequestException({
-        status: 400,
-        message: "Service Not found"
-      })
+    try {
+      let service = await this.servicePageManager.findOneDocument(this._spm_db, "service_link", service_link)
+      if (service === null) {
+        throw new BadRequestException({
+          status: 400,
+          message: "Service Not found"
+        })
+      }
+      await this.Insights.record_service_link_clicks(service_link, service._id)
+      return service
+    } catch (err: any) {
+      throw new BadRequestException({message: err.message})
     }
-    await this.Insights.record_service_link_clicks(service_link, service._id)
-    return service
   }
+    
+    
 }
