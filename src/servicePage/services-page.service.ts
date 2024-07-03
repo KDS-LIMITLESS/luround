@@ -199,11 +199,11 @@ export class ServicePageManager {
   }
 
   async suspend_service(serviceId: string) {
-    if (serviceId === undefined) throw new BadRequestException({
+    let find_service = await this.servicePageManager.findOneDocument(this._spm_db, "_id", serviceId)
+    if (find_service === null) throw new BadRequestException({
       message: "Invalid Service Id"
     })
-    let find_service = await this.servicePageManager.findOneDocument(this._spm_db, "_id", serviceId)
-    if (find_service !== null && find_service.service_status === 'ACTIVE') {
+    if (find_service.service_status === 'ACTIVE') {
       find_service = await this.servicePageManager.updateDocument(this._spm_db, serviceId, {service_status: "SUSPENDED"})
       return find_service
     }
