@@ -30,21 +30,11 @@ export async function sendOnboardingMail(to:string, name: string) {
     subject: `Welcome, ${name}`,
     htmlbody: `<p> Hi <b>${name}</b>, </p> 
       <p> Thanks for joining the Luround community! We're happy to have you here! </p>
-      <p> We created Luround to help professional service providers seamlessly and easily operate
-        different parts of their business from a single platform, and we're glad you've chosen us to help
-        you meet your needs. 
-      </p>
-      <p> Over the next few weeks, we'll be integrating new features and updates to make your
-        experience with Luround much more pleasant. We will also be checking in with you and sending
-        materials that will help you get started with those new features to ensure you get the most out of
-        it.
-      </p>
-      <p> Since you’ve recently downloaded the Luround app, you automatically have 30 days of free trial. 
-        We hope that this window of time gives you new opportunities to further grow your business.
+      <p> We created Luround to help professional service providers seamlessly manage their client relationships and we're glad you've 
+      chosen us to help you meet your needs. 
       </p>
       <p> Please don't hesitate to reach out for 24/7 support at support@luround.com if you need assistance! </p>
-      <p> We're so happy you're part of this community! </p> 
-      <p> Thanks, </p>
+      <p> To your success, </p>
       <p> C.C from Luround</p>`,
   })
 
@@ -124,6 +114,17 @@ export async function WithdrawalFailed(to:string, name: string, wallet_balance: 
     htmlBody: `<p>Hi <b>${name}</b>, </p>
       <p>Your withdrawal of ${amount} from your wallet failed.</P>
       <p>Your Wallet balance is <b>${wallet_balance}.</b></p>
+      <p>For 24/7 Support: support@luround.com</p>`
+  });
+}
+
+export async function quoteRequested(to:string, name: string, service_provider: string, service_name: string) {
+  return await client.sendMail({
+    from: {"address": "support@luround.com", "name": "Luround"},
+    to: [{"email_address": {"address": to,"name": service_provider}}],
+    subject: 'Quote Requested',
+    htmlBody: `<p>Hi <b>${service_provider.split(' ')[0]}</b>, </p>
+      <p>${name} requested a quote for your service <b>${service_name}</b> failed.
       <p>For 24/7 Support: support@luround.com</p>`
   });
 }
