@@ -302,8 +302,7 @@ export class PaymentsAPI {
 // };
 
 
-export async function initiateTransferToUserBank(user: any, amount: number, recipient_code: string, reference: string, reason: string) {
-  console.log(recipient_code)
+export async function initiateTransferToUserBank(user: any, amount: number, recipient_code: string, reference: string) {
   const data = JSON.stringify({
     'source': 'balance',
     'amount': amount,
@@ -322,7 +321,6 @@ export async function initiateTransferToUserBank(user: any, amount: number, reci
     }
   };
   try {
-    console.log(data)
     let response: any = await PaymentsAPI.makeRequest(data, options)
     return response
   } catch (err: any) {

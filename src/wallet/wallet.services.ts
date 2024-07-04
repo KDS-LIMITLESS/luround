@@ -159,8 +159,7 @@ export class WalletService {
       if (wallet_balance >= payload.amount) {
         // CALL INITIATE TRANSFER FUNCTION
         let amount = payload.amount * 100
-        let transfer = await initiateTransferToUserBank(user, amount, payload.recipient_code, payload.reference, payload.reason)
-        console.log(transfer)
+        let transfer = await initiateTransferToUserBank(user, amount, payload.recipient_code, payload.reference)
         if (transfer.status === true) {
           // SAVE TRANSFER REFERENCE AD RECIPIENT CODE TO DB
           // await this.transactions.record_user_transfer_transactions(userId, payload, transfer.data.transfer_code)

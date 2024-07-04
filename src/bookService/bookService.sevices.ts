@@ -6,7 +6,7 @@ import { BookServiceDto } from "./bookServiceDto.js";
 import { TransactionsManger } from "../transaction/tansactions.service.js";
 import { PaymentsAPI } from "../payments/paystack.sevices.js";
 import { UserService } from "../user/user.service.js";
-import { bookingConfirmed_account_viewer, bookingConfirmed_service_provider, bookingRescheduled, booking_account_viewer, scheduleEmailCronJob } from "../utils/mail.services.js";
+import { bookingConfirmed_account_viewer, bookingConfirmed_service_provider, bookingRescheduled, booking_account_viewer, convertToDateTime, scheduleEmailCronJob } from "../utils/mail.services.js";
 import { CRMService } from "../crm/crm.service.js";
 import { ObjectId } from "mongodb";
 import { InsightService } from "../insights/insights.service.js";
@@ -260,6 +260,7 @@ export class BookingsManager {
       message: ResponseMessages.BOOKING_ID_NOT_FOUND
     })
   }
+
   async registerBookingSchedule(serviceName: string, date: any, time: string) {
     try { 
       const bookingSchedule = await this.databaseManager.findOneDocument(this._sdl, "service_name", serviceName);
@@ -276,18 +277,36 @@ export class BookingsManager {
         };
         return await this.databaseManager.create(this._sdl, newSchedule);
       }
-  
+      // CHECK SCHEDULE DATE AND REMOVE FROM DB
+      await this.clear_service_schedule(bookingSchedule._id, bookingSchedule)
+      
+      // CHECK IF SCHEDULE ALREADY TAKEN
       const scheduleExists = bookingSchedule.schedules.some((schedule: any) =>
         schedule.selected_time === time && schedule.selected_date === date
       );
-  
+      
       if (!scheduleExists) {
         return await this.databaseManager.updateArr(this._sdl, "service_name", serviceName, "schedules", [newData]);
       }
-  
+      
       throw new BadRequestException({ message: "Booking data taken" });
     } catch (err: any) {
       throw new BadRequestException({ message: err.message });
+    }
+  }
+
+  async clear_service_schedule(_id: string, schedule:any) {
+    let currentDate = new Date()
+    
+    let outdatedSchedule = []
+    schedule.schedules.filter((elem: any) => {
+      let time = convertToDateTime(elem.selected_time)
+      let scheduleDate = new Date(`${elem.selected_date} ${time.split(" ")[4]}`) 
+      scheduleDate > currentDate ? true : outdatedSchedule.push(elem)
+      return scheduleDate > currentDate
+    })
+    for (const elem of outdatedSchedule){
+      await this.databaseManager.deletefromArray(this._sdl, _id, "schedules", elem )
     }
   }
 }

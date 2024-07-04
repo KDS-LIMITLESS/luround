@@ -351,3 +351,31 @@ export async function generateRandomAlphabets(length) {
   const charactersLength = characters.length;
   return Array.from({ length }, () => characters.charAt(Math.floor(Math.random() * charactersLength))).join('');
 }
+
+export function convertToDateTime(timeStr) {
+  // Get the current date
+  const currentDate = new Date();
+
+  // Split the time string into time and period (AM/PM)
+  const [time, period] = timeStr.split(' ');
+  
+  // Split the time part into hours and minutes
+  let [hours, minutes] = time.split(':');
+  hours = parseInt(hours, 10);
+  minutes = parseInt(minutes, 10);
+
+  // Convert to 24-hour format if PM
+  if (period === 'PM' && hours !== 12) {
+    hours += 12;
+  } else if (period === 'AM' && hours === 12) {
+    hours = 0;
+  }
+
+  // Set the hours and minutes to the current date
+  currentDate.setHours(hours) + 1;
+  currentDate.setMinutes(minutes);
+  currentDate.setSeconds(0);
+  currentDate.setMilliseconds(0);
+
+  return currentDate.toString();
+}

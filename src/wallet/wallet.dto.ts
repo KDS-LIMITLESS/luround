@@ -37,6 +37,4 @@ export class WithdrawDTO {
   @IsNotEmpty()
   reference: string
 
-  @IsOptional()
-  reason: string
 }
