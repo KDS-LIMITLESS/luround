@@ -29,6 +29,7 @@ export class ServicePageManager {
       pricing: serviceData.pricing,
       virtual_meeting_link: serviceData.virtual_meeting_link,
       availability_schedule: serviceData.availability_schedule,
+      is_active: true,
       
       virtual_event_fee: serviceData.virtual_event_fee,
       in_person_event_fee: serviceData.in_person_event_fee,
