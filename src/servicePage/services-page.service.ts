@@ -75,6 +75,7 @@ export class ServicePageManager {
       pricing: serviceData.pricing,
       virtual_meeting_link: serviceData.virtual_meeting_link,
       availability_schedule: serviceData.availability_schedule,
+      is_active: true,
       
       virtual_event_fee: serviceData.virtual_event_fee,
       in_person_event_fee: serviceData.in_person_event_fee,
@@ -206,11 +207,11 @@ export class ServicePageManager {
       })
 
       if (find_service.service_status === 'ACTIVE') {
-        find_service = await this.servicePageManager.updateDocument(this._spm_db, serviceId, {service_status: "SUSPENDED"})
+        find_service = await this.servicePageManager.updateDocument(this._spm_db, serviceId, {service_status: "SUSPENDED", is_active: false})
         return find_service
       }
 
-      find_service = await this.servicePageManager.updateDocument(this._spm_db, serviceId, {service_status: "ACTIVE"})
+      find_service = await this.servicePageManager.updateDocument(this._spm_db, serviceId, {service_status: "ACTIVE", is_active: true})
       return find_service
     } catch (err: any){
       throw new BadRequestException({message: err.message})
