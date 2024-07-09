@@ -41,7 +41,7 @@ export class PaymentsAPI {
     };
     let response:any = await PaymentsAPI.makeRequest(data, options)
     console.log(response)
-    return response.data
+    return response.data.authorization_url
   };
   
   async verifyPayment(transaction_ref: string, userId: any) {
