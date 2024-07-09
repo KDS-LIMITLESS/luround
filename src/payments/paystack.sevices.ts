@@ -109,9 +109,15 @@ export class PaymentsAPI {
         // SET WALLET BALANCE
         // DEDUCT 5%
         charged_amount = charged_amount / 100
+        console.log("Original_Charge_amount:", charged_amount)
         let deduct_service_charge = 5/100 * charged_amount
-        console.log(deduct_service_charge)
         charged_amount -= deduct_service_charge
+        console.log(JSON.stringify(
+          {
+            "Deduct_Service_Charge":deduct_service_charge, 
+            "New_Charge_amount:": charged_amount
+          })
+        )
         await this.walletService.increase_wallet_balance(service_providerId, charged_amount)
         
         // SAVE PAYMENT DETAILS TO SERVICE PAYMENTS DATABASE

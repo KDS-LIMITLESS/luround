@@ -204,7 +204,7 @@ export async function booking_account_viewer(to:string, booking_detail: any) {
     to: [{"email_address": {"address": to, "name": booking_detail.booking_user_info.displayName.split(' ')[0]}}],
     subject: 'Service Booking',
     htmlBody: `<p>Hi <b>${booking_detail.booking_user_info.displayName.split(' ')[0]}</b>, </p>
-      <p>You have booked a service with ${booking_detail.service_provider_info.displayName}, and you will receive a confirmation email once ${booking_detail.service_provider_info.displayName} has confirmed your booking</P>
+      <p>You have booked a service with ${booking_detail.service_provider_info.displayName}</P>
       <p> Here’s the breakdown - </p>
       <p> Service booked: <b>${booking_detail.service_details.service_name}</b> <br>
       Date: <b>${booking_detail.service_details.date}</b>  <br>

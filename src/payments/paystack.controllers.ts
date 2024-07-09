@@ -75,6 +75,7 @@ export class Payments {
           if (invoice !== null) {
             console.log(invoice)
             let data = { amount_paid: Number(eventData.data.amount) / 100, tx_ref: eventData.data.reference }
+            // WHERE ARE YOU DEDUCTING THE CHARGE
             await this.invoiceService.enter_invoice_payment(invoice, data)
           }
         } else {
