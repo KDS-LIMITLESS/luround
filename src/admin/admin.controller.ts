@@ -1,4 +1,4 @@
-import { Controller, Get, HttpStatus, Req, Res } from "@nestjs/common";
+import { Controller, Get, HttpStatus, Query, Res } from "@nestjs/common";
 import { AdminService } from "./admin.service.js";
 import { SkipAuth } from "../auth/jwt.strategy.js";
 
@@ -15,7 +15,7 @@ export class AdminController {
 
   @SkipAuth()
   @Get('analytics2')
-  async get_analytics2(@Res() res, @Req() req) {
-    return res.status(HttpStatus.OK).json(await this.adminService.computeAdminAnalytics2(req.body.email))
+  async get_analytics2(@Res() res, @Query() query) {
+    return res.status(HttpStatus.OK).json(await this.adminService.computeAdminAnalytics2(query.email))
   }
 }
