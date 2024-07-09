@@ -60,7 +60,7 @@ export class InvoiceService {
       note: invoice_data.note,
       due_date: invoice_data.due_date,
       created_at: Date.now(),
-      payment_link: payment_link.data.authorization_url || "",
+      payment_link: await payment_link.data.authorization_url || "",
       tx_ref
     };
   
