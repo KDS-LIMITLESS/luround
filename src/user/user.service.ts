@@ -93,7 +93,7 @@ export class UserService {
         certificates: [],
         media_links: [],
         user_nToken: user.user_nToken,
-        created_at: date.toISOString(),
+        created_at: date,
         account_status: "TRIAL",
         sent_expiry_email: false,
         trial_expiry: new Date(date.getTime() + 30 * 24 * 60 * 60 * 1000)
@@ -177,5 +177,10 @@ export class UserService {
   async deleteUserAccountTest(user_email: string) {
     await this._udb.findOneAndDelete({'email': user_email})
     return "User account deleted"
+  }
+
+  async updateLastLoginDate(userId: string) {
+    let date = Date.now()
+    return await this.databaseManager.updateDocument(this._udb, userId, {updated_at: date})
   }
 }

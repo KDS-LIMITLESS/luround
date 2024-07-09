@@ -24,6 +24,7 @@ import { ReceiptModule } from './receipt/receipt.moodule.js';
 import { CRMModule } from './crm/crm.module.js';
 import { SocketsModule } from './sockets/socket.module.js';
 import { InsightsModule } from './insights/insights.module.js';
+import { AdminModule } from './admin/admin.module.js';
 
 @Module({
   imports: [
@@ -46,7 +47,8 @@ import { InsightsModule } from './insights/insights.module.js';
     ReceiptModule,
     CRMModule,
     SocketsModule,
-    InsightsModule
+    InsightsModule,
+    AdminModule
   ],
   controllers: [AppController],
   providers: [

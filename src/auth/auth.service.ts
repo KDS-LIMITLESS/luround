@@ -15,10 +15,11 @@ export class AuthService {
     private jwt: JwtService,
   ) {}
 
-  async login(user: any, user_nToken?: string): Promise<object> {    
+  async login(user: any, user_nToken?: string): Promise<object> {  
+    let date = new Date()  
     let check_user_account_payment_satus = await this.calculate_user_payment_end_date(user._id)
     let payload = { email: user.email, userId: user._id, displayName: user.displayName, photoUrl: user.photoUrl, account_status: check_user_account_payment_satus }
-    await this.databaseManager.updateDocument(this._udb, user._id, {user_nToken: user_nToken})
+    await this.databaseManager.updateDocument(this._udb, user._id, {user_nToken: user_nToken, updated_at: date})
     return { "accessToken": await this.jwt.signAsync(payload), account_status: check_user_account_payment_satus }
   }
 

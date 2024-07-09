@@ -1,7 +1,6 @@
 import { BadRequestException, Injectable } from "@nestjs/common";
 import { PaymentsAPI } from "../payments/paystack.sevices.js";
 import { DatabaseService } from "../store/db.service.js";
-import { Encrypter } from "../utils/Encryption.js";
 import { ObjectId } from "mongodb";
 import { BookingsManager } from "../bookService/bookService.sevices.js";
 import { ProfileService } from "../profileManager/profile.service.js";
@@ -24,21 +23,17 @@ export class InvoiceService {
   ) {}
 
   async generate_invoice(user: any, invoice_data: any) {
-    const time = new Date();
-    const [user_mLinks, user_profile, invoice_id] = await Promise.all([
+    const [user_mLinks, user_profile, invoice_id, tx_ref] = await Promise.all([
       this.userProfile.get_user_media_links(user.email),
       this.userProfile.get_user_profile(user),
-      generateRandomSixDigitNumber()
+      generateRandomSixDigitNumber(),
+      this.paymentsManager.generateUniqueTransactionCode("INVOICE")
     ]);
   
     const phone_number_obj = user_mLinks.find((obj) => obj['name'] === 'Mobile') || {};
     const address_obj = user_mLinks.find((obj) => obj['name'] === 'Location') || {};
   
-    const tx_ref = await this.paymentsManager.generateUniqueTransactionCode("INVOICE");
     const payment_amount = 0.05 * Number(invoice_data.total) + Number(invoice_data.total);
-  
-    console.log(payment_amount, invoice_data);
-    console.log(invoice_data.total);
   
     // Wait for the external API call to complete
     const payment_link = await this.paymentsManager.initializePayment(invoice_data.send_to_email, payment_amount, tx_ref);
@@ -55,11 +50,6 @@ export class InvoiceService {
         phone_number: phone_number_obj['link'] || "",
         address: address_obj['link'] || "",
         logo_url: user_profile.logo_url,
-        bank_details: {
-          bank: invoice_data.bank,
-          account_name: invoice_data.account_name,
-          account_number: invoice_data.account_number
-        } || ""
       },
       phone_number: invoice_data.phone_number,
       payment_status: "PENDING",
@@ -70,7 +60,7 @@ export class InvoiceService {
       note: invoice_data.note,
       due_date: invoice_data.due_date,
       created_at: Date.now(),
-      payment_link: payment_link.data.authorization_url,
+      payment_link: payment_link.data.authorization_url || "",
       tx_ref
     };
   

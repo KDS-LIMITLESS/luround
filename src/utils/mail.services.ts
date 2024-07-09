@@ -124,7 +124,7 @@ export async function quoteRequested(to:string, name: string, service_provider: 
     to: [{"email_address": {"address": to,"name": service_provider}}],
     subject: 'Quote Requested',
     htmlBody: `<p>Hi <b>${service_provider.split(' ')[0]}</b>, </p>
-      <p>${name} requested a quote for your service <b>${service_name}</b> failed.
+      <p>${name} requested a quote for your service <b>${service_name}</b>.
       <p>For 24/7 Support: support@luround.com</p>`
   });
 }
