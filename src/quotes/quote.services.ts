@@ -54,10 +54,11 @@ export class QuotesService {
     }
     let quote = await this.databaseManager.create(this._qdb, quote_details)
     await this.databaseManager.updateArr(this._qdb, "_id", new ObjectId(quote.insertedId), "product_details", data.product_detail)
-    await quoteRequested(user.email, data.send_to_name, user.displayName, data.product_details[0].service_name)
+    await quoteRequested(user.email, data.send_to_name, user.displayName, data.product_detail[0].service_name)
     return {
-        quote_id, service_provider_userId: quote_details.service_provider.userId, user_nToken: user_profile.user_nToken,
-        service_provider_address: address['link'] || '', service_provider_phone_number: phone_number['link'] || ''}
+      quote_id, service_provider_userId: quote_details.service_provider.userId, user_nToken: user_profile.user_nToken,
+      service_provider_address: address['link'] || '', service_provider_phone_number: phone_number['link'] || ''
+      }
   }
 
   async get_saved_quotes(userId: string) {

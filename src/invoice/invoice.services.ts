@@ -23,80 +23,72 @@ export class InvoiceService {
     private transactionsManger: TransactionsManger,
   ) {}
 
-  // Add payment link to invoice.
   async generate_invoice(user: any, invoice_data: any) {
-    const time = new Date()
-    const user_mLinks = await this.userProfile.get_user_media_links(user.email)
-    const user_profile = await this.userProfile.get_user_profile(user)
-    const invoice_id = await generateRandomSixDigitNumber()
-
-
-    const phone_number = user_mLinks.find((obj) => obj['name'] === 'Mobile') || ""
-    const address = user_mLinks.find((obj) => obj['name'] === 'Location') || ""
-
-    // let encryption = new Encrypter(process.env.ENCRYPTION_KEY as string)
-    // const service_provider: any = await this.databaseManager.findOneDocument(this._udb, "email", email)
-
-    let tx_ref = await this.paymentsManager.generateUniqueTransactionCode("INVOICE")
-    let payment_amount = 0.05 * Number(invoice_data.total) + Number(invoice_data.total)
-
-    console.log(payment_amount, invoice_data)
-    console.log(invoice_data.total)
-    let payment_link = await this.paymentsManager.initializePayment(invoice_data.send_to_email, payment_amount, tx_ref)
-
+    const time = new Date();
+    const [user_mLinks, user_profile, invoice_id] = await Promise.all([
+      this.userProfile.get_user_media_links(user.email),
+      this.userProfile.get_user_profile(user),
+      generateRandomSixDigitNumber()
+    ]);
+  
+    const phone_number_obj = user_mLinks.find((obj) => obj['name'] === 'Mobile') || {};
+    const address_obj = user_mLinks.find((obj) => obj['name'] === 'Location') || {};
+  
+    const tx_ref = await this.paymentsManager.generateUniqueTransactionCode("INVOICE");
+    const payment_amount = 0.05 * Number(invoice_data.total) + Number(invoice_data.total);
+  
+    console.log(payment_amount, invoice_data);
+    console.log(invoice_data.total);
+  
+    // Wait for the external API call to complete
+    const payment_link = await this.paymentsManager.initializePayment(invoice_data.send_to_email, payment_amount, tx_ref);
+  
+    // Proceed only after payment_link is resolved
     const invoice = {
       invoice_id,
-      // userId: user.userId,
       send_to_name: invoice_data.send_to_name,
       send_to_email: invoice_data.send_to_email,
       service_provider: {
         name: user.displayName,
-        email: user.email ,
+        email: user.email,
         userId: user.userId,
-        phone_number: phone_number['link'] || "",
-        address: address['link'] || "",
+        phone_number: phone_number_obj['link'] || "",
+        address: address_obj['link'] || "",
         logo_url: user_profile.logo_url,
-        bank_details: {bank: invoice_data.bank, account_name: invoice_data.account_name, account_number: invoice_data.account_number} || ""
+        bank_details: {
+          bank: invoice_data.bank,
+          account_name: invoice_data.account_name,
+          account_number: invoice_data.account_number
+        } || ""
       },
       phone_number: invoice_data.phone_number,
-      // payment_reference_id: tx_ref,
       payment_status: "PENDING",
       discount: invoice_data.discount,
       vat: invoice_data.vat,
       sub_total: invoice_data.sub_total,
       total: invoice_data.total,
-      // invoice_link: `https://luround.com/invoice/${encryption.encrypt(user.userId)}`,
       note: invoice_data.note,
       due_date: invoice_data.due_date,
       created_at: Date.now(),
       payment_link: payment_link.data.authorization_url,
       tx_ref
-
-      //invoice_generated_from_quote: invoice_data.invoice_generated_from_quote
-      // time: `${time.getHours()}:${time.getMinutes()}:${time.getSeconds()}`
-    }
-
-    // let response: any = await PaymentsAPI.initiate_flw_payment(invoice.invoice_details.rate, user, invoice.phone_number, tx_ref, 
-    //   {
-    //     service_name: invoice.invoice_details.service_name, 
-    //     payment_receiver: service_details.service_provider_details.displayName,
-    //     payment_receiver_id: service_details.service_provider_details.userId
-    //   }
-    // )
+    };
+  
     try {
-      let create_invoice = await this.databaseManager.create(this._idb, invoice)
-      await this.databaseManager.updateArr(this._idb, "_id", new ObjectId(create_invoice.insertedId), "product_detail", invoice_data.product_detail)
+      const create_invoice = await this.databaseManager.create(this._idb, invoice);
+      await this.databaseManager.updateArr(this._idb, "_id", new ObjectId(create_invoice.insertedId), "product_detail", invoice_data.product_detail);
       return { 
-        invoice_id, service_provider_address: address['link'] || '', 
-        service_provider_phone_number: phone_number['link'] || '', 
+        invoice_id,
+        service_provider_address: address_obj['link'] || '',
+        service_provider_phone_number: phone_number_obj['link'] || '',
         payment_link: payment_link.data.authorization_url,
         processing_fee: Number(invoice_data.sub_total) * 0.05
-      }
-
+      };
     } catch (err: any) {
-      throw new BadRequestException({message: "Invoice Not sent"})
+      throw new BadRequestException({ message: "Invoice Not sent" });
     }
   }
+  
 
   async get_paid_invoices(userId: string) {
     return (await this._idb.find({"service_provider.userId": userId, "payment_status": "SUCCESSFUL"}).toArray()).reverse()
