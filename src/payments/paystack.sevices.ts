@@ -40,7 +40,7 @@ export class PaymentsAPI {
       }
     };
     let response:any = await PaymentsAPI.makeRequest(data, options)
-    return response
+    return response.data.authorization_url
   };
   
   async verifyPayment(transaction_ref: string, userId: any) {

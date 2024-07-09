@@ -37,7 +37,7 @@ export class InvoiceService {
   
     // Wait for the external API call to complete
     const payment_link = await this.paymentsManager.initializePayment(invoice_data.send_to_email, payment_amount, tx_ref);
-  
+  console.log(payment_link)
     // Proceed only after payment_link is resolved
     const invoice = {
       invoice_id,
@@ -60,7 +60,7 @@ export class InvoiceService {
       note: invoice_data.note,
       due_date: invoice_data.due_date,
       created_at: Date.now(),
-      payment_link: await payment_link.data.authorization_url || "",
+      payment_link: await payment_link,
       tx_ref
     };
   
@@ -71,7 +71,7 @@ export class InvoiceService {
         invoice_id,
         service_provider_address: address_obj['link'] || '',
         service_provider_phone_number: phone_number_obj['link'] || '',
-        payment_link: payment_link.data.authorization_url,
+        payment_link: payment_link,
         processing_fee: Number(invoice_data.sub_total) * 0.05
       };
     } catch (err: any) {
