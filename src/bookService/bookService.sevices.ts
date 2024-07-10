@@ -179,8 +179,6 @@ export class BookingsManager {
   }
 
   async confirm_booking_with_invoice_id(invoice_id: string) {
-
-    console.log(invoice_id)
     try {
       let get_booking = await this.databaseManager.findOneDocument(this._bKM, "invoice_id", invoice_id)
 
