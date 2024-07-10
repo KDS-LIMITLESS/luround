@@ -34,11 +34,8 @@ export class InvoiceService {
     const phone_number_obj = user_mLinks.find((obj) => obj['name'] === 'Mobile') || {};
     const address_obj = user_mLinks.find((obj) => obj['name'] === 'Location') || {};
   
-    let payment_amount: any = 0.065 * Number(invoice_data.total) + Number(invoice_data.total);
-    // payment_amount = Math.round(payment_amount)
-    console.log(payment_amount)
-    payment_amount = new Decimal(payment_amount).toPrecision(6)
-    console.log("After:", payment_amount)
+    let payment_amount: number = 0.065 * Number(invoice_data.total) + Number(invoice_data.total);
+    payment_amount = Math.round(payment_amount) // new Decimal(payment_amount).toPrecision(6)
 
     
     // Wait for the external API call to complete
