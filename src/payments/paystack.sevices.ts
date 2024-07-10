@@ -6,8 +6,7 @@ import { sendPaymentSuccessMail } from "../utils/mail.services.js";
 import { ObjectId } from "mongodb";
 import ResponseMessages from "../messageConstants.js";
 import { WalletService } from "../wallet/wallet.services.js";
-import { error } from "console";
-
+import { Decimal } from 'decimal.js'
 const flw = new Flutterwave(process.env.FLW_PUBLIC_KEY, process.env.FLW_SECRET_KEY)
 
 
@@ -79,7 +78,7 @@ export class PaymentsAPI {
     
   }
 
-  async verifyBookingPayment(payment_reference_id: string, charged_amount: number) {
+  async verifyBookingPayment(payment_reference_id: string, charged_amount: any) {
       
     try {
       let get_booking = await this.databaseManager.findOneDocument(this._bkDb, "payment_reference_id", payment_reference_id)
@@ -95,8 +94,8 @@ export class PaymentsAPI {
         // DEDUCT 5%
         charged_amount = charged_amount / 100
         console.log("Original_Charge_amount:", charged_amount)
-        let deduct_service_charge = 0.065 * charged_amount
-        charged_amount -= 0.065
+        let deduct_service_charge = new Decimal(0.065 * charged_amount).toPrecision(6)
+        charged_amount = new Decimal(charged_amount -0.065).toPrecision(6)
         console.log(JSON.stringify(
           {
             "Deduct_Service_Charge":deduct_service_charge, 

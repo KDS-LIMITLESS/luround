@@ -6,6 +6,7 @@ import { BookingsManager } from "../bookService/bookService.sevices.js";
 import { ProfileService } from "../profileManager/profile.service.js";
 import { generateRandomSixDigitNumber } from "../utils/mail.services.js";
 import { TransactionsManger } from "../transaction/tansactions.service.js";
+import { Decimal } from "decimal.js";
 
 
 @Injectable()
@@ -33,8 +34,12 @@ export class InvoiceService {
     const phone_number_obj = user_mLinks.find((obj) => obj['name'] === 'Mobile') || {};
     const address_obj = user_mLinks.find((obj) => obj['name'] === 'Location') || {};
   
-    let payment_amount: number = 0.065 * Number(invoice_data.total) + Number(invoice_data.total);
-    payment_amount = Math.round(payment_amount)
+    let payment_amount: any = 0.065 * Number(invoice_data.total) + Number(invoice_data.total);
+    // payment_amount = Math.round(payment_amount)
+    console.log(payment_amount)
+    payment_amount = new Decimal(payment_amount).toPrecision(6)
+    console.log("After:", payment_amount)
+
     
     // Wait for the external API call to complete
     const payment_link = await this.paymentsManager.initializePayment(invoice_data.send_to_email, payment_amount, tx_ref);
