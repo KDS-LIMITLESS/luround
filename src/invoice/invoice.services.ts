@@ -6,7 +6,6 @@ import { BookingsManager } from "../bookService/bookService.sevices.js";
 import { ProfileService } from "../profileManager/profile.service.js";
 import { generateRandomSixDigitNumber } from "../utils/mail.services.js";
 import { TransactionsManger } from "../transaction/tansactions.service.js";
-import { Decimal } from "decimal.js";
 
 
 @Injectable()
@@ -24,6 +23,7 @@ export class InvoiceService {
   ) {}
 
   async generate_invoice(user: any, invoice_data: any) {
+    
     const [user_mLinks, user_profile, invoice_id, tx_ref] = await Promise.all([
       this.userProfile.get_user_media_links(user.email),
       this.userProfile.get_user_profile(user),
@@ -36,9 +36,7 @@ export class InvoiceService {
   
     let payment_amount: number = 0.065 * Number(invoice_data.total) + Number(invoice_data.total);
     payment_amount = Math.round(payment_amount) // new Decimal(payment_amount).toPrecision(6)
-
     
-    // Wait for the external API call to complete
     const payment_link = await this.paymentsManager.initializePayment(invoice_data.send_to_email, payment_amount, tx_ref);
     const invoice = {
       invoice_id,

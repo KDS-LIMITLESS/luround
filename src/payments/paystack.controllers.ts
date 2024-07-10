@@ -78,9 +78,7 @@ export class Payments {
             await this.invoiceService.enter_invoice_payment(invoice, data)
             await this.walletService.increase_wallet_balance(invoice.service_provider.userId, Number(invoice.product_detail[0].total))
           }
-        } else {
-          // SET TIMEOUT TO ALLOW FOR THE BOOKING TO REGISTER FIRST
-          
+        } else {       
           let verify_booking = await this.paymentManager.verifyBookingPayment(eventData.data.reference.toString(), Number(eventData.data.amount))
           await this.bookingService.confirm_booking(verify_booking.booking_id)
         }
