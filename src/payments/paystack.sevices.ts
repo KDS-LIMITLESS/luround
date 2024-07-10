@@ -27,7 +27,6 @@ export class PaymentsAPI {
       'amount': amount * 100,
       "reference": reference
     });
-
     const options = {
       hostname: 'api.paystack.co',
       port: 443,

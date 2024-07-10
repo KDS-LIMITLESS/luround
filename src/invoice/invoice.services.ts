@@ -79,6 +79,7 @@ export class InvoiceService {
         processing_fee: Number(invoice_data.sub_total) * 0.065
       };
     } catch (err: any) {
+      console.log(err)
       throw new BadRequestException({ message: "Invoice Not sent" });
     }
   }
