@@ -81,9 +81,7 @@ export class PaymentsAPI {
       
     try {
       let get_booking = await this.databaseManager.findOneDocument(this._bkDb, "payment_reference_id", payment_reference_id)
-      
-      console.log("GET BOOKING: ", get_booking)
-      
+            
       // update the booked_status to successful. 
       if (get_booking !== null) {
         let service_providerId = get_booking.service_provider_info.userId

@@ -6,9 +6,11 @@ import crypto from 'crypto'
 import { WalletService } from "../wallet/wallet.services.js";
 import { BookingsManager } from "../bookService/bookService.sevices.js";
 import { InvoiceService } from "../invoice/invoice.services.js";
+import { calculateTotalRevenue } from "../utils/mail.services.js";
 
 @Controller('api/v1/payments')
 export class Payments {
+
   constructor(
     private paymentManager: PaymentsAPI, 
     private walletService: WalletService, 
@@ -74,13 +76,19 @@ export class Payments {
           let invoice = await this.invoiceService.get_invoice_with_reference(eventData.data.reference)
           if (invoice !== null) {
             let data = { amount_paid: Number(eventData.data.amount) / 100, tx_ref: eventData.data.reference }
+            
             // WHERE ARE YOU DEDUCTING THE CHARGE
             await this.invoiceService.enter_invoice_payment(invoice, data)
             await this.walletService.increase_wallet_balance(invoice.service_provider.userId, Number(invoice.product_detail[0].total))
+            // CALCULATE REVENUE GENERATED
+            await calculateTotalRevenue(Number(eventData.data.amount) / 100)
           }
         } else {       
+          
           let verify_booking = await this.paymentManager.verifyBookingPayment(eventData.data.reference.toString(), Number(eventData.data.amount))
           await this.bookingService.confirm_booking(verify_booking.booking_id)
+          // CALCULATE REVENUE GENERATED
+          await calculateTotalRevenue(Number(eventData.data.amount) / 100)
         }
       }
       return res.sendStatus(200)

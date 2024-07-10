@@ -1,6 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import { BookingsManager } from "../bookService/bookService.sevices.js";
 import { DatabaseService } from "../store/db.service.js";
+import { getTotalRevenue } from "../utils/mail.services.js";
 
 
 @Injectable()
@@ -33,8 +34,8 @@ export class AdminService {
         users.push(user_data);
       
     }
-  
-    return { total_users, total_bookings, active_users, users };
+    let total_revenue = await getTotalRevenue()
+    return { total_users, total_revenue, total_bookings, active_users, users };
   }
 
   async computeAdminAnalytics2(email: string) {

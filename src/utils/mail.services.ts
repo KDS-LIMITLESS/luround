@@ -338,6 +338,37 @@ export async function loadCronJobs() {
   }
 }
 
+export async function calculateTotalRevenue(new_revenue: number) {
+  try {
+    // Read the existing revenue from the file
+    let data = await fs.readJson('./revenue.json').catch(() => ({ total_revenue: 0 }));
+
+    // Update the total revenue
+    let total_revenue = data.total_revenue || 0;
+    total_revenue += new_revenue;
+
+    // Write the updated revenue back to the file
+    await fs.writeJson('./revenue.json', { total_revenue }, { spaces: 2 });
+
+    console.log("Total revenue updated successfully:", total_revenue);
+  } catch (err) {
+    throw new BadRequestException({ message: err.message });
+  }
+}
+
+export async function getTotalRevenue() {
+  try {
+    // Read the existing revenue from the file
+    let data = await fs.readJson('./revenue.json').catch(() => ({ total_revenue: 0 }));
+
+    // Return the total revenue
+    return data.total_revenue || 0;
+  } catch (err) {
+    throw new BadRequestException({ message: err.message });
+  }
+}
+
+
 export async function generateRandomSixDigitNumber(): Promise<number> {
   const min = 100000; 
   const max = 999999;
