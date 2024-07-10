@@ -95,8 +95,8 @@ export class PaymentsAPI {
         // DEDUCT 5%
         charged_amount = charged_amount / 100
         console.log("Original_Charge_amount:", charged_amount)
-        let deduct_service_charge = 5/100 * charged_amount
-        charged_amount -= deduct_service_charge
+        let deduct_service_charge = 0.05 * charged_amount
+        charged_amount -= 0.05
         console.log(JSON.stringify(
           {
             "Deduct_Service_Charge":deduct_service_charge, 
