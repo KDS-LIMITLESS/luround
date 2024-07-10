@@ -33,8 +33,8 @@ export class InvoiceService {
     const phone_number_obj = user_mLinks.find((obj) => obj['name'] === 'Mobile') || {};
     const address_obj = user_mLinks.find((obj) => obj['name'] === 'Location') || {};
   
-    let payment_amount: number = 0.05 * Number(invoice_data.total) + Number(invoice_data.total);
-    payment_amount = Math.round(payment_amount)
+    let payment_amount: number = 0.065 * Number(invoice_data.total) + Number(invoice_data.total) * 100;
+    // payment_amount = Math.round(payment_amount)
 
     // Wait for the external API call to complete
     const payment_link = await this.paymentsManager.initializePayment(invoice_data.send_to_email, payment_amount, tx_ref);
@@ -72,7 +72,7 @@ export class InvoiceService {
         service_provider_address: address_obj['link'] || '',
         service_provider_phone_number: phone_number_obj['link'] || '',
         payment_link: payment_link,
-        processing_fee: Number(invoice_data.sub_total) * 0.05
+        processing_fee: Number(invoice_data.sub_total) * 0.065
       };
     } catch (err: any) {
       throw new BadRequestException({ message: "Invoice Not sent" });

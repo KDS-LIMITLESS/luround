@@ -31,7 +31,6 @@ export class InsightService {
       const serviceId = new ObjectId(service_id);
     
       const serviceInsights = await this._insightsDB.find({ "_id": serviceId }).toArray();
-      console.log(serviceInsights)
       if(serviceInsights.length === 0) return []
       if (!serviceInsights[0].bookings) return [
         {clicks: serviceInsights[0].clicks || 0},

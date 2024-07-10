@@ -40,11 +40,10 @@ export class BookingsManager {
       // GET UNIQUE TRANSACTION REFERENCE CODE
       let tx_ref = await this.paymentsManager.generateUniqueTransactionCode("BOOKING")
 
-      // const { userId, email, displayName } = user
+      
       // CHECK IF SERVICE IS VALID AND EXISTS 
       let serviceDetails:any = await this.serviceManager.get_service_by_id(serviceID)
-      // CHECK IF USER IS TRYING TO BOOK THEMSELVES
-      // if (serviceDetails && serviceDetails.service_provider_details.userId !== userId) {
+      
       let amount: string;
       if (bookingDetail.appointment_type === 'In-Person') {
         amount = serviceDetails.service_charge_in_person

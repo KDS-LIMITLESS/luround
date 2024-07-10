@@ -197,7 +197,6 @@ async function check_meeting_location(booking_detail: any) {
 }
 export async function booking_account_viewer(to:string, booking_detail: any) {
   let meeting_location = await check_meeting_location(booking_detail)
-  console.log(meeting_location)
 
   return await client.sendMail({
     from: {"address": "support@luround.com", "name": "Luround"},

@@ -25,7 +25,7 @@ export class PaymentsAPI {
   async initializePayment(email: string, amount: number, reference: string): Promise<any> {
     const data = JSON.stringify({
       'email': email,
-      'amount': amount * 100,
+      'amount': amount,
       "reference": reference
     });
 
@@ -95,8 +95,8 @@ export class PaymentsAPI {
         // DEDUCT 5%
         charged_amount = charged_amount / 100
         console.log("Original_Charge_amount:", charged_amount)
-        let deduct_service_charge = 0.05 * charged_amount
-        charged_amount -= 0.05
+        let deduct_service_charge = 0.065 * charged_amount
+        charged_amount -= 0.065
         console.log(JSON.stringify(
           {
             "Deduct_Service_Charge":deduct_service_charge, 
