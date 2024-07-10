@@ -25,7 +25,7 @@ export class PaymentsAPI {
   async initializePayment(email: string, amount: number, reference: string): Promise<any> {
     const data = JSON.stringify({
       'email': email,
-      'amount': amount,
+      'amount': amount * 100,
       "reference": reference
     });
 
