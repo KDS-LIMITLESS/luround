@@ -40,7 +40,6 @@ export class PaymentsAPI {
       }
     };
     let response:any = await PaymentsAPI.makeRequest(data, options)
-    console.log(response)
     return response.data.authorization_url
   };
   
@@ -80,23 +79,8 @@ export class PaymentsAPI {
     
   }
 
-
-  // MAKE ENDPOINT FOR VERIFYING PAYMENTS MADE FROM SERVICES
-  // INCREASE USERS WALLET BALANCE
-
-  // REFACTOR FUNCTION FOR WITHDRAWING USERS FUNDS TO USE PAYSTACK APIS
-
   async verifyBookingPayment(payment_reference_id: string, charged_amount: number) {
-    // const options = {
-    //   hostname: 'api.paystack.co',
-    //   port: 443,
-    //   path: `/transaction/verify/${transaction_ref}`,
-    //   method: 'GET',
-    //   headers: {
-    //     Authorization: `Bearer ${process.env.PAYSTACK_SECRET}`,
-    //     'Content-Type': 'application/json'
-    //   }
-    // }    
+      
     try {
       let get_booking = await this.databaseManager.findOneDocument(this._bkDb, "payment_reference_id", payment_reference_id)
       
@@ -120,17 +104,9 @@ export class PaymentsAPI {
           })
         )
         await this.walletService.increase_wallet_balance(service_providerId, charged_amount)
-        
-        // SAVE PAYMENT DETAILS TO SERVICE PAYMENTS DATABASE
-        // let payment_ref_id = (await this.databaseManager.create(this._pdb, transaction_details)).insertedId
-       // await sendPaymentSuccessMail(request.data.customer.email, request.data.meta.consumer_name, request.data.meta.payment_receiver_name, request.data.charged_amount, request.data.meta.service_name )
        return {booking_status: "Success", transaction_ref: get_booking.payment_reference_id, booking_id: get_booking._id }
       }
       throw new BadRequestException({message: ResponseMessages.PaymentNotResolved})
-      // } else {
-      //   // await paymentFailed(response.data.customer.email, response.data.meta.consumer_name, response.data.meta.payment_receiver_name, response.data.charged_amount, response.data.meta.service_name )
-      //   throw new BadRequestException({message: request.data.status, transaction_ref})
-      // } 
     } catch (err: any) {
       console.log(err)
       throw new BadRequestException({message: err.message })

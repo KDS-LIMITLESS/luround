@@ -183,7 +183,6 @@ export class BookingsManager {
     console.log(invoice_id)
     try {
       let get_booking = await this.databaseManager.findOneDocument(this._bKM, "invoice_id", invoice_id)
-      console.log(get_booking)
 
       if (get_booking !== null ) {
        

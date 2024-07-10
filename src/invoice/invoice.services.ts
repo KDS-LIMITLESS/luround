@@ -35,10 +35,10 @@ export class InvoiceService {
   
     let payment_amount: number = 0.05 * Number(invoice_data.total) + Number(invoice_data.total);
     payment_amount = Math.round(payment_amount)
-    console.log(payment_amount)
+
     // Wait for the external API call to complete
     const payment_link = await this.paymentsManager.initializePayment(invoice_data.send_to_email, payment_amount, tx_ref);
-    // Proceed only after payment_link is resolved
+
     const invoice = {
       invoice_id,
       send_to_name: invoice_data.send_to_name,

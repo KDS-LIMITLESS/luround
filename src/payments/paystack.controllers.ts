@@ -73,17 +73,15 @@ export class Payments {
         if(eventData.data.reference.startsWith("INVOICE")){
           let invoice = await this.invoiceService.get_invoice_with_reference(eventData.data.reference)
           if (invoice !== null) {
-            console.log(invoice)
             let data = { amount_paid: Number(eventData.data.amount) / 100, tx_ref: eventData.data.reference }
             // WHERE ARE YOU DEDUCTING THE CHARGE
             await this.invoiceService.enter_invoice_payment(invoice, data)
-            await this.walletService.increase_wallet_balance(invoice.service_provider.userId, invoice.product_detail[0].amount)
+            await this.walletService.increase_wallet_balance(invoice.service_provider.userId, Number(invoice.product_detail[0].amount))
           }
         } else {
           // SET TIMEOUT TO ALLOW FOR THE BOOKING TO REGISTER FIRST
           
           let verify_booking = await this.paymentManager.verifyBookingPayment(eventData.data.reference.toString(), Number(eventData.data.amount))
-          console.log("Verified Booking:", verify_booking)
           await this.bookingService.confirm_booking(verify_booking.booking_id)
         }
       }
