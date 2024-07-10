@@ -132,7 +132,7 @@ export class WalletService {
   }
 
   // increase wallet balance.
-  async increase_wallet_balance(userId: string, amount: any) {
+  async increase_wallet_balance(userId: string, amount: number) {
     try {
       let balance  = await this.get_wallet_balance(userId)
       if ( balance === null ) {
