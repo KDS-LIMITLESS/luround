@@ -90,17 +90,11 @@ export class PaymentsAPI {
         // UPDATE MATCHING BOOKING STATUS
         await this.databaseManager.updateProperty(this._bkDb, get_booking._id, "booked_status", {booked_status: "SUCCESSFUL"})
         // SET WALLET BALANCE
-        // DEDUCT 5%
+        // DEDUCT 6.5%
         charged_amount = charged_amount / 100
-        console.log("Original_Charge_amount:", charged_amount)
-        let deduct_service_charge = new Decimal(0.065 * charged_amount).toPrecision(6)
-        charged_amount = new Decimal(charged_amount -0.065).toPrecision(6)
-        console.log(JSON.stringify(
-          {
-            "Deduct_Service_Charge":deduct_service_charge, 
-            "New_Charge_amount:": charged_amount
-          })
-        )
+        let deduct_service_charge = 0.065 * charged_amount
+        charged_amount = charged_amount -0.065
+      
         await this.walletService.increase_wallet_balance(service_providerId, charged_amount)
        return {booking_status: "Success", transaction_ref: get_booking.payment_reference_id, booking_id: get_booking._id }
       }
