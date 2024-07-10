@@ -77,6 +77,7 @@ export class Payments {
             let data = { amount_paid: Number(eventData.data.amount) / 100, tx_ref: eventData.data.reference }
             // WHERE ARE YOU DEDUCTING THE CHARGE
             await this.invoiceService.enter_invoice_payment(invoice, data)
+            await this.walletService.increase_wallet_balance(invoice.service_provider.userId, invoice.product_detail[0].amount)
           }
         } else {
           // SET TIMEOUT TO ALLOW FOR THE BOOKING TO REGISTER FIRST

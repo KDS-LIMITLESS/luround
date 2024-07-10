@@ -38,7 +38,6 @@ export class InvoiceService {
     console.log(payment_amount)
     // Wait for the external API call to complete
     const payment_link = await this.paymentsManager.initializePayment(invoice_data.send_to_email, payment_amount, tx_ref);
-  console.log(payment_link)
     // Proceed only after payment_link is resolved
     const invoice = {
       invoice_id,
@@ -108,10 +107,10 @@ export class InvoiceService {
           tx_ref: invoice.tx_ref
         }
       
-        await this.databaseManager.updateDocument(this._idb, invoice._id.toString(), payment_details)
+        await this.databaseManager.updateDocument(this._idb, invoice._id.toString(), {payment_details})
         await this.transactionsManger.record_transaction(invoice.service_provider.userId, {
           service_id: invoice.product_detail[0].service_id, service_name: invoice.product_detail[0].service_name, 
-          service_fee: data.total, transaction_ref: payment_details.tx_ref, transaction_status: "RECEIVED", 
+          service_fee: invoice.product_detail[0].total, transaction_ref: payment_details.tx_ref, transaction_status: "RECEIVED", 
           affliate_user: invoice.send_to_name, customer_email: invoice.send_to_email
         })
         let book_service = await this.bookingService.book_service(
@@ -122,8 +121,8 @@ export class InvoiceService {
             email: invoice.service_provider.email, 
             displayName: invoice.service_provider.displayName
           }, 
-          invoice.invoice_id, data.total,
-          payment_details.tx_ref, invoice.due_date, invoice.note, "True", data.phone_number
+          invoice.invoice_id, invoice.product_detail[0].total,
+          payment_details.tx_ref, invoice.due_date, invoice.note, "True", invoice.phone_number
         )
   
         await this.bookingService.confirm_booking_with_invoice_id(invoice.invoice_id)
