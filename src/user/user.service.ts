@@ -2,7 +2,7 @@ import { BadRequestException, Injectable, NotFoundException } from '@nestjs/comm
 import { JwtService } from '@nestjs/jwt';
 import { DatabaseService } from '../store/db.service.js';
 import { AuthService } from '../auth/auth.service.js';
-import { generateRandomSixDigitNumber, sendOTP, sendOnboardingMail, sendServiceUpdateEmail } from '../utils/mail.services.js';
+import { calculateTotalRevenue, generateRandomSixDigitNumber, sendOTP, sendOnboardingMail } from '../utils/mail.services.js';
 import ResponseMessages from '../messageConstants.js';
 import { UserDto } from './user.dto.js';
 import * as bcrypt from 'bcrypt'
@@ -171,11 +171,13 @@ export class UserService {
 
   async deleteUserAccount(userId: string) {
     await this.databaseManager.delete(this._udb, userId)
+    await calculateTotalRevenue(0, 1)
     return "User account deleted"
   }
 
   async deleteUserAccountTest(user_email: string) {
     await this._udb.findOneAndDelete({'email': user_email})
+    await calculateTotalRevenue(0, 1)
     return "User account deleted"
   }
 

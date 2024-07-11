@@ -7,6 +7,7 @@ import { WalletService } from "../wallet/wallet.services.js";
 import { BookingsManager } from "../bookService/bookService.sevices.js";
 import { InvoiceService } from "../invoice/invoice.services.js";
 import { calculateTotalRevenue } from "../utils/mail.services.js";
+import { TransactionsManger } from "../transaction/tansactions.service.js";
 
 @Controller('api/v1/payments')
 export class Payments {
@@ -15,7 +16,8 @@ export class Payments {
     private paymentManager: PaymentsAPI, 
     private walletService: WalletService, 
     public bookingService: BookingsManager, 
-    private invoiceService: InvoiceService
+    private invoiceService: InvoiceService,
+    private transactonsService: TransactionsManger
   ) {}
 
   // @Post('initialize-payment')
@@ -67,6 +69,14 @@ export class Payments {
           },   
           eventData.data.transfer_code
         )
+        let dt = new Date()
+        await this.transactonsService.record_transaction(eventData.data.reason, {
+          service_name: 'Withdrawal',
+          amount: -amount,
+          transaction_ref: eventData.data.reference,
+          transaction_date: Date.now(),
+          transaction_time: dt.getHours() + ":" + dt.getMinutes() + ":" + dt.getSeconds()
+        })
         console.log("Status:", "Transaction Recorded Successfully!")
       }
 
@@ -81,14 +91,14 @@ export class Payments {
             await this.invoiceService.enter_invoice_payment(invoice, data)
             await this.walletService.increase_wallet_balance(invoice.service_provider.userId, Number(invoice.product_detail[0].total))
             // CALCULATE REVENUE GENERATED
-            await calculateTotalRevenue(Number(eventData.data.amount) / 100)
+            await calculateTotalRevenue(Number(eventData.data.amount) / 100, 0)
           }
         } else {       
           
           let verify_booking = await this.paymentManager.verifyBookingPayment(eventData.data.reference.toString(), Number(eventData.data.amount))
           await this.bookingService.confirm_booking(verify_booking.booking_id)
           // CALCULATE REVENUE GENERATED
-          await calculateTotalRevenue(Number(eventData.data.amount) / 100)
+          await calculateTotalRevenue(Number(eventData.data.amount) / 100, 0)
         }
       }
       return res.sendStatus(200)

@@ -26,7 +26,8 @@ export class AdminService {
         const user_data = {
           user_name: user.displayName,
           email: user.email,
-          active: (new Date(user.updated_at).getTime() + 14 * 24 * 60 * 60 * 1000) >= date
+          active: (new Date(user.updated_at).getTime() + 14 * 24 * 60 * 60 * 1000) >= date,
+          created_at: user.created_at
         };
         if (user_data.active === true) {
           active_users += 1
@@ -34,8 +35,8 @@ export class AdminService {
         users.push(user_data);
       
     }
-    let total_revenue = await getTotalRevenue()
-    return { total_users, total_revenue, total_bookings, active_users, users };
+    let revenue = await getTotalRevenue()
+    return { total_users, total_revenue: revenue.total_revenue , total_bookings, active_users, users, deleted_users: revenue.deleted_users };
   }
 
   async computeAdminAnalytics2(email: string) {
