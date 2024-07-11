@@ -50,6 +50,11 @@ export class InvoiceService {
         address: address_obj['link'] || "",
         logo_url: user_profile.logo_url,
       },
+      bank_details: {
+        bank: "",
+        account_name: "",
+        account_number: ""
+      },
       phone_number: invoice_data.phone_number,
       payment_status: "PENDING",
       discount: invoice_data.discount,
