@@ -72,7 +72,7 @@ export class Payments {
         let dt = new Date()
         await this.transactonsService.record_transaction(eventData.data.reason, {
           service_name: 'Withdrawal',
-          amount: -amount,
+          amount: - Number(amount),
           transaction_ref: eventData.data.reference,
           transaction_date: Date.now(),
           transaction_time: dt.getHours() + ":" + dt.getMinutes() + ":" + dt.getSeconds()
