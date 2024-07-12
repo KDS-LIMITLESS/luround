@@ -338,7 +338,7 @@ export async function loadCronJobs() {
   }
 }
 
-export async function calculateTotalRevenue(new_revenue: number, deleted_users: number) {
+export async function calculateTotalRevenue(new_revenue: number, deleted_user: number) {
   try {
     // Read the existing revenue from the file
     let data = await fs.readJson('./revenue.json').catch(() => ({ total_revenue: 0, deleted_users: 0 }));
@@ -347,7 +347,7 @@ export async function calculateTotalRevenue(new_revenue: number, deleted_users: 
     let total_revenue = data.total_revenue || 0;
     let deleted_users = data.deleted_users || 0
     total_revenue += new_revenue;
-    deleted_users += deleted_users
+    deleted_users += deleted_user
 
     // Write the updated revenue back to the file
     await fs.writeJson('./revenue.json', { total_revenue, deleted_users }, { spaces: 2 });
@@ -364,7 +364,7 @@ export async function getTotalRevenue() {
     let data = await fs.readJson('./revenue.json').catch(() => ({ total_revenue: 0, deleted_users: 0 }));
 
     // Return the total revenue
-    return {total_revenue: data.total_revenue || 0, deleted_users: data.deleted_users || 0}
+    return {total_revenue: data.total_revenue, deleted_users: data.deleted_users}
   } catch (err) {
     throw new BadRequestException({ message: err.message });
   }
