@@ -15,7 +15,7 @@ export class TransactionsManger {
     let transaction = {
       service_id: payload.service_id,
       service_name: payload.service_name,
-      amount: payload.service_fee,
+      amount: payload.service_fee || payload.amount,
       affliate_user: payload.affliate_user,
       customer_email: payload.customer_email,
       transaction_status: payload.transaction_status,
