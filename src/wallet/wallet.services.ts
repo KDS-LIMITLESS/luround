@@ -158,9 +158,9 @@ export class WalletService {
       // FIX PRESCION FLOATING 
       amount = new Decimal(amount).toNumber()
       if (Number.isInteger(amount)) {
-        wallet_balance = new Decimal(wallet_balance).minus(amount)
+        wallet_balance = new Decimal(wallet_balance).plus(amount)
       } else {
-        wallet_balance = new Decimal(wallet_balance).minus(amount).toPrecision(3)
+        wallet_balance = new Decimal(wallet_balance).plus(amount).toPrecision(3)
       }
       console.log(wallet_balance)
       

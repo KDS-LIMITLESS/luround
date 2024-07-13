@@ -364,6 +364,7 @@ export async function getTotalRevenue() {
     let data = await fs.readJson('./revenue.json') // .catch(() => ({ total_revenue: 0, deleted_users: 0 }));
 
     // Return the total revenue
+    console.log(data)
     return {total_revenue: data.total_revenue, deleted_users: data.deleted_users}
   } catch (err) {
     throw new BadRequestException({ message: err.message });
