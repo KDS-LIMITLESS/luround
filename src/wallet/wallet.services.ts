@@ -125,8 +125,8 @@ export class WalletService {
       if (wallet_balance !== null && wallet_balance >= amount) {
 
         // FIX PRESCION FLOATING 
-        amount = new Decimal(amount)
-        if (amount.isInteger()) {
+        amount = new Decimal(amount).toNumber()
+        if (Number.isInteger(amount)) {
           wallet_balance = new Decimal(wallet_balance).minus(amount)
         } else {
           wallet_balance = new Decimal(wallet_balance).minus(amount).toPrecision(3)
@@ -144,7 +144,7 @@ export class WalletService {
   }
 
   // increase wallet balance.
-  async increase_wallet_balance(userId: string, amount: any) {
+  async increase_wallet_balance(userId: string, amount:number) {
     try {
       let balance  = await this.get_wallet_balance(userId)
       if ( balance === null ) {
@@ -156,8 +156,8 @@ export class WalletService {
       let { wallet_balance } = balance
 
       // FIX PRESCION FLOATING 
-      amount = new Decimal(amount)
-      if (amount.isInteger()) {
+      amount = new Decimal(amount).toNumber()
+      if (Number.isInteger(amount)) {
         wallet_balance = new Decimal(wallet_balance).minus(amount)
       } else {
         wallet_balance = new Decimal(wallet_balance).minus(amount).toPrecision(3)
