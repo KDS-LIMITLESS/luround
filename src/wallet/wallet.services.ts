@@ -127,9 +127,10 @@ export class WalletService {
         // FIX PRESCION FLOATING 
         wallet_balance = new Decimal(wallet_balance)
         amount = new Decimal(amount)
-        wallet_balance.minus(amount)
-        await this.databaseManger.updateProperty(this._wDB, userId, 'wallet_ballance', { wallet_balance: Number(wallet_balance.toPrecision(3)) })
-
+      
+        wallet_balance -= amount
+        wallet_balance.toPrecision(3)
+        await this.databaseManger.updateProperty(this._wDB, userId, 'wallet_ballance', { wallet_balance: wallet_balance.toNumber() })
         return ResponseMessages.TransactionSuccessful
       }
       throw new BadRequestException({message: 'Wallet balance is too low for this transaction'})  
@@ -146,8 +147,8 @@ export class WalletService {
       if ( balance === null ) {
         // USER HAS NO WALLET
         await this.create_wallet(userId, '0000')
-        amount = new Decimal(amount)
-        await this.databaseManger.updateProperty(this._wDB, userId, 'wallet_ballance', {wallet_balance: Number(amount.toPrecision(3))})
+        amount = new Decimal(amount).toPrecision(3)
+        await this.databaseManger.updateProperty(this._wDB, userId, 'wallet_ballance', {wallet_balance: amount.toNumber()})
         return ResponseMessages.TransactionSuccessful
       }
       let { wallet_balance } = balance
@@ -156,9 +157,9 @@ export class WalletService {
       wallet_balance = new Decimal(wallet_balance)
       amount = new Decimal(amount)
 
-      wallet_balance.plus(amount)
-      await this.databaseManger.updateProperty(this._wDB, userId, 'wallet_ballance', {wallet_balance: Number(wallet_balance.toPrecision(3))})
-
+      wallet_balance += amount
+      wallet_balance.toPrecision(3)
+      await this.databaseManger.updateProperty(this._wDB, userId, 'wallet_ballance', {wallet_balance: wallet_balance.toNumber()})
       return ResponseMessages.TransactionSuccessful
     } catch (err: any) {
       throw new BadRequestException({message: err.message})
