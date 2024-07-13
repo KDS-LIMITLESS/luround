@@ -8,6 +8,7 @@ import { WithdrawalFailed, WithdrawalSuccess, generateRandomSixDigitNumber, send
 import { UserWalletDto, WithdrawDTO } from "./wallet.dto.js";
 import { initiateTransferToUserBank } from "../payments/paystack.sevices.js";
 import { TransactionsManger } from "../transaction/tansactions.service.js";
+import { Decimal } from "decimal.js";
 
 const flw = new Flutterwave(process.env.FLW_PUBLIC_KEY, process.env.FLW_SECRET_KEY)
 
@@ -117,12 +118,18 @@ export class WalletService {
 
   // transfer api
   // deduct wallet balance.
-  async deduct_wallet_balance(userId: string, amount: number) {
+  async deduct_wallet_balance(userId: string, amount: any) {
     try {
       let { wallet_balance } = await this.get_wallet_balance(userId)
+
       if (wallet_balance !== null && wallet_balance >= amount) {
-        wallet_balance -= amount
-        await this.databaseManger.updateProperty(this._wDB, userId, 'wallet_ballance', {wallet_balance})
+
+        // FIX PRESCION FLOATING 
+        wallet_balance = new Decimal(wallet_balance).toPrecision(3)
+        amount = new Decimal(amount).toPrecision(3)
+      
+        wallet_balance.minus(amount)
+        await this.databaseManger.updateProperty(this._wDB, userId, 'wallet_ballance', { wallet_balance: wallet_balance.toNumber() })
         return ResponseMessages.TransactionSuccessful
       }
       throw new BadRequestException({message: 'Wallet balance is too low for this transaction'})  
@@ -132,17 +139,24 @@ export class WalletService {
   }
 
   // increase wallet balance.
-  async increase_wallet_balance(userId: string, amount: number) {
+  async increase_wallet_balance(userId: string, amount: any) {
     try {
       let balance  = await this.get_wallet_balance(userId)
       if ( balance === null ) {
+        // USER HAS NO WALLET
         await this.create_wallet(userId, '0000')
-        await this.databaseManger.updateProperty(this._wDB, userId, 'wallet_ballance', {wallet_balance: amount})
+        amount = new Decimal(amount).toPrecision(3)
+        await this.databaseManger.updateProperty(this._wDB, userId, 'wallet_ballance', {wallet_balance: amount.toNumber()})
         return ResponseMessages.TransactionSuccessful
       }
       let { wallet_balance } = balance
-      wallet_balance +=amount
-      await this.databaseManger.updateProperty(this._wDB, userId, 'wallet_ballance', {wallet_balance})
+
+      // FIX PRESCION FLOATING 
+      wallet_balance = new Decimal(wallet_balance).toPrecision(3)
+      amount = new Decimal(amount).toPrecision(3)
+
+      wallet_balance.plus(amount)
+      await this.databaseManger.updateProperty(this._wDB, userId, 'wallet_ballance', {wallet_balance: wallet_balance.toNumber()})
       return ResponseMessages.TransactionSuccessful
     } catch (err: any) {
       throw new BadRequestException({message: err.message})
