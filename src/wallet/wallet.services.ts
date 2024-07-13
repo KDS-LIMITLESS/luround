@@ -129,11 +129,13 @@ export class WalletService {
         amount = new Decimal(amount).toPrecision(3)
       
         wallet_balance.minus(amount)
+        
         await this.databaseManger.updateProperty(this._wDB, userId, 'wallet_ballance', { wallet_balance: wallet_balance.toNumber() })
         return ResponseMessages.TransactionSuccessful
       }
       throw new BadRequestException({message: 'Wallet balance is too low for this transaction'})  
     } catch (err: any){
+      console.log(err)
       throw new BadRequestException({message: err.message})
     }
   }
@@ -202,6 +204,7 @@ export class WalletService {
       await this.transactions.record_user_transfer_transactions(userId, payload, transfer_code)
       return;
     } catch(err: any) {
+      console.log(err)
       throw new BadRequestException({message: err})
     }
   }

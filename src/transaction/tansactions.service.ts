@@ -25,7 +25,7 @@ export class TransactionsManger {
     }
     let find_user_transactions = await this.databaseManger.findOneDocument(this._tDB, "_id", userId)
     if (find_user_transactions !== null) {
-      let updateArray = await this.databaseManger.updateArr(this._tDB, "_id", new ObjectId(userId), "transactions", [transaction])
+      await this.databaseManger.updateArr(this._tDB, "_id", new ObjectId(userId), "transactions", [transaction])
       return ResponseMessages.TransactionRecorded
     }
     await this.databaseManger.create(this._tDB, {"_id": new ObjectId(userId), transactions: [transaction]})
