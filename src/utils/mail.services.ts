@@ -338,38 +338,38 @@ export async function loadCronJobs() {
   }
 }
 
-export async function calculateTotalRevenue(new_revenue: number, deleted_user: number) {
-  try {
-    // Read the existing revenue from the file
-    let data = await fs.readJson('./revenue.json') // .catch(() => ({ total_revenue: 0, deleted_users: 0 }));
+// export async function calculateTotalRevenue(new_revenue: number, deleted_user: number) {
+//   try {
+//     // Read the existing revenue from the file
+//     let data = fs.readJson('./revenue.json') // .catch(() => ({ total_revenue: 0, deleted_users: 0 }));
 
-    // Update the total revenue
-    let total_revenue = data.total_revenue
-    let deleted_users = data.deleted_users
-    total_revenue += new_revenue;
-    deleted_users += deleted_user
+//     // Update the total revenue
+//     let total_revenue = data.total_revenue
+//     let deleted_users = data.deleted_users
+//     total_revenue += new_revenue;
+//     deleted_users += deleted_user
 
-    // Write the updated revenue back to the file
-    await fs.writeJson('./revenue.json', { total_revenue, deleted_users }, { spaces: 2 });
+//     // Write the updated revenue back to the file
+//     fs.writeJson('./revenue.json', { total_revenue, deleted_users }, { spaces: 2 });
 
-    console.log("Total revenue updated successfully:", total_revenue);
-  } catch (err) {
-    throw new BadRequestException({ message: err.message });
-  }
-}
+//     console.log("Total revenue updated successfully:", total_revenue);
+//   } catch (err) {
+//     throw new BadRequestException({ message: err.message });
+//   }
+// }
 
-export async function getTotalRevenue() {
-  try {
-    // Read the existing revenue from the file
-    let data = await fs.readJson('./revenue.json') // .catch(() => ({ total_revenue: 0, deleted_users: 0 }));
+// export async function getTotalRevenue() {
+//   try {
+//     // Read the existing revenue from the file
+//     let data = fs.readJson('./revenue.json') // .catch(() => ({ total_revenue: 0, deleted_users: 0 }));
 
-    // Return the total revenue
-    console.log(data)
-    return {total_revenue: data.total_revenue, deleted_users: data.deleted_users}
-  } catch (err) {
-    throw new BadRequestException({ message: err.message });
-  }
-}
+//     // Return the total revenue
+//     console.log(data)
+//     return {total_revenue: data.total_revenue, deleted_users: data.deleted_users}
+//   } catch (err) {
+//     throw new BadRequestException({ message: err.message });
+//   }
+// }
 
 
 export async function generateRandomSixDigitNumber(): Promise<number> {

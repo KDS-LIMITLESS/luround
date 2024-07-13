@@ -1,7 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import { BookingsManager } from "../bookService/bookService.sevices.js";
 import { DatabaseService } from "../store/db.service.js";
-import { getTotalRevenue } from "../utils/mail.services.js";
+import { UserService } from "../user/user.service.js";
 
 
 @Injectable()
@@ -9,7 +9,11 @@ export class AdminService {
   _udb = this.databaseManager.userDB
   _bkdb = this.databaseManager.bookingsDB
 
-  constructor(private databaseManager: DatabaseService, private bookingsService: BookingsManager) {}
+  constructor(
+    private databaseManager: DatabaseService, 
+    private bookingsService: BookingsManager,
+    private userService: UserService) 
+  {}
 
   async computeAdminAnalytics() {
     const date = Date.now();
@@ -35,7 +39,7 @@ export class AdminService {
         users.push(user_data);
       
     }
-    let revenue = await getTotalRevenue()
+    let revenue = await this.userService.getTotalRevenue()
     return { total_users, total_revenue: revenue.total_revenue , total_bookings, active_users, users, deleted_users: revenue.deleted_users };
   }
 
