@@ -125,11 +125,10 @@ export class WalletService {
       if (wallet_balance !== null && wallet_balance >= amount) {
 
         // FIX PRESCION FLOATING 
-        wallet_balance = new Decimal(wallet_balance)
-        amount = new Decimal(amount)
+        wallet_balance = new Decimal(wallet_balance).toPrecision(3)
+        amount = new Decimal(amount).toPrecision(3)
       
         wallet_balance -= amount
-        wallet_balance = wallet_balance.toPrecision(3)
         console.log(wallet_balance)
 
         await this.databaseManger.updateProperty(this._wDB, userId, 'wallet_ballance', { wallet_balance: Number(wallet_balance) })
@@ -156,11 +155,10 @@ export class WalletService {
       let { wallet_balance } = balance
 
       // FIX PRESCION FLOATING 
-      wallet_balance = new Decimal(wallet_balance)
-      amount = new Decimal(amount)
+      wallet_balance = new Decimal(wallet_balance).toPrecision(3)
+      amount = new Decimal(amount).toPrecision(3)
 
       wallet_balance += amount
-      wallet_balance = wallet_balance.toPrecision(3)
       await this.databaseManger.updateProperty(this._wDB, userId, 'wallet_ballance', {wallet_balance: Number(wallet_balance)})
 
       return ResponseMessages.TransactionSuccessful
