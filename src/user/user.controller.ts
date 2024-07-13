@@ -68,11 +68,11 @@ export class UserController {
     return res.status(HttpStatus.OK).json(await this.userService.deleteUserAccount(req.user.userId))
   }
 
-  @SkipAuth()
-  @Get('api/v1/user/account/delete')
-  async deleteUserAccountTest(@Req() req, @Res() res, @Query() query) {
-    return res.status(HttpStatus.OK).json(await this.userService.deleteUserAccountTest(query.user_email))
-  }
+  // @SkipAuth()
+  // @Get('api/v1/user/account/delete')
+  // async deleteUserAccountTest(@Req() req, @Res() res, @Query() query) {
+  //   return res.status(HttpStatus.OK).json(await this.userService.deleteUserAccountTest(query.user_email))
+  // }
   
   // @Post('/api/v1/upload-image')
   // @UseInterceptors(FileInterceptor('image'))

@@ -40,7 +40,7 @@ export class AdminService {
       
     }
     let revenue = await this.userService.getTotalRevenue()
-    return { total_users, total_revenue: revenue.total_revenue , total_bookings, active_users, users, deleted_users: revenue.deleted_users };
+    return { total_users, total_revenue: revenue.total_revenue , total_bookings, active_users, deleted_users: revenue.deleted_users, users};
   }
 
   async computeAdminAnalytics2(email: string) {

@@ -175,11 +175,11 @@ export class UserService {
     return "User account deleted"
   }
 
-  async deleteUserAccountTest(user_email: string) {
-    await this._udb.findOneAndDelete({'email': user_email})
-    await this.updateTotalRevenue(0, 1)
-    return "User account deleted"
-  }
+  // async deleteUserAccountTest(user_email: string) {
+  //   await this._udb.findOneAndDelete({'email': user_email})
+  //   await this.updateTotalRevenue(0, 1)
+  //   return "User account deleted"
+  // }
 
   async updateLastLoginDate(userId: string) {
     let date = Date.now()
@@ -191,13 +191,13 @@ export class UserService {
     if (bossAccount.total_revenue) {
       let total_revenue = bossAccount.total_revenue + new_revenue
       let total_user_deleted = bossAccount.deleted_users + deleted_users
-      return await this.databaseManager.updateDocument(this._udb, bossAccount._id, {total_revenue, total_user_deleted})
+      return await this.databaseManager.updateDocument(this._udb, bossAccount._id, {total_revenue, deleted_users: total_user_deleted})
     }
-    await this.databaseManager.updateDocument(this._udb, bossAccount._id, {total_revenue: new_revenue, deleted_users: 0})
+    await this.databaseManager.updateDocument(this._udb, bossAccount._id, {total_revenue: new_revenue, deleted_users: deleted_users})
   }
 
   async getTotalRevenue() {
     let revenue = await this.databaseManager.findOneDocument(this._udb, "email", "ccachukwu@gmail.com")
-    return { total_revenue: revenue.total_revenue, deleted_users: revenue.deleted_revenue }
+    return { total_revenue: revenue.total_revenue, deleted_users: revenue.deleted_users }
   }
 }
