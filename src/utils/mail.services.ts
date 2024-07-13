@@ -341,11 +341,11 @@ export async function loadCronJobs() {
 export async function calculateTotalRevenue(new_revenue: number, deleted_user: number) {
   try {
     // Read the existing revenue from the file
-    let data = await fs.readJson('./revenue.json').catch(() => ({ total_revenue: 0, deleted_users: 0 }));
+    let data = await fs.readJson('./revenue.json') // .catch(() => ({ total_revenue: 0, deleted_users: 0 }));
 
     // Update the total revenue
-    let total_revenue = data.total_revenue || 0;
-    let deleted_users = data.deleted_users || 0
+    let total_revenue = data.total_revenue
+    let deleted_users = data.deleted_users
     total_revenue += new_revenue;
     deleted_users += deleted_user
 
@@ -361,7 +361,7 @@ export async function calculateTotalRevenue(new_revenue: number, deleted_user: n
 export async function getTotalRevenue() {
   try {
     // Read the existing revenue from the file
-    let data = await fs.readJson('./revenue.json').catch(() => ({ total_revenue: 0, deleted_users: 0 }));
+    let data = await fs.readJson('./revenue.json') // .catch(() => ({ total_revenue: 0, deleted_users: 0 }));
 
     // Return the total revenue
     return {total_revenue: data.total_revenue, deleted_users: data.deleted_users}
