@@ -131,8 +131,6 @@ export class WalletService {
         } else {
           wallet_balance = new Decimal(wallet_balance).minus(amount).toPrecision(3)
         }
-        console.log(wallet_balance)
-
         await this.databaseManger.updateProperty(this._wDB, userId, 'wallet_ballance', { wallet_balance: Number(wallet_balance) })
         return ResponseMessages.TransactionSuccessful
       }
@@ -161,9 +159,7 @@ export class WalletService {
         wallet_balance = new Decimal(wallet_balance).plus(amount)
       } else {
         wallet_balance = new Decimal(wallet_balance).plus(amount).toPrecision(3)
-      }
-      console.log(wallet_balance)
-      
+      }      
       await this.databaseManger.updateProperty(this._wDB, userId, 'wallet_ballance', {wallet_balance: Number(wallet_balance)})
 
       return ResponseMessages.TransactionSuccessful
