@@ -126,8 +126,11 @@ export class WalletService {
 
         // FIX PRESCION FLOATING 
         amount = new Decimal(amount)
-        wallet_balance = new Decimal(wallet_balance).minus(amount).toPrecision(3)
-        
+        if (amount.isInteger()) {
+          wallet_balance = new Decimal(wallet_balance).minus(amount)
+        } else {
+          wallet_balance = new Decimal(wallet_balance).minus(amount).toPrecision(3)
+        }
         console.log(wallet_balance)
 
         await this.databaseManger.updateProperty(this._wDB, userId, 'wallet_ballance', { wallet_balance: Number(wallet_balance) })
@@ -154,7 +157,11 @@ export class WalletService {
 
       // FIX PRESCION FLOATING 
       amount = new Decimal(amount)
-      wallet_balance = new Decimal(wallet_balance).plus(amount).toPrecision(3)
+      if (amount.isInteger()) {
+        wallet_balance = new Decimal(wallet_balance).minus(amount)
+      } else {
+        wallet_balance = new Decimal(wallet_balance).minus(amount).toPrecision(3)
+      }
       console.log(wallet_balance)
       
       await this.databaseManger.updateProperty(this._wDB, userId, 'wallet_ballance', {wallet_balance: Number(wallet_balance)})
