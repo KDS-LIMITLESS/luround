@@ -140,7 +140,6 @@ export class PaymentsAPI {
     }
   }
 
-
   async get_user_subscription_plan(userId: string) {
     let get_user = await this.databaseManager.findOneDocument(this._udb, "_id", userId)
     if (get_user !== null && get_user.payment_details !== undefined) return {subscription_plan : get_user.payment_details.current_plan}

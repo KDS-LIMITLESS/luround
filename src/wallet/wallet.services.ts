@@ -180,9 +180,9 @@ export class WalletService {
         let amount = payload.amount
         let transaction_fees;
 
-         // CALCULATE TRANSACTION FEE
-         // use transaction fees as a means of solving the atomic transaction problem incase of failures
-         if (payload.amount <= 5000) {
+        // CALCULATE TRANSACTION FEE
+        // use transaction fees as a means of solving the atomic transaction problem incase of failures
+        if (payload.amount <= 5000) {
           amount = payload.amount - 10
           transaction_fees = 10
 
