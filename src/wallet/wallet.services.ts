@@ -136,7 +136,6 @@ export class WalletService {
       }
       throw new BadRequestException({message: 'Wallet balance is too low for this transaction'})  
     } catch (err: any){
-      console.log(err)
       throw new BadRequestException({message: err.message})
     }
   }
@@ -176,10 +175,31 @@ export class WalletService {
     const { wallet_balance } = await this.get_wallet_balance(userId)
     try {
       if (wallet_balance >= payload.amount) {
+
         // CALL INITIATE TRANSFER FUNCTION
-        let amount = payload.amount * 100
-        let transfer = await initiateTransferToUserBank(user, amount, payload.recipient_code, payload.reference)
+        let amount = payload.amount
+        let transaction_fees;
+
+         // CALCULATE TRANSACTION FEE
+         // use transaction fees as a means of solving the atomic transaction problem incase of failures
+         if (payload.amount <= 5000) {
+          amount = payload.amount - 10
+          transaction_fees = 10
+
+        } else if (payload.amount >= 5001 && payload.amount <= 50000) {
+          transaction_fees = 25
+          amount = payload.amount - 25
+          
+        } else if (payload.amount > 50000) {
+          transaction_fees = 50
+          amount = payload.amount - 50
+        }
+
+        let transfer = await initiateTransferToUserBank(user, amount * 100, payload.recipient_code, payload.reference)
         if (transfer.status === true) {
+          //  DEDUCT TRANSACTION FEE
+          await this.deduct_wallet_balance(userId, transaction_fees)
+
           // SAVE TRANSFER REFERENCE AD RECIPIENT CODE TO DB
           // await this.transactions.record_user_transfer_transactions(userId, payload, transfer.data.transfer_code)
           return {

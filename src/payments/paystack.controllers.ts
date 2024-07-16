@@ -58,6 +58,7 @@ export class Payments {
       if(eventData.event === 'transfer.success') {
         console.log("Verifying Transfer...:", eventData.data.reference )
         let amount = eventData.data.amount / 100
+        // record and deduct transfer data from user wallet
         await this.walletService.record_user_transfer_transaction(
           // THE USER ID IS SAVED AS THE REASON FOR THE TRANSFER
           eventData.data.reason, 
