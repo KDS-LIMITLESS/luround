@@ -277,7 +277,7 @@ export async function SendBookingNotificationEmail_Client(to:string, booking_det
 
 export async function SendFeedBackEmail(from:string, name: string, subject: string, description: string) {
   return await client.sendMail({
-    from: {"address": "support@luround.com", "name": name},
+    from: {"address": "support@luround.com", "name": "Luround"},
     to: [{"email_address": {"address": "support@luround.com","name": "Luround-Support"}}],
     subject: subject,
     htmlBody: `
