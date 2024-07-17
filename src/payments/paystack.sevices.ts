@@ -93,7 +93,7 @@ export class PaymentsAPI {
         let deduct_service_charge = new Decimal(0.065 * charged_amount).toPrecision(3)
         charged_amount = new Decimal(charged_amount - Number(deduct_service_charge)).toPrecision(3)
 
-        await this.walletService.increase_wallet_balance(service_providerId, Number(charged_amount))
+        await this.walletService.increase_wallet_balance(service_providerId, Math.round(Number(charged_amount)))
        return {booking_status: "Success", transaction_ref: get_booking.payment_reference_id, booking_id: get_booking._id }
       }
       throw new BadRequestException({message: ResponseMessages.PaymentNotResolved})
