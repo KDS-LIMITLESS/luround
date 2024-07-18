@@ -12,10 +12,12 @@ export class FeedBackService {
 
   async record_feedback(user: any, data: any){
     try {
-    const {displayName, userId, email} = user
-    await this.databaseManager.create(this._fdb, {userId, displayName, feed_back: data})
-    await SendFeedBackEmail(email, displayName.split(' ')[0], data.subject, data.description)
-    return ResponseMessages.FeedBackRecorded
+
+      const {displayName, userId, email} = user
+      await this.databaseManager.create(this._fdb, {userId, displayName, feed_back: data})
+      await SendFeedBackEmail(email, displayName.split(' ')[0], data.subject, data.description)
+      return ResponseMessages.FeedBackRecorded
+      
     } catch(err: any) {
       console.log(err)
       throw new BadRequestException({message: err.message})
