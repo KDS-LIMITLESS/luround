@@ -98,7 +98,7 @@ export class PaymentsAPI {
       }
       throw new BadRequestException({message: ResponseMessages.PaymentNotResolved})
     } catch (err: any) {
-      console.log(err)
+      console.log("Associated booking not found")
       throw new BadRequestException({message: err.message })
     }
   }

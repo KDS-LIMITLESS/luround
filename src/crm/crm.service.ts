@@ -16,9 +16,11 @@ export class CRMService {
     if (user_contacts) {
       let find_existing_contact = user_contacts.contacts.find((obj) => obj.email === contact.email)
       if (find_existing_contact === undefined) {
+        // CONTACT DOES NOT EXIST YET
         await this.databaseService.updateArr(this._crmdb, "_id", new ObjectId(userId), "contacts", [contact])
         return "New Contact Added"
       }
+      // NOW CONTACT EXISTS, UPDATE CERTAIN FIELDS OF THE CONTACT
       return "Contact already Exists"
     }
     await this.databaseService.create(this._crmdb, {"_id": new ObjectId(userId), "contacts": [contact]})
