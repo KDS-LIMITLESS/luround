@@ -159,9 +159,9 @@ export class BookingsManager {
 
       let dt = new Date()
       await this.serviceInsights.store_service_booking_history(
-        get_booking.serviceDetails._id,
-        get_booking.serviceDetails.service_name, 
-        get_booking.serviceDetails.service_fee, 
+        get_booking.service_details._id,
+        get_booking.service_details.service_name, 
+        get_booking.service_details.service_fee, 
         `${dt.getDate()}/${dt.getMonth()}/${dt.getFullYear()}`, 
         get_booking.booking_user_info.displayName 
       )
@@ -212,9 +212,9 @@ export class BookingsManager {
 
         let dt = new Date()
       await this.serviceInsights.store_service_booking_history(
-        get_booking.serviceDetails._id,
-        get_booking.serviceDetails.service_name, 
-        get_booking.serviceDetails.service_fee, 
+        get_booking.service_details._id,
+        get_booking.service_details.service_name, 
+        get_booking.service_details.service_fee, 
         `${dt.getDate()}/${dt.getMonth()}/${dt.getFullYear()}`, 
         get_booking.booking_user_info.displayName 
       )
