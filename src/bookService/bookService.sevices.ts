@@ -168,7 +168,7 @@ export class BookingsManager {
       await scheduleEmailCronJob(get_booking.service_details.date, get_booking)
 
       // ADD USER TO SERVICE PROVIDER CONTACTS
-      let service_provider_id = new ObjectId(get_booking.service_provider_details.userId)
+      let service_provider_id = new ObjectId(get_booking.service_provider_info.userId)
       await this.crmService.add_new_contact(service_provider_id, 
         {
           name: get_booking.booking_user_info.displayName,
@@ -222,7 +222,7 @@ export class BookingsManager {
       await scheduleEmailCronJob(get_booking.service_details.date, get_booking)
 
       // ADD USER TO SERVICE PROVIDER CONTACTS
-      let service_provider_id = new ObjectId(get_booking.service_provider_details.userId)
+      let service_provider_id = new ObjectId(get_booking.service_provider_info.userId)
       await this.crmService.add_new_contact(service_provider_id, 
         {
           name: get_booking.booking_user_info.displayName,

@@ -86,7 +86,7 @@ export class PaymentsAPI {
       if (get_booking !== null) {
         let service_providerId = get_booking.service_provider_info.userId
         // UPDATE MATCHING BOOKING STATUS
-        await this.databaseManager.updateProperty(this._bkDb, get_booking._id, "booked_status", {booked_status: "SUCCESSFUL"})
+        await this.databaseManager.updateProperty(this._bkDb, get_booking._id, "booked_status", {booked_status: "CONFIRMED"})
 
         // DEDUCT 5%
         charged_amount = charged_amount / 100
