@@ -29,6 +29,9 @@ export class BookServiceDto {
   service_type: string
 
   @IsOptional()
+  document: string
+
+  @IsOptional()
   service_fee : string
 
   @IsOptional()

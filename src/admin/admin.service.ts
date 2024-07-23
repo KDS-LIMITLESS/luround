@@ -19,7 +19,7 @@ export class AdminService {
     const date = Date.now();
     const [total_users, total_bookings] = await Promise.all([
       this._udb.countDocuments(), 
-      this._bkdb.countDocuments()
+      this.bookingsService.get_all_confirmed_bookings()
     ]);
     
     const get_users = await this._udb.find({}).toArray();

@@ -60,6 +60,7 @@ export class BookingsManager {
           displayName: bookingDetail.displayName, 
           phone_number: bookingDetail.phone_number || phone_number
         },
+        document: bookingDetail.document,
         booked_status: "PENDING CONFIRMATION",
         payment_reference_id: transaction_ref || bookingDetail.payment_reference,
         invoice_id: invoice_id || "",
@@ -105,9 +106,11 @@ export class BookingsManager {
       // CHECK FOR PAYMENT CONFIRMED AND SEND NOTIFICATION
       if (service_booked.acknowledged) {
         // SEND EMAILS
-        if (booking_Detail.invoice_id === ""){
-          await booking_account_viewer(booking_Detail.booking_user_info.email, booking_Detail)
-        }
+        // if (booking_Detail.invoice_id === ""){
+        //   await booking_account_viewer(booking_Detail.booking_user_info.email, booking_Detail).catch((err: any) => {
+        //     console.log(err.err.error.details)
+        //   })
+        // }
         // await bookingConfirmed_service_provider(booking_Detail.service_provider_info.email, booking_Detail)
         // *********INITIATE AND RECORD PAYMENT *************
         // let response: any = await PaymentsAPI.initiate_flw_payment(amount, user, bookingDetail.phone_number, tx_ref, 
@@ -156,13 +159,38 @@ export class BookingsManager {
       
       let get_booking = await this.databaseManager.findOneDocument(this._bKM, "_id", booking_id)
       if (get_booking !== null) {
+
+      let dt = new Date()
+      await this.serviceInsights.store_service_booking_history(
+        get_booking.serviceDetails._id,
+        get_booking.serviceDetails.service_name, 
+        get_booking.serviceDetails.service_fee, 
+        `${dt.getDate()}/${dt.getMonth()}/${dt.getFullYear()}`, 
+        get_booking.booking_user_info.displayName 
+      )
+      await scheduleEmailCronJob(get_booking.service_details.date, get_booking)
+
+      // ADD USER TO SERVICE PROVIDER CONTACTS
+      let service_provider_id = new ObjectId(get_booking.service_provider_details.userId)
+      await this.crmService.add_new_contact(service_provider_id, 
+        {
+          name: get_booking.booking_user_info.displayName,
+          email: get_booking.booking_user_info.email,
+          phone_number: get_booking.booking_user_info.phone_number
+        })
+
         // THE BOOKING ALREADY EXISTS. SO CONFIRM THE BOOKING BEFORE PROCEDDING WITH SENDING EMAILS.
         await this.transactionsManger.record_transaction(get_booking.service_provider_info.userId, {
           service_id: get_booking.service_details.service_id, service_name: get_booking.service_details.service_name, 
           service_fee: get_booking.service_details.service_fee, transaction_ref: get_booking.payment_reference_id, transaction_status: "RECEIVED", 
           affliate_user: get_booking.booking_user_info.displayName, customer_email: get_booking.booking_user_info.email
         })
-        
+
+        // send email to account viewer
+        await booking_account_viewer(get_booking.booking_user_info.email, get_booking).catch((err: any) => {
+          console.log(err.err.error.details)
+        })
+
         // await bookingConfirmed_account_viewer(get_booking.booking_user_info.email, get_booking)
         await bookingConfirmed_service_provider(get_booking.service_provider_info.email, get_booking)
         // supress bounced emails
@@ -184,6 +212,32 @@ export class BookingsManager {
       let get_booking = await this.databaseManager.findOneDocument(this._bKM, "invoice_id", invoice_id)
 
       if (get_booking !== null ) {
+
+        let dt = new Date()
+      await this.serviceInsights.store_service_booking_history(
+        get_booking.serviceDetails._id,
+        get_booking.serviceDetails.service_name, 
+        get_booking.serviceDetails.service_fee, 
+        `${dt.getDate()}/${dt.getMonth()}/${dt.getFullYear()}`, 
+        get_booking.booking_user_info.displayName 
+      )
+      await scheduleEmailCronJob(get_booking.service_details.date, get_booking)
+
+      // ADD USER TO SERVICE PROVIDER CONTACTS
+      let service_provider_id = new ObjectId(get_booking.service_provider_details.userId)
+      await this.crmService.add_new_contact(service_provider_id, 
+        {
+          name: get_booking.booking_user_info.displayName,
+          email: get_booking.booking_user_info.email,
+          phone_number: get_booking.booking_user_info.phone_number
+        })
+
+        // THE BOOKING ALREADY EXISTS. SO CONFIRM THE BOOKING BEFORE PROCEDDING WITH SENDING EMAILS.
+        await this.transactionsManger.record_transaction(get_booking.service_provider_info.userId, {
+          service_id: get_booking.service_details.service_id, service_name: get_booking.service_details.service_name, 
+          service_fee: get_booking.service_details.service_fee, transaction_ref: get_booking.payment_reference_id, transaction_status: "RECEIVED", 
+          affliate_user: get_booking.booking_user_info.displayName, customer_email: get_booking.booking_user_info.email
+        })
        
         await bookingConfirmed_service_provider(get_booking.service_provider_info.email, get_booking)
         // supress bounced emails
@@ -214,14 +268,14 @@ export class BookingsManager {
   // RUN THIS FUNCTION IN THE WORKER THREAD AND CACHE THE RESPONSE
   async get_user_service_bookings(userId: string) {
     try {
-      let filter1 = 'service_provider_info.userId' // The service provider being booked
-      let filter2 = 'booking_user_info.userId' // The user booking the service
-      // BOOKED ME = MY SERVICES THAT CUSTOMERS BOOKED
-      // i BOOKED = SERVICES THAT I BOOKED FROM OTHER USERS
-      let [booked_me, i_booked] = await Promise.all([
-        await this.databaseManager.readAndWriteToArray(this._bKM, filter1, userId), 
-        await this.databaseManager.readAndWriteToArray(this._bKM, filter2, userId)
-      ])
+      const filter1 = { 'service_provider_info.userId': userId, 'booked_status': 'CONFIRMED' }; // Services provided by the user
+      const filter2 = { 'booking_user_info.userId': userId, 'booked_status': 'CONFIRMED' }; // Services booked by the user
+
+    // Fetch both sets of bookings in parallel
+    const [booked_me, i_booked] = await Promise.all([
+      this._bKM.find(filter1).toArray(),
+      this._bKM.find(filter2).toArray()
+    ]);
       //  1st OBJECT --> BOOKINGS I MADE TO OTHER USERS
       //  2nd OBJECT -->  BOOKINGS I MADE TO OTHER USERS 
         return [{userBooked: false, details: booked_me}, {userBooked: true, details: i_booked}]
@@ -229,8 +283,13 @@ export class BookingsManager {
       throw new NotFoundException({message: "Bookings not found"})
     }
   }
-  // refund decorator 
   
+  async get_all_confirmed_bookings() {
+    const filter = { 'booked_status': 'CONFIRMED' }
+    const CONFIRMED_BOOKINGS = await this._bKM.find(filter).toArray()
+    return CONFIRMED_BOOKINGS.length
+  }
+
   // how do we diffarentiate a booking that has been carried out and one that hasnt
   async cancel_booking(booking_id: string) {
     let booking = await this.databaseManager.findOneDocument(this._bKM, "_id", booking_id)
