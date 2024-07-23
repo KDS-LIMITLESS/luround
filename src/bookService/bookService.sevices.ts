@@ -200,6 +200,7 @@ export class BookingsManager {
         })
       } 
     } catch(err: any){
+      console.log(err)
       throw new BadRequestException({message: err.message})
     }
   }
