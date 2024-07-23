@@ -108,15 +108,16 @@ export class BookingsManager {
           await bookingConfirmed_service_provider(booking_Detail.service_provider_info.email, booking_Detail).catch((err: any) => {
             console.log(err.err.error.details)
           })
-          let user_nToken = await this.userService.get_user_notification_token(serviceDetails.service_provider_details.userId)
-          return {
-            userId: serviceDetails.service_provider_details.userId,
-            user_nToken, 
-            BookingId: service_booked.insertedId, 
-            transaction_ref: booking_Detail.payment_reference_id
-            // booking_payment_link: response.data.link
-          }
-        } // end if statement
+          
+        } 
+        let user_nToken = await this.userService.get_user_notification_token(serviceDetails.service_provider_details.userId)
+        return {
+           userId: serviceDetails.service_provider_details.userId,
+           user_nToken, 
+           BookingId: service_booked.insertedId, 
+           transaction_ref: booking_Detail.payment_reference_id
+           // booking_payment_link: response.data.link
+        }  
 
         // await bookingConfirmed_service_provider(booking_Detail.service_provider_info.email, booking_Detail)
         // *********INITIATE AND RECORD PAYMENT *************
