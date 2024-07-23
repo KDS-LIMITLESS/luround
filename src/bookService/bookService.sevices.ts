@@ -26,21 +26,13 @@ export class BookingsManager {
     private serviceInsights: InsightService
   ) {}
   
-  // Decorate service with initialize payment 
-  // Add the payment_reference to the bookingDetail document
-  // Run seperate endpoint to verify the payment using the payment_reference_no.
-  // If payment valid update booked status
-
-  // Increase price based on the service duration
+  
   async book_service(bookingDetail: BookServiceDto, serviceID: string, user: any, invoice_id?:string, amount_paid?: string, transaction_ref?: string, due_date?: string, note?: string, booking_generated_from_invoice?: string, phone_number?: string) {
     try {
       if (bookingDetail.payment_reference === ''){
-        throw new BadRequestException({message: 'Please ensure you complete the payment for this service.'})
+        throw new BadRequestException({message: 'Payment reference not found for this service booking'})
       }
-      // GET UNIQUE TRANSACTION REFERENCE CODE
-      let tx_ref = await this.paymentsManager.generateUniqueTransactionCode("BOOKING")
 
-      
       // CHECK IF SERVICE IS VALID AND EXISTS 
       let serviceDetails:any = await this.serviceManager.get_service_by_id(serviceID)
       
@@ -82,35 +74,50 @@ export class BookingsManager {
         }
       }
       
-      let service_booked = await this.databaseManager.create(this._bKM, booking_Detail)
-      // REGISTER SERVICE INSIGHTS.
-      let dt = new Date()
-      await this.serviceInsights.store_service_booking_history(
-        serviceDetails._id,
-        serviceDetails.service_name, 
-        bookingDetail.service_fee, 
-        `${dt.getDate()}/${dt.getMonth()}/${dt.getFullYear()}`, 
-        bookingDetail.displayName 
-      )
-      await scheduleEmailCronJob(booking_Detail.service_details.date, booking_Detail)
-
-      // ADD USER TO SERVICE PROVIDER CONTACTS
-      let service_provider_id = new ObjectId(serviceDetails.service_provider_details.userId)
-      await this.crmService.add_new_contact(service_provider_id, 
-        {
-          name: booking_Detail.booking_user_info.displayName,
-          email: booking_Detail.booking_user_info.email,
-          phone_number: booking_Detail.booking_user_info.phone_number
-        })
-        
-      // CHECK FOR PAYMENT CONFIRMED AND SEND NOTIFICATION
+      let service_booked = await this.databaseManager.create(this._bKM, booking_Detail)     
       if (service_booked.acknowledged) {
-        // SEND EMAILS
-        // if (booking_Detail.invoice_id === ""){
-        //   await booking_account_viewer(booking_Detail.booking_user_info.email, booking_Detail).catch((err: any) => {
-        //     console.log(err.err.error.details)
-        //   })
-        // }
+        if (booking_Detail.service_details.service_fee === "0") {
+
+          // STORE SERVICE INSIGHTS
+          let dt = new Date()
+          await this.serviceInsights.store_service_booking_history(
+            serviceDetails._id,
+            serviceDetails.service_name, 
+            bookingDetail.service_fee, 
+            `${dt.getDate()}/${dt.getMonth()}/${dt.getFullYear()}`, 
+            bookingDetail.displayName 
+          )
+          
+          // SCHEDULE EMAIL CRON JOBS
+          await scheduleEmailCronJob(booking_Detail.service_details.date, booking_Detail)
+        
+          // ADD USER TO SERVICE PROVIDER CONTACTS
+          let service_provider_id = new ObjectId(serviceDetails.service_provider_details.userId)
+          await this.crmService.add_new_contact(service_provider_id, 
+            {
+              name: booking_Detail.booking_user_info.displayName,
+              email: booking_Detail.booking_user_info.email,
+              phone_number: booking_Detail.booking_user_info.phone_number
+            })
+
+          // SEND EMAILS
+          await booking_account_viewer(booking_Detail.booking_user_info.email, booking_Detail).catch((err: any) => {
+            console.log(err.err.error.details)
+          })
+
+          await bookingConfirmed_service_provider(booking_Detail.service_provider_info.email, booking_Detail).catch((err: any) => {
+            console.log(err.err.error.details)
+          })
+          let user_nToken = await this.userService.get_user_notification_token(serviceDetails.service_provider_details.userId)
+          return {
+            userId: serviceDetails.service_provider_details.userId,
+            user_nToken, 
+            BookingId: service_booked.insertedId, 
+            transaction_ref: booking_Detail.payment_reference_id
+            // booking_payment_link: response.data.link
+          }
+        } // end if statement
+
         // await bookingConfirmed_service_provider(booking_Detail.service_provider_info.email, booking_Detail)
         // *********INITIATE AND RECORD PAYMENT *************
         // let response: any = await PaymentsAPI.initiate_flw_payment(amount, user, bookingDetail.phone_number, tx_ref, 
@@ -129,20 +136,9 @@ export class BookingsManager {
         // })
         // SERVICE PROVIDER TRANSACTION DETAIL
         // GET SERVICE PROVIDER DEVICE NOTIFICATION TOKEN 
-        let user_nToken = await this.userService.get_user_notification_token(serviceDetails.service_provider_details.userId)
-        return {
-          userId: serviceDetails.service_provider_details.userId,
-          user_nToken, 
-          BookingId: service_booked.insertedId, 
-          transaction_ref: booking_Detail.payment_reference_id
-          // booking_payment_link: response.data.link
-        }
+        
       }
       throw new BadRequestException({message: "An error occured. Service not booked"})
-      // }
-      // throw new BadRequestException({
-      //   message: "An error occurred. Are you booking Yourself?"
-      // })
     } catch (err: any) {
       console.log(err)
       throw new BadRequestException({message: "An error occured while booking", err})
