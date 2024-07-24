@@ -6,7 +6,7 @@ import { ServicePageDto } from "../servicePage/servicePage.dto.js";
 enum AppointmentTypes {
   virtual = 'Virtual',
   in_person = 'In-Person',
-  nil = 'NIL'
+  nil = 'nil'
 }
 export enum BookingGeneratedFromInvoice {
   true = "True",
