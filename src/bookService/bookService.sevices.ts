@@ -76,7 +76,7 @@ export class BookingsManager {
       
       let service_booked = await this.databaseManager.create(this._bKM, booking_Detail)     
       if (service_booked.acknowledged) {
-        if (booking_Detail.service_details.service_fee === "0") {
+        if (bookingDetail.service_fee === "0") {
 
           // STORE SERVICE INSIGHTS
           let dt = new Date()
