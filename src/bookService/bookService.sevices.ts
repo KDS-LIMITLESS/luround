@@ -78,6 +78,8 @@ export class BookingsManager {
       if (service_booked.acknowledged) {
         if (bookingDetail.service_fee === "0") {
 
+          // UPDATE BOOKING PAYMENT STATUS
+          await this.databaseManager.updateProperty(this._bKM, service_booked.insertedId.toString(), "booked_status", {booked_status: "CONFIRMED"})
           // STORE SERVICE INSIGHTS
           let dt = new Date()
           await this.serviceInsights.store_service_booking_history(
@@ -165,6 +167,10 @@ export class BookingsManager {
         `${dt.getDate()}/${dt.getMonth()}/${dt.getFullYear()}`, 
         get_booking.booking_user_info.displayName 
       )
+
+      // UPDATE BOOKING PAYMENT STATUS
+      await this.databaseManager.updateProperty(this._bKM, booking_id, "booked_status", {booked_status: "CONFIRMED"})
+
       await scheduleEmailCronJob(get_booking.service_details.date, get_booking)
 
       // ADD USER TO SERVICE PROVIDER CONTACTS
@@ -190,13 +196,9 @@ export class BookingsManager {
 
         // await bookingConfirmed_account_viewer(get_booking.booking_user_info.email, get_booking)
         await bookingConfirmed_service_provider(get_booking.service_provider_info.email, get_booking)
-        // supress bounced emails
-        .then(async () => {
-          return await this.databaseManager.updateProperty(this._bKM, booking_id, "booked_status", {booked_status: "CONFIRMED"})
-        })
         // EVEN IF EMAIL IS NOT VALID, PROCEED WITH UPDATING THE BOOKING STATUS IN DB
-        .catch(async () => {
-          return await this.databaseManager.updateProperty(this._bKM, booking_id, "booked_status", {booked_status: "CONFIRMED"})
+        .catch(async (err) => {
+          console.log(err.err.error.details)
         })
       } 
     } catch(err: any){
@@ -219,6 +221,10 @@ export class BookingsManager {
         `${dt.getDate()}/${dt.getMonth()}/${dt.getFullYear()}`, 
         get_booking.booking_user_info.displayName 
       )
+
+      // UPDATE BOOKING PAYMENT STATUS
+      await this.databaseManager.updateProperty(this._bKM, get_booking._id, "booked_status", {booked_status: "CONFIRMED"})
+
       await scheduleEmailCronJob(get_booking.service_details.date, get_booking)
 
       // ADD USER TO SERVICE PROVIDER CONTACTS
@@ -238,12 +244,8 @@ export class BookingsManager {
         })
        
         await bookingConfirmed_service_provider(get_booking.service_provider_info.email, get_booking)
-        // supress bounced emails
-        .then(async () => {
-          return await this.databaseManager.updateProperty(this._bKM, get_booking._id, "booked_status", {booked_status: "CONFIRMED"})
-        })
-        .catch(async () => {
-          return await this.databaseManager.updateProperty(this._bKM, get_booking._id, "booked_status", {booked_status: "CONFIRMED"})
+        .catch(async (err) => {
+          console.log(err.err.error.details)
         })
       }
     } catch(err: any){
