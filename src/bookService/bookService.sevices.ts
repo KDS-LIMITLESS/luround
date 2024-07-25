@@ -70,7 +70,8 @@ export class BookingsManager {
           duration: bookingDetail.duration,
           message: note || bookingDetail.message || null,
           location: bookingDetail.location,
-          created_at: Date.now()
+          created_at: Date.now(),
+          oneoff_type: serviceDetails.oneoff_type
         }
       }
       
