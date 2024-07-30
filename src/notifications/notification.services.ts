@@ -31,8 +31,10 @@ export class NotificationService {
   async send_notification(message: any) {
     try {
       let sendNotification = await getMessaging().send(message)
+      console.log("Send Notification:",sendNotification)
       return sendNotification
     } catch(err: any) {
+      console.log("Error", err)
       throw new InternalServerErrorException({message: err})
     }
   }
