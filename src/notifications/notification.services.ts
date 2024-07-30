@@ -47,6 +47,7 @@ export class NotificationService {
       },
       token: user_nToken
     }
+    console.log("Token>>>>>>>>>", user_nToken)
     await this.send_notification(message)
     await this.save_user_notification(userIdTOSendNotificationTo, title, body, service_name)
     return

@@ -56,7 +56,7 @@ export class AuthService {
       let send_expiry_mail_date = new Date(trial_expiry_date.getTime() - 3 * 24 * 60 * 60 * 1000)
 
       if (current_date.getTime() >= send_expiry_mail_date.getTime() && user.sent_expiry_email === false){
-        await sendPlanExpiringMail(user.email, user.displayName)
+        // await sendPlanExpiringMail(user.email, user.displayName)
         await this.databaseManager.updateDocument(this._udb, userId, {sent_expiry_email: true})
       }
       return user.account_status
@@ -73,7 +73,7 @@ export class AuthService {
       if (current_date.getTime() >= send_payment_expiry_mail_date.getTime() && user.payment_details.sent_expiry_email === false){
         
         await this.databaseManager.updateProperty(this._udb, userId, '', {[`payment_details.sent_expiry_email`]: true})
-        await sendPlanExpiringMail(user.email, user.displayName)
+        // await sendPlanExpiringMail(user.email, user.displayName)
       }
       return user.account_status
     } else {
