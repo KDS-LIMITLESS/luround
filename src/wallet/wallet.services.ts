@@ -123,6 +123,7 @@ export class WalletService {
       let { wallet_balance } = await this.get_wallet_balance(userId)
 
       if (wallet_balance !== null && wallet_balance >= amount) {
+        console.log(wallet_balance)
 
         // FIX PRESCION FLOATING 
         amount = new Decimal(amount).toNumber()
@@ -174,33 +175,33 @@ export class WalletService {
     const {userId, email, displayName} = user
     await this.verify_wallet_pin(userId, payload.wallet_pin)
     const { wallet_balance } = await this.get_wallet_balance(userId)
-    console.log(wallet_balance)
     try {
-      if (wallet_balance >= payload.amount) {
+      if (wallet_balance >= payload.amount && payload.amount > 10) {
 
         // CALL INITIATE TRANSFER FUNCTION
         let amount = payload.amount
-        let transaction_fees;
+        let transaction_fee;
 
         // CALCULATE TRANSACTION FEE
         // use transaction fees as a means of solving the atomic transaction problem incase of failures
         if (payload.amount <= 5000) {
           amount = payload.amount - 10
-          transaction_fees = 10
+          transaction_fee = 10
 
         } else if (payload.amount >= 5001 && payload.amount <= 50000) {
-          transaction_fees = 25
+          transaction_fee = 25
           amount = payload.amount - 25
           
         } else if (payload.amount > 50000) {
-          transaction_fees = 50
+          transaction_fee = 50
           amount = payload.amount - 50
         }
 
+        await this.deduct_wallet_balance(userId, amount)
         let transfer = await initiateTransferToUserBank(user, amount * 100, payload.recipient_code, payload.reference)
         if (transfer.status === true) {
           //  DEDUCT TRANSACTION FEE
-          await this.deduct_wallet_balance(userId, transaction_fees)
+          await this.deduct_wallet_balance(userId, transaction_fee)
 
           // SAVE TRANSFER REFERENCE AD RECIPIENT CODE TO DB
           // await this.transactions.record_user_transfer_transactions(userId, payload, transfer.data.transfer_code)
@@ -214,7 +215,7 @@ export class WalletService {
         throw new BadRequestException({message: transfer.message})
         // MAKE WEBHOOK FUNCTION FOR VERIFYING TRANSFER STATUS
       } 
-      throw new BadRequestException({message: 'Your wallet balance is low'})
+      throw new BadRequestException({message: 'Your wallet balance is low. Withdrawal amount must be greater than N10'})
     } catch(err: any) {
       console.log(err)
       await WithdrawalFailed(email, displayName, wallet_balance, payload.amount)
@@ -225,7 +226,6 @@ export class WalletService {
   async record_user_transfer_transaction(userId: any, payload: any, transfer_code: string) {
     try {
       // DEDUCT USER WALLET BALANCE
-      await this.deduct_wallet_balance(userId, payload.amount)
       console.log(payload.amount)
       // SAVE TRANSFER REFERENCE AD RECIPIENT CODE TO DB
       await this.transactions.record_user_transfer_transactions(userId, payload, transfer_code)
