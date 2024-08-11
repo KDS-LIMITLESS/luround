@@ -126,13 +126,14 @@ export class WalletService {
         console.log(wallet_balance)
 
         // FIX PRESCION FLOATING 
-        amount = new Decimal(amount).toNumber()
-        if (Number.isInteger(amount)) {
-          wallet_balance = new Decimal(wallet_balance).minus(amount)
-        } else {
-          wallet_balance = new Decimal(wallet_balance).minus(amount).toPrecision(3)
-        }
-        await this.databaseManger.updateProperty(this._wDB, userId, 'wallet_ballance', { wallet_balance: Number(wallet_balance) })
+        amount = Number(amount)
+        wallet_balance = wallet_balance - amount
+        // if (Number.isInteger(amount)) {
+          // wallet_balance - amount
+        // } else {
+          // wallet_balance = new Decimal(wallet_balance).minus(amount)
+        // }
+        await this.databaseManger.updateProperty(this._wDB, userId, 'wallet_ballance', { wallet_balance: Number(wallet_balance).toPrecision(2) })
         return ResponseMessages.TransactionSuccessful
       }
       throw new BadRequestException({message: 'Wallet balance is too low for this transaction'})  
