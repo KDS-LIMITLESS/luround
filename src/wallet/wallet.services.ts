@@ -176,7 +176,7 @@ export class WalletService {
     await this.verify_wallet_pin(userId, payload.wallet_pin)
     const { wallet_balance } = await this.get_wallet_balance(userId)
     try {
-      if (wallet_balance >= payload.amount && payload.amount > 10) {
+      if (wallet_balance >= payload.amount ) {
 
         // CALL INITIATE TRANSFER FUNCTION
         let amount = payload.amount
