@@ -136,6 +136,7 @@ export class WalletService {
       }
       throw new BadRequestException({message: 'Wallet balance is too low for this transaction'})  
     } catch (err: any){
+      console.log(err)
       throw new BadRequestException({message: err.message})
     }
   }
@@ -224,6 +225,7 @@ export class WalletService {
     try {
       // DEDUCT USER WALLET BALANCE
       await this.deduct_wallet_balance(userId, payload.amount)
+      console.log(payload.amount)
       // SAVE TRANSFER REFERENCE AD RECIPIENT CODE TO DB
       await this.transactions.record_user_transfer_transactions(userId, payload, transfer_code)
       return;
