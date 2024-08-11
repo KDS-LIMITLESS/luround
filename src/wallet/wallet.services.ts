@@ -197,8 +197,9 @@ export class WalletService {
           amount = payload.amount - 50
         }
 
-        await this.deduct_wallet_balance(userId, amount)
+        
         let transfer = await initiateTransferToUserBank(user, amount * 100, payload.recipient_code, payload.reference)
+        await this.deduct_wallet_balance(userId, amount)
         if (transfer.status === true) {
           //  DEDUCT TRANSACTION FEE
           await this.deduct_wallet_balance(userId, transaction_fee)
