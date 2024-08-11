@@ -174,6 +174,7 @@ export class WalletService {
     const {userId, email, displayName} = user
     await this.verify_wallet_pin(userId, payload.wallet_pin)
     const { wallet_balance } = await this.get_wallet_balance(userId)
+    console.log(wallet_balance)
     try {
       if (wallet_balance >= payload.amount) {
 
