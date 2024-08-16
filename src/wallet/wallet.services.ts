@@ -76,9 +76,9 @@ export class WalletService {
     
   }
 
-  async get_wallet_balance(userId: string){
+  async get_wallet_balance(userId: string): Promise<any>{
     let getWallet =  await this.databaseManger.findOneDocument(this._wDB, "_id", userId)
-    return getWallet ?  {wallet_balance: getWallet.wallet_balance, has_wallet_pin: getWallet.has_wallet_pin} : null
+    return getWallet ?  {wallet_balance: getWallet.wallet_balance, has_wallet_pin: getWallet.has_wallet_pin} : 0
   }
 
   async reset_wallet_pin(userId: string, old_pin: string, new_pin: string) {
@@ -133,7 +133,7 @@ export class WalletService {
         // } else {
           // wallet_balance = new Decimal(wallet_balance).minus(amount)
         // }
-        await this.databaseManger.updateProperty(this._wDB, userId, 'wallet_ballance', { wallet_balance: Number(wallet_balance).toPrecision(2) })
+        await this.databaseManger.updateProperty(this._wDB, userId, 'wallet_ballance', { wallet_balance: Number(Number(wallet_balance).toPrecision(2)) })
         return ResponseMessages.TransactionSuccessful
       }
       throw new BadRequestException({message: 'Wallet balance is too low for this transaction'})  
