@@ -53,10 +53,10 @@ export class ProfileController {
   
   @SkipAuth()
   @Get('/get')
-  async getUserProfile(@Query() query: userProfileDto , @Res() res: Response) {
+  async getUserProfile(@Req()req,  @Query() query: userProfileDto , @Res() res: Response) {
     return res
     .status(HttpStatus.OK)
-    .json(await this.profileSevice.get_user_profile(query)) 
+    .json(await this.profileSevice.get_user_profile(req.user)) 
   }
   
   @Get('/certificates/get')
