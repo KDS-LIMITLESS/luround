@@ -30,7 +30,7 @@ export class CRMService {
   async get_user_contacts(userId: string) {
     try {
       let { contacts } = await this.databaseService.findOneDocument(this._crmdb, "_id", userId)
-      return contacts
+      return contacts.sort((a, b) => a.name.localeCompare(b.name))
     } catch (err) {
       return []
     }

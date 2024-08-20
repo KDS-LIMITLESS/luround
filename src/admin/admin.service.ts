@@ -40,7 +40,15 @@ export class AdminService {
       
     }
     let revenue = await this.userService.getTotalRevenue()
-    return { total_users, total_revenue: revenue.total_revenue , total_bookings, active_users, deleted_users: revenue.deleted_users, users};
+    return { 
+      total_users,
+      total_revenue: revenue.total_revenue , 
+      total_bookings, 
+      active_users, 
+      deleted_users: revenue.deleted_users, 
+      users: users.sort((a, b) => a.user_name.localeCompare(b.user_name))
+    };
+
   }
 
   async computeAdminAnalytics2(email: string) {

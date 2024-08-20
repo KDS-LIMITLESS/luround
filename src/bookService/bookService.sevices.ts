@@ -79,6 +79,13 @@ export class BookingsManager {
       if (service_booked.acknowledged) {
         if (bookingDetail.service_fee === "0") {
 
+          // REGISTER BOOKING IN USER TRANSACTIONS LIST
+          await this.transactionsManger.record_transaction(booking_Detail.service_provider_info.userId, {
+            service_id: booking_Detail.service_details.service_id, service_name: booking_Detail.service_details.service_name, 
+            service_fee: booking_Detail.service_details.service_fee, transaction_ref: booking_Detail.payment_reference_id, transaction_status: "RECEIVED", 
+            affliate_user: booking_Detail.booking_user_info.displayName, customer_email: booking_Detail.booking_user_info.email
+          })
+
           // UPDATE BOOKING PAYMENT STATUS
           await this.databaseManager.updateProperty(this._bKM, service_booked.insertedId.toString(), "booked_status", {booked_status: "CONFIRMED"})
           // STORE SERVICE INSIGHTS
@@ -279,7 +286,10 @@ export class BookingsManager {
     ]);
       //  1st OBJECT --> BOOKINGS I MADE TO OTHER USERS
       //  2nd OBJECT -->  BOOKINGS I MADE TO OTHER USERS 
-        return [{userBooked: false, details: booked_me}, {userBooked: true, details: i_booked}]
+      booked_me.sort((a, b) => b.service_details.created_at - a.service_details.created_at);
+      i_booked.sort((a, b) => b.service_details.created_at - a.service_details.created_at);
+
+      return [{userBooked: false, details: booked_me}, {userBooked: true, details: i_booked}]
     } catch (err: any){
       throw new NotFoundException({message: "Bookings not found"})
     }
