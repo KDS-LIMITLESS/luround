@@ -172,7 +172,7 @@ export class BookingsManager {
         get_booking.service_details.service_id.toString(),
         get_booking.service_details.service_name, 
         get_booking.service_details.service_fee, 
-        `${dt.getDate()}/${dt.getMonth()}/${dt.getFullYear()}`, 
+        `${dt.getDate()}/${dt.getMonth() + 1}/${dt.getFullYear()}`, 
         get_booking.booking_user_info.displayName 
       )
 

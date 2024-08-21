@@ -20,6 +20,7 @@ export class DatabaseService {
   crmDB = this._db.collection("crm")
   insightDB = this._db.collection("insight")
   scheduleDB = this._db.collection("schedules")
+  reminders = this._db.collection("reminder")
   
   constructor(@Inject('MONGO_CONNECTION') private _db:Db) {}
   

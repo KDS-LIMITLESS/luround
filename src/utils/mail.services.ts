@@ -192,7 +192,7 @@ export async function bookingConfirmed_account_viewer(to:string, booking_detail:
 }
 async function check_meeting_location(booking_detail: any) {
   let meeting_link = booking_detail.service_details.appointment_type === 'Virtual' ? booking_detail.service_details.location 
-  : 'This is an In-Person event.'
+  : '[Not Available]'
   return meeting_link
 }
 export async function booking_account_viewer(to:string, booking_detail: any) {
@@ -328,6 +328,7 @@ export async function loadCronJobs() {
   try {
     const jobConfigs = await fs.readJson('./savedjobs.json');
     jobConfigs.forEach(async ({ date, booking_detail }) => {
+      console.log(date, booking_detail)
       cron.schedule(date, async () => {
         console.log('Running email cron job');
         await SendBookingNotificationEmail_ServiceProvider(booking_detail.service_provider_info.email, booking_detail);
