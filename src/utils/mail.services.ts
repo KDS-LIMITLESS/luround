@@ -287,11 +287,12 @@ export async function SendFeedBackEmail(from:string, name: string, subject: stri
 }
 
 
-const jobs = []
 
 export async function scheduleEmailCronJob(date:string, booking_detail:any) {
   const targetDate = new Date(`${date}`)
   targetDate.setDate(targetDate.getDate() - 1);
+  const jobs = []
+
 
   // Schedule the cron job to run at the target date and time
   const targetCronTime = `${targetDate.getUTCMinutes()} ${targetDate.getUTCHours()} ${targetDate.getUTCDate()} ${targetDate.getUTCMonth() + 1} 0`;
@@ -306,15 +307,16 @@ export async function scheduleEmailCronJob(date:string, booking_detail:any) {
   });
   jobs.push({targetCronTime, booking_detail}) // [ { } ]
   console.log('Email cron job scheduled');
-  return await persistCronJobs()
+  return await persistCronJobs(jobs)
 }
 
-async function persistCronJobs() {
+async function persistCronJobs(jobs) {
+  console.log(jobs)
   let savedJobs = jobs.map(job => ({
     date: job.targetCronTime, booking_detail: job.booking_detail
   }))
 
-  fs.readJson('src/utils/jobs.json', 'utf8', (err, dataObj) => {
+  fs.readJson('src/utils/jobs1.json', 'utf8', (err, dataObj) => {
     if (err) {
       console.log("Error reading file", err)
       return;
@@ -324,7 +326,7 @@ async function persistCronJobs() {
       try {
        dataObj.push(...savedJobs)
 
-      fs.writeJson('src/utils/jobs.json', dataObj, { spaces: 2})
+      fs.writeJson('src/utils/jobs1.json', dataObj, { spaces: 2})
       .then(() => {
         console.log("Cron Job Persisted!")
       })
@@ -340,7 +342,7 @@ async function persistCronJobs() {
 
 export async function loadCronJobs() {
   try {
-    const jobConfigs = await fs.readJson('src/utils/jobs.json');
+    const jobConfigs = await fs.readJson('src/utils/jobs1.json');
     jobConfigs.forEach(async ({ date, booking_detail }) => {
       console.log(date, booking_detail)
       cron.schedule(date, async () => {
@@ -352,6 +354,7 @@ export async function loadCronJobs() {
     console.log('Email cron jobs re-scheduled');
   } catch (error) {
     console.error('Error loading cron jobs:', error);
+    fs.writeFile("src/utils/jobs1.json", JSON.stringify([], null, 2), {spaces: 2})
     throw new BadRequestException({message: error.message})
   }
 }
