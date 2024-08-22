@@ -6,15 +6,18 @@ import { BookServiceDto } from "./bookServiceDto.js";
 import { TransactionsManger } from "../transaction/tansactions.service.js";
 import { PaymentsAPI } from "../payments/paystack.sevices.js";
 import { UserService } from "../user/user.service.js";
-import { bookingConfirmed_account_viewer, bookingConfirmed_service_provider, bookingRescheduled, booking_account_viewer, convertToDateTime, scheduleEmailCronJob } from "../utils/mail.services.js";
+import { SendBookingNotificationEmail_Client, SendBookingNotificationEmail_ServiceProvider, bookingConfirmed_account_viewer, bookingConfirmed_service_provider, bookingRescheduled, booking_account_viewer, convertToDateTime, scheduleEmailCronJob } from "../utils/mail.services.js";
 import { CRMService } from "../crm/crm.service.js";
 import { ObjectId } from "mongodb";
 import { InsightService } from "../insights/insights.service.js";
+import cron from 'node-cron'
+
 
 @Injectable()
 export class BookingsManager {
   _bKM = this.databaseManager.bookingsDB
   _sdl = this.databaseManager.scheduleDB
+  _rmd = this.databaseManager.reminders
   
   constructor(
     private databaseManager: DatabaseService, 
@@ -77,7 +80,8 @@ export class BookingsManager {
       
       let service_booked = await this.databaseManager.create(this._bKM, booking_Detail)     
       if (service_booked.acknowledged) {
-        await scheduleEmailCronJob(booking_Detail.service_details.date, booking_Detail)
+        let job = await scheduleEmailCronJob(booking_Detail.service_details.date, booking_Detail)
+        await this.persist_booking_cron_job(job)
         if (bookingDetail.service_fee === "0") {
 
           // REGISTER BOOKING IN USER TRANSACTIONS LIST
@@ -100,7 +104,8 @@ export class BookingsManager {
           )
           
           // SCHEDULE EMAIL CRON JOBS
-          await scheduleEmailCronJob(booking_Detail.service_details.date, booking_Detail)
+          let job = await scheduleEmailCronJob(booking_Detail.service_details.date, booking_Detail)
+          await this.persist_booking_cron_job(job)
         
           // ADD USER TO SERVICE PROVIDER CONTACTS
           let service_provider_id = new ObjectId(serviceDetails.service_provider_details.userId)
@@ -180,7 +185,8 @@ export class BookingsManager {
       // UPDATE BOOKING PAYMENT STATUS
       await this.databaseManager.updateProperty(this._bKM, booking_id, "booked_status", {booked_status: "CONFIRMED"})
 
-      await scheduleEmailCronJob(get_booking.service_details.date, get_booking)
+      let job = await scheduleEmailCronJob(get_booking.service_details.date, get_booking)
+      await this.persist_booking_cron_job(job)
 
       // ADD USER TO SERVICE PROVIDER CONTACTS
       let service_provider_id = new ObjectId(get_booking.service_provider_info.userId)
@@ -234,7 +240,8 @@ export class BookingsManager {
       // UPDATE BOOKING PAYMENT STATUS
       await this.databaseManager.updateProperty(this._bKM, get_booking._id, "booked_status", {booked_status: "CONFIRMED"})
 
-      await scheduleEmailCronJob(get_booking.service_details.date, get_booking)
+      let job = await scheduleEmailCronJob(get_booking.service_details.date, get_booking)
+      await this.persist_booking_cron_job(job)
 
       // ADD USER TO SERVICE PROVIDER CONTACTS
       let service_provider_id = new ObjectId(get_booking.service_provider_info.userId)
@@ -377,5 +384,22 @@ export class BookingsManager {
     for (const elem of outdatedSchedule){
       await this.databaseManager.deletefromArray(this._sdl, _id, "schedules", elem )
     }
+  }
+
+  async persist_booking_cron_job(job:any) {
+    console.log(job)
+    return await this.databaseManager.create(this._rmd, job[0] )
+  }
+
+  public async load_cron_jobs() {
+    let jobs = await this._rmd.find({}).toArray()
+    jobs.forEach(async ({ targetCronTime, booking_detail }) => {
+      cron.schedule(targetCronTime, async () => {
+        console.log('Running email cron job');
+        await SendBookingNotificationEmail_ServiceProvider(booking_detail.service_provider_info.email, booking_detail);
+        await SendBookingNotificationEmail_Client(booking_detail.booking_user_info.email, booking_detail)
+      });
+    });
+    console.log("Jobs loaded")
   }
 }

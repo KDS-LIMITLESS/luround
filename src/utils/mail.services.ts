@@ -3,6 +3,8 @@ import { SendMailClient } from "zeptomail";
 import cron from 'node-cron'
 import fs from 'fs-extra'
 import { BadRequestException } from "@nestjs/common";
+import { DatabaseService } from "../store/db.service.js";
+import { Db } from "mongodb";
 
 // const mail = new postmark.ServerClient('9f332d3f-5c4d-42d5-b4c4-0959b0dd648a');
 
@@ -286,8 +288,6 @@ export async function SendFeedBackEmail(from:string, name: string, subject: stri
   });
 }
 
-
-
 export async function scheduleEmailCronJob(date:string, booking_detail:any) {
   const targetDate = new Date(`${date}`)
   targetDate.setDate(targetDate.getDate() - 1);
@@ -307,57 +307,28 @@ export async function scheduleEmailCronJob(date:string, booking_detail:any) {
   });
   jobs.push({targetCronTime, booking_detail}) // [ { } ]
   console.log('Email cron job scheduled');
-  return await persistCronJobs(jobs)
+  return jobs
 }
 
-async function persistCronJobs(jobs) {
-  console.log(jobs)
-  let savedJobs = jobs.map(job => ({
-    date: job.targetCronTime, booking_detail: job.booking_detail
-  }))
 
-  fs.readJson('src/utils/jobs1.json', 'utf8', (err, dataObj) => {
-    if (err) {
-      console.log("Error reading file", err)
-      return;
-    }
-
-    if (Array.isArray(dataObj)) {
-      try {
-       dataObj.push(...savedJobs)
-
-      fs.writeJson('src/utils/jobs1.json', dataObj, { spaces: 2})
-      .then(() => {
-        console.log("Cron Job Persisted!")
-      })
-      .catch((err: any) => {
-        throw new BadRequestException({message: err.message})
-      })
-    } catch(err) {
-      console.log("Error -------> ", err)
-      }
-    }
-  })  
-}
-
-export async function loadCronJobs() {
-  try {
-    const jobConfigs = await fs.readJson('src/utils/jobs1.json');
-    jobConfigs.forEach(async ({ date, booking_detail }) => {
-      console.log(date, booking_detail)
-      cron.schedule(date, async () => {
-        console.log('Running email cron job');
-        await SendBookingNotificationEmail_ServiceProvider(booking_detail.service_provider_info.email, booking_detail);
-        await SendBookingNotificationEmail_Client(booking_detail.booking_user_info.email, booking_detail)
-      });
-    });
-    console.log('Email cron jobs re-scheduled');
-  } catch (error) {
-    console.error('Error loading cron jobs:', error);
-    fs.writeFile("src/utils/jobs1.json", JSON.stringify([], null, 2), {spaces: 2})
-    throw new BadRequestException({message: error.message})
-  }
-}
+// export async function loadCronJobs() {
+//   try {
+//     const jobConfigs = await fs.readJson('src/utils/jobs1.json');
+//     jobConfigs.forEach(async ({ date, booking_detail }) => {
+//       console.log(date, booking_detail)
+//       cron.schedule(date, async () => {
+//         console.log('Running email cron job');
+//         await SendBookingNotificationEmail_ServiceProvider(booking_detail.service_provider_info.email, booking_detail);
+//         await SendBookingNotificationEmail_Client(booking_detail.booking_user_info.email, booking_detail)
+//       });
+//     });
+//     console.log('Email cron jobs re-scheduled');
+//   } catch (error) {
+//     console.error('Error loading cron jobs:', error);
+//     fs.writeFile("src/utils/jobs1.json", JSON.stringify([], null, 2), {spaces: 2})
+//     throw new BadRequestException({message: error.message})
+//   }
+// }
 
 // export async function calculateTotalRevenue(new_revenue: number, deleted_user: number) {
 //   try {
