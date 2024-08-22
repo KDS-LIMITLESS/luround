@@ -268,7 +268,6 @@ export async function SendBookingNotificationEmail_Client(to:string, booking_det
       <p> Here’s the breakdown - </p>
       <p> Service booked: <b>${booking_detail.service_details.service_name}</b> <br>
       Appointment Time: <b>${booking_detail.service_details.time} </b> <br>
-      Meeting Link: <b>${booking_detail.service_details.meeting_link}</b> <br>
       Type of booking: <b>${booking_detail.service_details.appointment_type} </b></p>
       <p>Virtual Meeting Link: <b> ${meeting_location}</b></p>
       <p>For 24/7 Support: support@luround.com</p>`
@@ -306,27 +305,42 @@ export async function scheduleEmailCronJob(date:string, booking_detail:any) {
     await SendBookingNotificationEmail_Client(booking_detail.booking_user_info.email, booking_detail)
   });
   jobs.push({targetCronTime, booking_detail}) // [ { } ]
-  await persistCronJobs()
-
   console.log('Email cron job scheduled');
+  return await persistCronJobs()
 }
 
 async function persistCronJobs() {
   let savedJobs = jobs.map(job => ({
     date: job.targetCronTime, booking_detail: job.booking_detail
   }))
-  fs.writeJson('./savedjobs.json', savedJobs, { spaces: 2})
-  .then(() => {
-    console.log("Cron Job Persisted!")
-  })
-  .catch((err: any) => {
-    throw new BadRequestException({message: err.message})
-  })
+
+  fs.readJson('src/utils/jobs.json', 'utf8', (err, dataObj) => {
+    if (err) {
+      console.log("Error reading file", err)
+      return;
+    }
+
+    if (Array.isArray(dataObj)) {
+      try {
+       dataObj.push(...savedJobs)
+
+      fs.writeJson('src/utils/jobs.json', dataObj, { spaces: 2})
+      .then(() => {
+        console.log("Cron Job Persisted!")
+      })
+      .catch((err: any) => {
+        throw new BadRequestException({message: err.message})
+      })
+    } catch(err) {
+      console.log("Error -------> ", err)
+      }
+    }
+  })  
 }
 
 export async function loadCronJobs() {
   try {
-    const jobConfigs = await fs.readJson('./savedjobs.json');
+    const jobConfigs = await fs.readJson('src/utils/jobs.json');
     jobConfigs.forEach(async ({ date, booking_detail }) => {
       console.log(date, booking_detail)
       cron.schedule(date, async () => {

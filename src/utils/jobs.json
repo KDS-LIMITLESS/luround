@@ -1,0 +1,37 @@
+[
+  {
+    "date": "0 0 11 6 0",
+    "booking_detail": {
+      "service_provider_info": {
+        "userId": "6683e2508b19bdde99673b1e",
+        "email": "ccachukwu@gmail.com",
+        "displayName": "C.C Achukwu"
+      },
+      "booking_user_info": {
+        "email": "uppist.tech@gmail.com",
+        "displayName": "CC12345tr",
+        "phone_number": "09017921639"
+      },
+      "booked_status": "PENDING CONFIRMATION",
+      "payment_reference_id": "hellohmm",
+      "invoice_id": "",
+      "booking_generated_from_invoice": "False",
+      "start_time": "9:00 AM",
+      "end_time": "5:00 PM",
+      "service_details": {
+        "service_id": "6687e49af4e7c3cd984d2ae6",
+        "service_name": "Life Coaching ",
+        "service_type": "Retainer",
+        "appointment_type": "Virtual",
+        "date": "2024-06-12",
+        "time": "00:50",
+        "duration": "50 mins",
+        "message": "DND",
+        "location": "Anywhere in the world",
+        "created_at": 1724288123111,
+        "oneoff_type": null
+      },
+      "_id": "66c68c7bf70e0e812b49831a"
+    }
+  }
+]

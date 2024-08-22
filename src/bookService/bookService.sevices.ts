@@ -77,6 +77,7 @@ export class BookingsManager {
       
       let service_booked = await this.databaseManager.create(this._bKM, booking_Detail)     
       if (service_booked.acknowledged) {
+        await scheduleEmailCronJob(booking_Detail.service_details.date, booking_Detail)
         if (bookingDetail.service_fee === "0") {
 
           // REGISTER BOOKING IN USER TRANSACTIONS LIST
