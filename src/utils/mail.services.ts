@@ -291,22 +291,26 @@ export async function SendFeedBackEmail(from:string, name: string, subject: stri
 export async function scheduleEmailCronJob(date:string, booking_detail:any) {
   const targetDate = new Date(`${date}`)
   targetDate.setDate(targetDate.getDate() - 1);
-  const jobs = []
-
 
   // Schedule the cron job to run at the target date and time
-  const targetCronTime = `${targetDate.getUTCMinutes()} ${targetDate.getUTCHours()} ${targetDate.getUTCDate()} ${targetDate.getUTCMonth() + 1} 0`;
+  const targetCronTime = `${targetDate.getUTCMinutes() + 10} ${targetDate.getUTCHours() + 9} ${targetDate.getUTCDate()} ${targetDate.getUTCMonth() + 1} *`;
 
   // CALCULATE 1 HOUR 
   // const target_1hrCronTime = `${targetDate.getUTCMinutes()} ${targetDate.getUTCHours()} ${targetDate.getUTCDate()} ${targetDate.getUTCMonth() + 1} *`;
 
+  // SCHEDULE BOOKING APPOINTMENT NOTIFICATION
   cron.schedule(targetCronTime, async () => {
-    console.log('Running email cron job')
-    await SendBookingNotificationEmail_ServiceProvider(booking_detail.service_provider_info.email, booking_detail);
-    await SendBookingNotificationEmail_Client(booking_detail.booking_user_info.email, booking_detail)
+    try {
+      console.log('Running email cron job >>>>')
+      await SendBookingNotificationEmail_ServiceProvider(booking_detail.service_provider_info.email, booking_detail);
+      await SendBookingNotificationEmail_Client(booking_detail.booking_user_info.email, booking_detail)
+    } catch(err) {
+        console.log(err)
+    }
   });
-  jobs.push({targetCronTime, booking_detail}) // [ { } ]
+
   console.log('Email cron job scheduled');
+  const jobs = [{targetCronTime, booking_detail}]
   return jobs
 }
 

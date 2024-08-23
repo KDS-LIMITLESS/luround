@@ -391,13 +391,18 @@ export class BookingsManager {
 
   public async load_cron_jobs() {
     let jobs = await this._rmd.find({}).toArray()
-    jobs.forEach(async ({ targetCronTime, booking_detail }) => {
+    let targetCronTime, booking_detail
+    for({ targetCronTime, booking_detail } of jobs){
       cron.schedule(targetCronTime, async () => {
-        console.log('Running email cron job');
-        await SendBookingNotificationEmail_ServiceProvider(booking_detail.service_provider_info.email, booking_detail);
-        await SendBookingNotificationEmail_Client(booking_detail.booking_user_info.email, booking_detail)
+        try {
+          console.log('Running email cron job HERE');
+          await SendBookingNotificationEmail_ServiceProvider(booking_detail.service_provider_info.email, booking_detail)
+          await SendBookingNotificationEmail_Client(booking_detail.booking_user_info.email, booking_detail)
+        } catch(err: any) {
+          console.log(err)
+        }
       });
-    });
+    };
     console.log("Jobs loaded")
   }
 }
