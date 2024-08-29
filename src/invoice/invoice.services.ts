@@ -34,7 +34,7 @@ export class InvoiceService {
     const phone_number_obj = user_mLinks.find((obj) => obj['name'] === 'Mobile') || {};
     const address_obj = user_mLinks.find((obj) => obj['name'] === 'Location') || {};
   
-    let payment_amount: number = 0.065 * Number(invoice_data.total) + Number(invoice_data.total);
+    let payment_amount: number = 0.035 * Number(invoice_data.total) + Number(invoice_data.total);
     payment_amount = Math.round(payment_amount) // new Decimal(payment_amount).toPrecision(6)
     
     const payment_link = await this.paymentsManager.initializePayment(invoice_data.send_to_email, payment_amount, tx_ref);
@@ -76,7 +76,7 @@ export class InvoiceService {
         service_provider_address: address_obj['link'] || '',
         service_provider_phone_number: phone_number_obj['link'] || '',
         payment_link: payment_link,
-        processing_fee: Number(invoice_data.sub_total) * 0.065
+        processing_fee: Number(invoice_data.sub_total) * 0.035
       };
     } catch (err: any) {
       console.log(err)
@@ -113,11 +113,11 @@ export class InvoiceService {
         }
       
         await this.databaseManager.updateDocument(this._idb, invoice._id.toString(), {payment_details})
-        await this.transactionsManger.record_transaction(invoice.service_provider.userId, {
-          service_id: invoice.product_detail[0].service_id, service_name: invoice.product_detail[0].service_name, 
-          service_fee: invoice.product_detail[0].total, transaction_ref: payment_details.tx_ref, transaction_status: "RECEIVED", 
-          affliate_user: invoice.send_to_name, customer_email: invoice.send_to_email
-        })
+        // -await this.transactionsManger.record_transaction(invoice.service_provider.userId, {
+        // -  service_id: invoice.product_detail[0].service_id, service_name: invoice.product_detail[0].service_name, 
+        // -  service_fee: invoice.product_detail[0].total, transaction_ref: payment_details.tx_ref, transaction_status: "RECEIVED", 
+        // -  affliate_user: invoice.send_to_name, customer_email: invoice.send_to_email
+        // -})
         let book_service = await this.bookingService.book_service(
           invoice.product_detail[0], 
           invoice.product_detail[0].service_id, 

@@ -281,17 +281,18 @@ export class BookingsManager {
 
   // RUN THIS FUNCTION IN THE WORKER THREAD AND CACHE THE RESPONSE
   async get_user_service_bookings(userId: string) {
+    let booked_status;
     try {
-      const filter1 = { 'service_provider_info.userId': userId, 'booked_status': 'CONFIRMED' }; // Services provided by the user
-      const filter2 = { 'booking_user_info.userId': userId, 'booked_status': 'CONFIRMED' }; // Services booked by the user
+      const filter1 = { 'service_provider_info.userId': userId, 'booked_status': "CONFIRMED" }; // Services provided by the user
+      const filter2 = { 'booking_user_info.userId': userId, 'booked_status': booked_status? "CANCELLED" : "CONFIRMED" }; // Services booked by the user
 
-    // Fetch both sets of bookings in parallel
-    const [booked_me, i_booked] = await Promise.all([
-      this._bKM.find(filter1).toArray(),
-      this._bKM.find(filter2).toArray()
-    ]);
-      //  1st OBJECT --> BOOKINGS I MADE TO OTHER USERS
-      //  2nd OBJECT -->  BOOKINGS I MADE TO OTHER USERS 
+      // Fetch both sets of bookings in parallel
+      const [booked_me, i_booked] = await Promise.all([
+        this._bKM.find(filter1).toArray(),
+        this._bKM.find(filter2).toArray()
+      ]);
+        //  1st OBJECT --> BOOKINGS I MADE TO OTHER USERS
+        //  2nd OBJECT -->  BOOKINGS I MADE TO OTHER USERS 
       booked_me.sort((a, b) => b.service_details.created_at - a.service_details.created_at);
       i_booked.sort((a, b) => b.service_details.created_at - a.service_details.created_at);
 
