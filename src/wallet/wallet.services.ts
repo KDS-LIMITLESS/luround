@@ -123,17 +123,15 @@ export class WalletService {
       let { wallet_balance } = await this.get_wallet_balance(userId)
 
       if (wallet_balance !== null && wallet_balance >= amount) {
-        console.log(wallet_balance)
+        let total = 20.437
+        let i = new Decimal(0.11).mul(total).plus(total).toNumber().toPrecision(5)
+        console.log(parseFloat(i))
 
         // FIX PRESCION FLOATING 
-        amount = Number(amount)
-        wallet_balance = wallet_balance - amount
-        // if (Number.isInteger(amount)) {
-          // wallet_balance - amount
-        // } else {
-          // wallet_balance = new Decimal(wallet_balance).minus(amount)
-        // }
-        await this.databaseManger.updateProperty(this._wDB, userId, 'wallet_ballance', { wallet_balance: Number(Number(wallet_balance).toPrecision(2)) })
+        amount = parseFloat(amount)
+        wallet_balance = new Decimal(wallet_balance).minus(amount).toPrecision(5)
+       
+        await this.databaseManger.updateProperty(this._wDB, userId, 'wallet_balance', { wallet_balance: parseFloat(wallet_balance) })
         return ResponseMessages.TransactionSuccessful
       }
       throw new BadRequestException({message: 'Wallet balance is too low for this transaction'})  
@@ -147,24 +145,19 @@ export class WalletService {
   async increase_wallet_balance(userId: string, amount:number) {
     try {
       let balance  = await this.get_wallet_balance(userId)
-      if ( balance === null ) {
+      if ( !balance.has_wallet_pin) {  
         // USER HAS NO WALLET
         await this.create_wallet(userId, '0000')
-        await this.databaseManger.updateProperty(this._wDB, userId, 'wallet_ballance', {wallet_balance: amount})
+        await this.databaseManger.updateProperty(this._wDB, userId, 'wallet_balance', {wallet_balance: amount})
         return ResponseMessages.TransactionSuccessful
       }
+
       let { wallet_balance } = balance
-
       // FIX PRESCION FLOATING 
-      amount = new Decimal(amount).toNumber()
-      if (Number.isInteger(amount)) {
-        wallet_balance = new Decimal(wallet_balance).plus(amount)
-      } else {
-        wallet_balance = new Decimal(wallet_balance).plus(amount).toPrecision(3)
-      }      
-      await this.databaseManger.updateProperty(this._wDB, userId, 'wallet_ballance', {wallet_balance: Number(wallet_balance)})
-
+      wallet_balance = new Decimal(wallet_balance).plus(amount).toPrecision(5)
+      await this.databaseManger.updateProperty(this._wDB, userId, 'wallet_balance', {wallet_balance : parseFloat(wallet_balance)})
       return ResponseMessages.TransactionSuccessful
+
     } catch (err: any) {
       throw new BadRequestException({message: err.message})
     }

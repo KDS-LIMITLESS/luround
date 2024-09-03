@@ -66,7 +66,7 @@ export class WalletController {
   //   return res.status(HttpStatus.OK).json(JSON.parse(response.body))
   // }
 
-  // @Post('deduct-wallet-balance')
+  // @Post('inc')
   // async deductWalletBalance(@Req() req, @Res() res, @Body() payload) {
   //   return res.status(HttpStatus.OK).json(await this.walletManager.deduct_wallet_balance(req.user.userId, payload.amount))
   // }

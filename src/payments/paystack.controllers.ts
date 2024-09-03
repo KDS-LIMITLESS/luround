@@ -82,7 +82,7 @@ export class Payments {
         let dt = new Date()
         await this.transactonsService.record_transaction(eventData.data.reason, {
           service_name: 'Withdrawal',
-          amount: - Number(amount),
+          amount: - parseFloat(`${amount}`),
           transaction_ref: eventData.data.reference,
           transaction_date: Date.now(),
           transaction_time: dt.getHours() + ":" + dt.getMinutes() + ":" + dt.getSeconds()
@@ -95,20 +95,18 @@ export class Payments {
         if(eventData.data.reference.startsWith("INVOICE")){
           let invoice = await this.invoiceService.get_invoice_with_reference(eventData.data.reference)
           if (invoice !== null) {
-            let data = { amount_paid: Number(eventData.data.amount) / 100, tx_ref: eventData.data.reference }
+            let data = { amount_paid: parseFloat(eventData.data.amount) / 100, tx_ref: eventData.data.reference }
             
-            // WHERE ARE YOU DEDUCTING THE CHARGE
             await this.invoiceService.enter_invoice_payment(invoice, data)
-            await this.walletService.increase_wallet_balance(invoice.service_provider.userId, Number(invoice.product_detail[0].total))
+            await this.walletService.increase_wallet_balance(invoice.service_provider.userId, parseFloat(invoice.product_detail[0].total))
             // CALCULATE REVENUE GENERATED
-            await this.userService.updateTotalRevenue(Number(eventData.data.amount) / 100, 0)
+            await this.userService.updateTotalRevenue(parseFloat(eventData.data.amount) / 100, 0)
           }
-        } else {       
-          
-          let verify_booking = await this.paymentManager.verifyBookingPayment(eventData.data.reference.toString(), Number(eventData.data.amount))
+        } else {
+          let verify_booking = await this.paymentManager.verifyBookingPayment(eventData.data.reference.toString(), parseFloat(eventData.data.amount))
           await this.bookingService.confirm_booking(verify_booking.booking_id)
           // CALCULATE REVENUE GENERATED
-          await this.userService.updateTotalRevenue(Number(eventData.data.amount) / 100, 0)
+          await this.userService.updateTotalRevenue(parseFloat(eventData.data.amount) / 100, 0)
         }
       }
       return res.sendStatus(200)

@@ -88,12 +88,12 @@ export class PaymentsAPI {
         // UPDATE MATCHING BOOKING STATUS
         await this.databaseManager.updateProperty(this._bkDb, get_booking._id, "booked_status", {booked_status: "CONFIRMED"})
 
-        // DEDUCT 5%
+        // DEDUCT 11% (VAT + Service_Charge)
         charged_amount = charged_amount / 100
-        let deduct_service_charge = new Decimal(0.11 * charged_amount).toPrecision(3)
-        charged_amount = new Decimal(charged_amount - Number(deduct_service_charge)).toPrecision(3)
+        let deduct_service_charge = new Decimal((0.11 * charged_amount).toPrecision(5)).toNumber()
+        charged_amount = new Decimal(charged_amount - deduct_service_charge).toPrecision(5)
 
-        await this.walletService.increase_wallet_balance(service_providerId, Math.round(Number(charged_amount)))
+        await this.walletService.increase_wallet_balance(service_providerId, charged_amount)
        return {booking_status: "Success", transaction_ref: get_booking.payment_reference_id, booking_id: get_booking._id }
       }
       throw new BadRequestException({message: ResponseMessages.PaymentNotResolved})
