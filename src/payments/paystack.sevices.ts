@@ -90,7 +90,7 @@ export class PaymentsAPI {
 
         // DEDUCT 5%
         charged_amount = charged_amount / 100
-        let deduct_service_charge = new Decimal(0.035 * charged_amount).toPrecision(3)
+        let deduct_service_charge = new Decimal(0.11 * charged_amount).toPrecision(3)
         charged_amount = new Decimal(charged_amount - Number(deduct_service_charge)).toPrecision(3)
 
         await this.walletService.increase_wallet_balance(service_providerId, Math.round(Number(charged_amount)))
