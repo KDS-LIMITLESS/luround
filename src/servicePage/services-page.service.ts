@@ -1,9 +1,9 @@
 import { BadRequestException, Injectable, InternalServerErrorException, NotFoundException } from "@nestjs/common";
 import ResponseMessages from "../messageConstants.js";
 import { DatabaseService } from "../store/db.service.js";
-import { Encrypter } from "../utils/Encryption.js";
+// import { Encrypter } from "../utils/Encryption.js";
 import { ServiceDto, ServicePageDto } from "./servicePage.dto.js";
-import { generateRandomSixDigitNumber } from "../utils/mail.services.js";
+import { generateRandomAlphabets } from "../utils/mail.services.js";
 import { InsightService } from "../insights/insights.service.js";
 
 
@@ -17,8 +17,9 @@ export class ServicePageManager {
 
   async add_new_service(user: any, serviceData: ServicePageDto){
     const { userId, email, displayName } = user
-    let encryption = new Encrypter(process.env.ENCRYPTION_KEY as string)
-    let service_link = `https://luround.com/${serviceData.service_name.replace(/\s/g, "-")}/${encryption.encrypt(userId)}`
+    // let encryption = new Encrypter(process.env.ENCRYPTION_KEY as string)
+    let randomLetters = await generateRandomAlphabets(6)
+    let service_link = `https://luround.com/${serviceData.service_name.replace(/\s/g, "-")}/${randomLetters}`
     let service = {
       service_provider_details: { userId, email, displayName },
       service_link,
