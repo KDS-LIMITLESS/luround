@@ -171,7 +171,7 @@ export async function bookingRescheduled(to:string, booking_detail: any) {
       Amount Paid: <b>${booking_detail.service_details.service_fee}</b> <br>
       Delivery: <b>${booking_detail.service_details.appointment_type} </b><br>
       location: <b>${meeting_location.location}</b></p>
-      <p>Virtual Meeting Link: <b> ${meeting_location}</b></p>
+      <p>Virtual Meeting Link: <b> ${meeting_location.meeting_link}</b></p>
       <p>For 24/7 Support: support@luround.com</p>`
   });
 }
@@ -217,7 +217,7 @@ export async function booking_account_viewer(to:string, booking_detail: any) {
       Amount Paid: <b>${booking_detail.service_details.service_fee}</b> <br>
       Delivery: <b>${booking_detail.service_details.appointment_type} </b><br>
       location: <b>${meeting_location.location}</b></p>
-      <p>Virtual Meeting Link: <b> ${meeting_location}</b></p>`
+      <p>Virtual Meeting Link: <b> ${meeting_location.meeting_link}</b></p>`
   });
 }
 
@@ -239,7 +239,7 @@ export async function bookingConfirmed_service_provider(to:string, booking_detai
       Amount Paid: <b>${booking_detail.service_details.service_fee}</b> <br>
       Delivery: <b>${booking_detail.service_details.appointment_type} </b><br>
       location: <b>${meeting_location.location}</b></p>
-      <p>Virtual Meeting Link: <b> ${meeting_location}</b></p>
+      <p>Virtual Meeting Link: <b> ${meeting_location.meeting_link}</b></p>
       <p>For 24/7 Support: support@luround.com</p>`
   });
 }
@@ -260,7 +260,7 @@ export async function SendBookingNotificationEmail_ServiceProvider(to:string, bo
       Amount Paid: <b>${booking_detail.service_details.service_fee}</b> <br>
       Type of booking: <b>${booking_detail.service_details.appointment_type} </b><br>
       location: <b>${meeting_location.location}</b></p>
-      <p>Virtual Meeting Link: <b> ${meeting_location}</b></p>
+      <p>Virtual Meeting Link: <b> ${meeting_location.meeting_link}</b></p>
       <p>For 24/7 Support: support@luround.com</p>`
   });
 }
@@ -279,7 +279,7 @@ export async function SendBookingNotificationEmail_Client(to:string, booking_det
       Appointment Time: <b>${booking_detail.service_details.time} </b> <br>
       Type of booking: <b>${booking_detail.service_details.appointment_type} </b><br>
       location: <b>${meeting_location.location}</b></p>
-      <p>Virtual Meeting Link: <b> ${meeting_location}</b></p>
+      <p>Virtual Meeting Link: <b> ${meeting_location.meeting_link}</b></p>
     `
   });
 }
