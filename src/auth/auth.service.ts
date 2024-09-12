@@ -32,7 +32,7 @@ export class AuthService {
         message: ResponseMessages.BadLoginDetails
       })
     }
-    const {password, ...userDetails} = isUser
+    const {password, otp, certificates, ...userDetails} = isUser
     return userDetails
   }
 

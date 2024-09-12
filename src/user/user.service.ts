@@ -145,7 +145,8 @@ export class UserService {
   }
 
   async change_password(userId: string, old_password: string, new_password: string) {
-    if (await this.verify_user_password(userId, old_password)){
+    const VERIFIED_USER_PASSWORD = await this.verify_user_password(userId, old_password)
+    if (VERIFIED_USER_PASSWORD){
       const password_hash = await bcrypt.hash(new_password, 12)
       await this.databaseManager.updateProperty(this._udb, userId, "password", {"password": password_hash})
       return ResponseMessages.PasswordChangeSuccessfull

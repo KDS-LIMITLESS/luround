@@ -33,10 +33,10 @@ export class DatabaseService {
    */
   public async findOneDocument(db:Collection<Document | any>, searchParam: string, value: string): Promise<any | null> {
     if (searchParam === "_id") {
-      const document = await db.findOne({ _id: new ObjectId(value) }, { projection: { password: 0 }})
+      const document = await db.findOne({ _id: new ObjectId(value) })
       return document || null
     }
-    const document = await db.findOne({ [searchParam]: value }, { projection: { password: 0 }})
+    const document = await db.findOne({ [searchParam]: value })
     return document || null
   }
 
