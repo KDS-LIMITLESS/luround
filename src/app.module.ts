@@ -25,6 +25,7 @@ import { CRMModule } from './crm/crm.module.js';
 import { SocketsModule } from './sockets/socket.module.js';
 import { InsightsModule } from './insights/insights.module.js';
 import { AdminModule } from './admin/admin.module.js';
+import { StoreFrontModule } from './storefront/storefront.module.js'
 
 @Module({
   imports: [
@@ -48,7 +49,8 @@ import { AdminModule } from './admin/admin.module.js';
     CRMModule,
     SocketsModule,
     InsightsModule,
-    AdminModule
+    AdminModule,
+    StoreFrontModule
   ],
   controllers: [AppController],
   providers: [

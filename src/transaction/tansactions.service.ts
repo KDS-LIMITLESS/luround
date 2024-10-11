@@ -53,6 +53,29 @@ export class TransactionsManger {
     return ResponseMessages.TransactionRecorded
   }
 
+  async recordUserProductTransactions(userId: string, payload: any) {
+    let dt = new Date()
+    let productPurchaseDetails = {
+      product_id: payload.productId,
+      product_name: payload.product_name,
+      price: payload.price,
+      customer_name: payload.customer_name,
+      customer_email: payload.customer_email,
+      transaction_status: payload.transaction_status,
+      transaction_ref: payload.transaction_ref,
+      transaction_date: Date.now(),
+      transaction_time: dt.getHours() + ":" + dt.getMinutes() + ":" + dt.getSeconds()
+    }
+    let find_user_transactions = await this.databaseManger.findOneDocument(this._tDB, "_id", userId)
+    if (find_user_transactions !== null) {
+      await this.databaseManger.updateArr(this._tDB, "_id", new ObjectId(userId), "product", [productPurchaseDetails])
+      return ResponseMessages.TransactionRecorded
+    }
+    await this.databaseManger.create(this._tDB, {"_id": new ObjectId(userId), product: [productPurchaseDetails]})
+    return ResponseMessages.TransactionRecorded
+  }
+
+
   async get_user_transactions(userId: string) {
     let get_transactions = await this.databaseManger.findOneDocument(this._tDB, "_id", userId)
     return get_transactions ? get_transactions.transactions : []

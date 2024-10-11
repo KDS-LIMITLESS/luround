@@ -8,6 +8,7 @@ import { BookingsManager } from "../bookService/bookService.sevices.js";
 import { InvoiceService } from "../invoice/invoice.services.js";
 import { TransactionsManger } from "../transaction/tansactions.service.js";
 import { UserService } from "../user/user.service.js";
+import { StoreFrontService } from "../storefront/storefront.service.js";
 
 @Controller('api/v1/payments')
 export class Payments {
@@ -18,7 +19,8 @@ export class Payments {
     public bookingService: BookingsManager, 
     private invoiceService: InvoiceService,
     private transactonsService: TransactionsManger, 
-    private userService: UserService
+    private userService: UserService,
+    private productService: StoreFrontService
   ) {}
 
   // @Post('initialize-payment')
@@ -102,6 +104,12 @@ export class Payments {
             // CALCULATE REVENUE GENERATED
             await this.userService.updateTotalRevenue(parseFloat(eventData.data.amount) / 100, 0)
           }
+
+        } else if (eventData.data.reference.startsWith("PRODUCT")){
+          // come back here
+          await this.productService.purchaseProduct("find a way to embed produc id from frotend request", eventData.data.reason, eventData.data.reference )
+
+          
         } else {
           let verify_booking = await this.paymentManager.verifyBookingPayment(eventData.data.reference.toString(), parseFloat(eventData.data.amount))
           await this.bookingService.confirm_booking(verify_booking.booking_id)

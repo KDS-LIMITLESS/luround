@@ -13,6 +13,7 @@ import { InsightService } from "../insights/insights.service.js";
 import { AuthService } from "../auth/auth.service.js";
 import { ProfileService } from "../profileManager/profile.service.js";
 import { InvoiceService } from "../invoice/invoice.services.js";
+import { StoreFrontService } from "../storefront/storefront.service.js";
 
 @Module({
   imports: [],
@@ -21,7 +22,8 @@ import { InvoiceService } from "../invoice/invoice.services.js";
     TransactionsManger,
     BookingsManager, 
     ServicePageManager,
-    UserService, CRMService, InsightService, AuthService, ProfileService, InvoiceService]
+    UserService, CRMService, InsightService, AuthService, 
+    ProfileService, InvoiceService, StoreFrontService]
 })
 
 export class PaymentsModule {}
