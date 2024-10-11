@@ -12,9 +12,14 @@ export class StoreFrontController {
     return res.status(HttpStatus.OK).json(await this.storeFrontService.addProduct(req.user.userId, payload))
   }
 
-  @Post('new-product')
+  @Post('purchase-product')
   async purchaseProduct(@Req() req, @Res() res, @Body() payload: any, @Query() query: ProductIdDTO) {
     return res.status(HttpStatus.OK).json(await this.storeFrontService.purchaseProduct(query.productId, payload, payload.tx_ref))
+  }
+
+  @Post('record-click')
+  async recordProductClick(@Req() req, @Res() res, @Query() query: ProductIdDTO) {
+    return res.status(HttpStatus.OK).json(await this.storeFrontService.recordProductClicks(query.productId))
   }
 
   @Get('get-product')
@@ -32,10 +37,6 @@ export class StoreFrontController {
     return res.status(HttpStatus.OK).json(await this.storeFrontService.getProductInsight(req.user.userId, query.productId))
   }
 
-  @Get('record-click')
-  async recordProductClick(@Req() req, @Res() res, @Query() query: ProductIdDTO) {
-    return res.status(HttpStatus.OK).json(await this.storeFrontService.recordProductClicks(query.productId))
-  }
 
   @Put('edit-product')
   async editProduct(@Req() req, @Res() res, @Body() payload: EProductDTO, @Query() query: ProductIdDTO) {
@@ -49,7 +50,7 @@ export class StoreFrontController {
 
   @Delete('/delete-product')
   async deleteBooking(@Req() req, @Query() query, @Res() res) {
-    return res.status(200).json(await this.storeFrontService.deleteProduct(req.user.userId,query.productId))
+    return res.status(200).json(await this.storeFrontService.deleteProduct(req.user.userId, query.productId))
   }
 
 }

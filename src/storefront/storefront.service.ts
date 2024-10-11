@@ -80,12 +80,13 @@ export class StoreFrontService {
 
   // @Internal - No endpoint for this function
   async storeProductPurchaseHistory(productId: string, 
-    price: string, date_purchased: string, customer_name: string, /* customer_email: string,*/ tx_ref: string ) 
+    price: string, date_purchased: string, customer_name: string, customer_email: string,
+    customer_phone, tx_ref: string ) 
   {
     let FIND_PRODUCT = await this .databaseManager.findOneDocument(this._productsDB, "_id", productId)
     // FIND THE SERVICE WITH SPECIFIED ID 
     // let find_service_id = await this.databaseManager.findOneDocument(this._productsDB, "_id", productId)
-    let purchaseHistory = {date_purchased, customer_name, price, /*customer_email, tx_ref*/ }
+    let purchaseHistory = {date_purchased, customer_name, price, customer_email, customer_phone, tx_ref  }
     // if (find_service_id === null) {
     //   return await this.databaseManager.create(this._productsDB, {"_id": new ObjectId(productId), purchaseHistory: [purchaseHistory]})
     // }
@@ -153,12 +154,13 @@ export class StoreFrontService {
     let dt = new Date()
     let product = await this.getProduct(productId)
     await this.storeProductPurchaseHistory(
-      productId, 
-      product.price, 
+      productId,
       dt.getHours() + ":" + dt.getMinutes() + ":" + dt.getSeconds(),
+      product.price,
+      purchaseDetails.email,
       purchaseDetails.full_name,
-      tx_ref
-      // purchaseDetails.email, tx_ref
+      purchaseDetails.email,
+      tx_ref   
     )
   }
 

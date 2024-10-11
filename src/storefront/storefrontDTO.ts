@@ -27,9 +27,7 @@ export class ProductDTO {
   price: string
 
   links: string
-
-  productId: string
-
+  
 }
 
 export class EProductDTO extends PartialType(ProductDTO) {}
