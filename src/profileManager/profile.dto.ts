@@ -2,7 +2,7 @@ import { Contains, IsArray, IsDate, IsEmail, IsNotEmpty, IsNumber, IsOptional, V
   ValidationOptions, 
   ValidatorConstraint, ValidatorConstraintInterface, registerDecorator 
 } from "class-validator";
-import { PartialType } from '@nestjs/mapped-types'
+import { PartialType, PickType } from '@nestjs/mapped-types'
 import { BadRequestException } from "@nestjs/common";
 
 
@@ -158,4 +158,5 @@ export class CertificateValidationDto {
 
 
 export class userProfileDto extends PartialType(userProfileMainDto) {}
+export class MediaLinkDTO extends PickType(userProfileMainDto, ['media_links']) {}
 

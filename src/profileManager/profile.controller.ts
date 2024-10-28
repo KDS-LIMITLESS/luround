@@ -1,7 +1,7 @@
 import { Body, Controller, Delete, Get, HttpStatus, Post, Put, Query, Req, Res,} from "@nestjs/common";
 import { ProfileService } from "./profile.service.js";
 import { Response } from "express";
-import { userProfileDto } from "./profile.dto.js";
+import { MediaLinkDTO, userProfileDto } from "./profile.dto.js";
 import { SkipAuth } from "../auth/jwt.strategy.js";
 
 @Controller('api/v1/profile')
@@ -17,7 +17,7 @@ export class ProfileController {
   }
 
   @Put('/media-links/update')
-  async updateMediaLinks(@Req() req, @Res() res: Response, @Body() body: userProfileDto) {
+  async updateMediaLinks(@Req() req, @Res() res: Response, @Body() body: MediaLinkDTO) {
     return res
     .status(HttpStatus.OK)
     .json(await this.profileSevice.update_user_media_links(req.user, body.media_links)) 

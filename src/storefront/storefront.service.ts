@@ -27,8 +27,8 @@ export class StoreFrontService {
     return product
   }
 
-  async getAllProducts() {
-    return this._productsDB.find({}).toArray()
+  async getAllProducts(item_category: string) {
+    return this._productsDB.find({"category": item_category}).toArray()
   }
 
   async editProduct(userId: string, productId: string, product_details: EProductDTO) {

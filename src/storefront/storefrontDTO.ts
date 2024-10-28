@@ -31,6 +31,7 @@ export class ProductDTO {
 }
 
 export class EProductDTO extends PartialType(ProductDTO) {}
+export class ProductCategoryDTO extends PickType(ProductDTO, ['category']) {}
 
 export class ProductIdDTO {
 

@@ -1,6 +1,6 @@
 import { Body, Controller, Delete, Get, HttpStatus, Post, Put, Query, Req, Res } from "@nestjs/common";
 import { StoreFrontService } from "./storefront.service.js";
-import { ProductDTO, EProductDTO, ProductIdDTO } from "./storefrontDTO.js";
+import { ProductDTO, EProductDTO, ProductIdDTO, ProductCategoryDTO } from "./storefrontDTO.js";
 
 @Controller('api/v1/storefront')
 export class StoreFrontController {
@@ -28,8 +28,8 @@ export class StoreFrontController {
   }
 
   @Get('get-all-products')
-  async getAllProduct(@Req() req, @Res() res) {
-    return res.status(HttpStatus.OK).json(await this.storeFrontService.getAllProducts())
+  async getAllProduct(@Req() req, @Res() res, @Query() query: ProductCategoryDTO ) {
+    return res.status(HttpStatus.OK).json(await this.storeFrontService.getAllProducts(query.category))
   }
 
   @Get('product-insight')
